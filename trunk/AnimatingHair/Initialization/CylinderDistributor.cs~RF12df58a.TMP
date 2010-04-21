@@ -1,0 +1,57 @@
+﻿using System.Collections.Generic;
+using AnimatingHair.Auxiliary;
+using OpenTK;
+using System;
+
+namespace AnimatingHair.Initializing
+{
+    class CylinderDistributor
+    {
+        private Random r;
+
+        public CylinderDistributor( int seed )
+        {
+            r = new Random( seed );
+        }
+
+        public IEnumerable<Vector3> DistributeParticles( int particleCount )
+        {
+            Vector3[] result = new Vector3[ particleCount ];
+
+            int k = 0;
+            float minDistance = 10; // NOTE: konstanta
+
+            while ( k < particleCount )
+            {
+                bool badPosition = false;
+                Vector3 newPosition = Vector3.Zero;
+
+                float length = 3 * r.NextDouble();
+                newPosition.Z = length + 4;
+                float angle = 2 * Math.PI * r.NextDouble();
+                float radius = 2 * r.NextDouble();
+                newPosition.X = radius * Math.Cos( angle );
+                newPosition.Y = radius * Math.Sin( angle ) - 1;
+
+                for ( int i = 0; i < k; i++ )
+                {
+                    if ( (newPosition - result[ i ]).Length < minDistance )
+                    {
+                        badPosition = true;
+                        minDistance *= 0.99; // NOTE: konstanta
+                        break;
+                    }
+                }
+
+                if ( !badPosition )
+                {
+                    result[ k ] = newPosition;
+                    k++;
+                    minDistance = 10; // NOTE: konstanta
+                }
+            }
+
+            return result;
+        }
+    }
+}

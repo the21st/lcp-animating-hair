@@ -1,0 +1,235 @@
+﻿using System;
+using System.ComponentModel;
+using System.Drawing;
+using AnimatingHair.Rendering.Debug;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
+
+using AnimatingHair.Entity;
+using AnimatingHair.Auxiliary;
+
+namespace AnimatingHair.Rendering
+{
+    class Renderer : IRenderable
+    {
+        private Scene scene;
+        private Camera camera;
+        private Light light;
+        private Light backLight;
+        private HairRenderer hairRenderer;
+        private SimpleHairRenderer simpleHairRenderer;
+        private AirRenderer airRenderer;
+        private BustRenderer bustRenderer;
+        private MetaBustRenderer metaBustRenderer;
+        private VoxelGridRenderer voxelGridRenderer;
+        private double angle = -1.5;
+
+        #region Properties
+
+        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether any hair is drawn." )]
+        public bool ShowHair { get; set; }
+        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether the hair is rendered in debug mode." )]
+        public bool DebugHair { get; set; }
+        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether neighbor connections are shown (only applies to debug mode)." )]
+        public bool RenderConnections
+        {
+            get { return simpleHairRenderer.RenderConnections; }
+            set { simpleHairRenderer.RenderConnections = value; }
+        }
+        [CategoryAttribute( "Bust" ), DescriptionAttribute( "Indicates whether the polygonal model of the bust is rendered." )]
+        public bool ShowBust { get; set; }
+        [CategoryAttribute( "Bust" ), DescriptionAttribute( "Indicates whether the mesh is drawn as a wireframe model." )]
+        public bool WireFrame { get; set; }
+        [CategoryAttribute( "Bust" ), DescriptionAttribute( "Indicates whether the analytical model of the bust is shown." )]
+        public bool ShowMetaBust { get; set; }
+        [CategoryAttribute( "Lights" ), DescriptionAttribute( "Indicates whether Light1 is orbiting or in place." )]
+        public bool CruisingLight { get; set; }
+        [CategoryAttribute( "Lights" ), DescriptionAttribute( "Indicates whether Light1 is turned on." )]
+        public bool Light1 { get; set; }
+        [CategoryAttribute( "Lights" ), DescriptionAttribute( "Indicates whether Light2 is turned on." )]
+        public bool Light2 { get; set; }
+        [CategoryAttribute( "Misc" ), DescriptionAttribute( "Turn on/off voxel grid display." )]
+        public bool ShowVoxelGrid { get; set; }
+        [CategoryAttribute( "Misc" ), DescriptionAttribute( "Indicates whether air particles are drawn (debug)." )]
+        public bool ShowAir { get; set; }
+
+        #endregion
+
+        public Renderer( Camera camera, Scene scene )
+        {
+            this.camera = camera;
+            this.scene = scene;
+
+            light = new Light
+            {
+                Intensity = 0.6,
+                Position = new Vector3d( 5, 0, 5 )
+            };
+
+            backLight = new Light
+            {
+                Intensity = 0.7,
+                Position = new Vector3d( 5, 0, 5 )
+            };
+
+            hairRenderer = new HairRenderer( camera, scene.Hair );
+            simpleHairRenderer = new SimpleHairRenderer( scene.Hair );
+
+            airRenderer = new AirRenderer( scene.Air );
+
+            bustRenderer = new BustRenderer( scene.Bust );
+            metaBustRenderer = new MetaBustRenderer( scene.Bust );
+
+            voxelGridRenderer = new VoxelGridRenderer( scene.VoxelGrid );
+
+            ShowBust = false;
+            WireFrame = false;
+            ShowMetaBust = true;
+            ShowHair = true;
+            DebugHair = true;
+            CruisingLight = true;
+            Light1 = true;
+            Light2 = true;
+        }
+
+        public void Initialize()
+        {
+            initializeOpenGL();
+        }
+
+        private void initializeOpenGL()
+        {
+            GL.ClearColor( Color.CornflowerBlue );
+
+            GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
+            GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
+            GL.ShadeModel( ShadingModel.Smooth );
+            GL.Enable( EnableCap.Lighting );
+
+            GL.Light( LightName.Light0, LightParameter.Diffuse, new float[] { (float)light.Intensity, (float)light.Intensity, (float)light.Intensity } );
+            GL.Light( LightName.Light0, LightParameter.Ambient, new float[] { 0.1f, 0.1f, 0.1f } );
+
+            GL.Light( LightName.Light1, LightParameter.Diffuse, new float[] { (float)backLight.Intensity, (float)backLight.Intensity, (float)backLight.Intensity } );
+            GL.Light( LightName.Light1, LightParameter.Specular, new float[] { 0.1f, 0.1f, 0.1f } );
+
+            if ( !DebugHair )
+                GL.Enable( EnableCap.Blend );
+            else
+                GL.Disable( EnableCap.Blend );
+
+            if ( Light1 )
+                GL.Enable( EnableCap.Light0 );
+            else
+                GL.Disable( EnableCap.Light0 );
+
+            if ( Light2 )
+                GL.Enable( EnableCap.Light1 );
+            else
+                GL.Disable( EnableCap.Light1 );
+        }
+
+        public void Render()
+        {
+            prepareBufferAndMatrix();
+
+            initializeOpenGL();
+
+            if ( CruisingLight )
+                angle += 0.005;
+
+            light.Position = new Vector3d( 10 * Math.Sin( angle ), 4, 10 * Math.Cos( angle ) );
+            GL.Light( LightName.Light0, LightParameter.Position, new Vector4( (Vector3)light.Position, 1 ) );
+
+            if ( DebugHair )
+            {
+                light.Position = camera.Eye;
+                GL.Light( LightName.Light0, LightParameter.Position, new Vector4( (Vector3)light.Position, 1 ) );
+            }
+
+            Vector3d camDir = camera.Target - camera.Eye;
+            Vector3d right = Vector3d.Cross( camDir, camera.Up );
+            right.Normalize();
+            backLight.Position = camera.Eye + 2 * camDir + 10 * camera.Up + 10 * right;
+            GL.Light( LightName.Light1, LightParameter.Position, new Vector4( (Vector3)backLight.Position, 1 ) );
+
+            GL.Enable( EnableCap.DepthTest );
+            GL.Disable( EnableCap.Texture2D );
+            GL.Disable( EnableCap.Lighting );
+            drawAxes();
+
+            //light.Render();
+
+            GL.Enable( EnableCap.Lighting );
+
+            if ( ShowBust )
+            {
+                bustRenderer.Wireframe = WireFrame;
+                bustRenderer.Render();
+            }
+            GL.PushMatrix();
+            GL.Translate( (Vector3)scene.Bust.Position );
+            GL.Rotate( (float)(scene.Bust.Angle * 180 / Math.PI), Vector3.UnitY );
+
+            if ( ShowMetaBust )
+                metaBustRenderer.Render();
+
+            GL.Disable( EnableCap.Texture2D );
+            GL.Disable( EnableCap.Lighting );
+            if ( ShowVoxelGrid )
+                voxelGridRenderer.Render();
+
+            if ( ShowHair )
+            {
+                if ( DebugHair )
+                {
+                    GL.Disable( EnableCap.Texture2D );
+                    GL.Disable( EnableCap.Lighting );
+                    simpleHairRenderer.Render();
+                }
+                else
+                {
+
+                    GL.DepthMask( false );
+                    GL.Enable( EnableCap.Texture2D );
+                    GL.Enable( EnableCap.Blend );
+                    GL.Enable( EnableCap.Lighting );
+                    hairRenderer.Render();
+                    GL.DepthMask( true );
+                }
+            }
+
+            if (ShowAir)
+            {
+                GL.Disable( EnableCap.Texture2D );
+                GL.Disable( EnableCap.Lighting );
+                airRenderer.Render();
+            }
+
+            GL.PopMatrix();
+        }
+
+        private void prepareBufferAndMatrix()
+        {
+            GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
+
+            Matrix4 modelview = Matrix4.LookAt( (Vector3)camera.Eye, (Vector3)camera.Target, (Vector3)camera.Up );
+            GL.MatrixMode( MatrixMode.Modelview );
+            GL.LoadMatrix( ref modelview );
+        }
+
+        private static void drawAxes()
+        {
+            GL.Color3( Color.Red );
+            GL.Begin( BeginMode.Lines );
+            {
+                GL.Vertex3( -Vector3.UnitX );
+                GL.Vertex3( Vector3.UnitX );
+                GL.Vertex3( -Vector3.UnitY );
+                GL.Vertex3( Vector3.UnitY );
+                GL.Vertex3( -Vector3.UnitZ );
+                GL.Vertex3( Vector3.UnitZ );
+            }
+            GL.End();
+        }
+    }
+}
