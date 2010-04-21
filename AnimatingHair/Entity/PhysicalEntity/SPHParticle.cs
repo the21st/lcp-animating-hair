@@ -1,0 +1,37 @@
+using System.Collections.Generic;
+using AnimatingHair.Auxiliary;
+
+namespace AnimatingHair.Entity.PhysicalEntity
+{
+    /// <summary>
+    /// An abstract particle used for smoothed particle hydrodynamics simulation.
+    /// </summary>
+    abstract class SPHParticle : PointMass
+    {
+        /// <summary>
+        /// The density of the fluid volume at the position of this particle
+        /// </summary>
+        public float Density { get; set; }
+
+        /// <summary>
+        /// The voxel this particle is contained in.
+        /// </summary>
+        public Voxel ContainedIn { get; set; }
+
+        // list of the current HairParticle neighbors, along with list of corresponding pre-computed distances and kernel values for efficiency
+        public readonly List<HairParticle> NeighborsHair = new List<HairParticle>();
+        public readonly List<float> DistancesHair = new List<float>();
+        public readonly List<float> KernelH2DistancesHair = new List<float>();
+
+        // list of the current AirParticle neighbors, along with list of corresponding pre-computed distances and kernel values for efficiency
+        public readonly List<AirParticle> NeighborsAir = new List<AirParticle>();
+        public readonly List<float> DistancesAir = new List<float>();
+        public readonly List<float> KernelH2DistancesAir = new List<float>();
+
+        public override void RKStep( int stepNumber )
+        {
+            Acceleration = Force / Mass;
+            base.RKStep( stepNumber );
+        }
+    }
+}
