@@ -28,8 +28,9 @@ namespace AnimatingHair.Rendering
         private readonly VoxelGridRenderer voxelGridRenderer;
 
         // auxiliary
-        private readonly float[] light1Diffuse;
-        private readonly float[] light1Ambient;
+        private readonly float[] lightDiffuse;
+        private readonly float[] lightAmbient;
+        private readonly float[] lightSpecular;
         private float angle = -1.5f;
 
         #region Rendering options
@@ -53,13 +54,34 @@ namespace AnimatingHair.Rendering
         [CategoryAttribute( "Lights" ), DescriptionAttribute( "Indicates whether Light1 is orbiting or in place." )]
         public bool CruisingLight { get; set; }
         [CategoryAttribute( "Lights" ), DescriptionAttribute( "Indicates whether Light1 is turned on." )]
-        public bool Light1 { get; set; }
-        [CategoryAttribute( "Lights" ), DescriptionAttribute( "Indicates whether Light2 is turned on." )]
-        public bool Light2 { get; set; }
-        [CategoryAttribute( "Misc" ), DescriptionAttribute( "Turn on/off voxel Grid display." )]
         public bool ShowVoxelGrid { get; set; }
         [CategoryAttribute( "Misc" ), DescriptionAttribute( "Indicates whether air particles are drawn (debug)." )]
         public bool ShowAir { get; set; }
+
+        public float LightIntensity
+        {
+            set
+            {
+                light.Intensity = value;
+                refreshLight();
+            }
+        }
+
+        private void refreshLight()
+        {
+            lightDiffuse[ 0 ] = light.Intensity;
+            lightDiffuse[ 1 ] = light.Intensity;
+            lightDiffuse[ 2 ] = light.Intensity;
+            lightAmbient[ 0 ] = light.Intensity / 10f;
+            lightAmbient[ 1 ] = light.Intensity / 10f;
+            lightAmbient[ 2 ] = light.Intensity / 10f;
+            lightSpecular[ 0 ] = light.Intensity;
+            lightSpecular[ 1 ] = light.Intensity;
+            lightSpecular[ 2 ] = light.Intensity;
+            GL.Light( LightName.Light0, LightParameter.Diffuse, lightDiffuse );
+            GL.Light( LightName.Light0, LightParameter.Ambient, lightAmbient );
+            GL.Light( LightName.Light0, LightParameter.Specular, lightSpecular );
+        }
 
         #endregion
 
@@ -70,7 +92,7 @@ namespace AnimatingHair.Rendering
 
             light = new Light
             {
-                Intensity = 0.6f,
+                Intensity = 0.5f,
                 Position = new Vector3( 5, 0, 5 )
             };
 
@@ -90,13 +112,13 @@ namespace AnimatingHair.Rendering
             ShowHair = true;
             DebugHair = false;
             CruisingLight = false;
-            Light1 = true;
-            Light2 = false;
             ShowVoxelGrid = false;
             ShowAir = false;
 
-            light1Diffuse = new float[] { light.Intensity, light.Intensity, light.Intensity };
-            light1Ambient = new float[] { 0.1f, 0.1f, 0.1f };
+            lightDiffuse = new float[ 3 ];
+            lightAmbient = new float[ 3 ];
+            lightSpecular = new float[ 3 ];
+            refreshLight();
 
             initializeOpenGL();
         }
@@ -105,22 +127,22 @@ namespace AnimatingHair.Rendering
         /// The main rendering method. Called after each simulation step.
         /// </summary>
         /// <remarks>
-        /// Calls component's Render() methods according to rendering options variables.
+        /// Calls the components' Render() methods according to rendering options.
         /// </remarks>
         public void Render()
         {
-            // clears buffer, sets modelview matrix to identity
+            renderScene();
+        }
+
+        private void renderScene()
+        {
+            // clears buffer, sets modelview matrix to LookAt from camera
             prepareBufferAndMatrix();
 
             if ( !DebugHair )
                 GL.Enable( EnableCap.Blend );
             else
                 GL.Disable( EnableCap.Blend );
-
-            if ( Light1 )
-                GL.Enable( EnableCap.Light0 );
-            else
-                GL.Disable( EnableCap.Light0 );
 
             if ( CruisingLight )
                 angle += 0.005f;
@@ -182,15 +204,18 @@ namespace AnimatingHair.Rendering
 
         private void initializeOpenGL()
         {
-            GL.ClearColor( Color.CornflowerBlue );
+            //GL.ClearColor( Color.CornflowerBlue );
+            GL.ClearColor( Color.Gray );
 
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
             GL.ShadeModel( ShadingModel.Smooth );
             GL.Enable( EnableCap.Lighting );
+            GL.Enable( EnableCap.Light0 );
 
-            GL.Light( LightName.Light0, LightParameter.Diffuse, light1Diffuse );
-            GL.Light( LightName.Light0, LightParameter.Ambient, light1Ambient );
+            GL.Light( LightName.Light0, LightParameter.Diffuse, lightDiffuse );
+            GL.Light( LightName.Light0, LightParameter.Ambient, lightAmbient );
+            //GL.Light( LightName.Light0, LightParameter.Specular, lightSpecular );
         }
 
         private void prepareBufferAndMatrix()

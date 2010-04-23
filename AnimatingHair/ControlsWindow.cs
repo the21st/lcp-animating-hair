@@ -23,7 +23,7 @@ namespace AnimatingHair
         private float distance = 10, elevation = 0, azimuth = 0, mouseX, mouseY;
         private readonly Random r = new Random();
         private bool loaded = false;
-        private bool paused = false;
+        private bool paused = true;
         private string saveFile = "";
         private readonly LinkedList<float> fpsHistory = new LinkedList<float>();
 
@@ -146,6 +146,10 @@ namespace AnimatingHair
             if ( tb == trackBarNumberOfParticles )
             {
                 textBoxNumberOfParticles.Text = ((int)(value * 1900 + 100)).ToString();
+            }
+            if ( tb == trackBarLightIntensity )
+            {
+                renderer.LightIntensity = value * 2;
             }
 
             updateConstants( tb );
@@ -362,6 +366,7 @@ namespace AnimatingHair
         void glControl_Paint( object sender, PaintEventArgs e )
         {
             render();
+            polarToCartesian();
         }
 
         #endregion
@@ -456,8 +461,6 @@ namespace AnimatingHair
                        {
                            CruisingLight = ((Renderer)propertyGridRenderer.SelectedObject).CruisingLight,
                            DebugHair = ((Renderer)propertyGridRenderer.SelectedObject).DebugHair,
-                           Light1 = ((Renderer)propertyGridRenderer.SelectedObject).Light1,
-                           Light2 = ((Renderer)propertyGridRenderer.SelectedObject).Light2,
                            RenderConnections = ((Renderer)propertyGridRenderer.SelectedObject).RenderConnections,
                            ShowBust = ((Renderer)propertyGridRenderer.SelectedObject).ShowBust,
                            ShowMetaBust = ((Renderer)propertyGridRenderer.SelectedObject).ShowMetaBust,

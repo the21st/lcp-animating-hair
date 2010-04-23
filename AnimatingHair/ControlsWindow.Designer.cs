@@ -101,7 +101,13 @@
             this.label10 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.propertyGridRenderer = new System.Windows.Forms.PropertyGrid();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.label16 = new System.Windows.Forms.Label();
+            this.trackBarLightIntensity = new System.Windows.Forms.TrackBar();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.diffuseDialog = new System.Windows.Forms.ColorDialog();
+            this.ambientDialog = new System.Windows.Forms.ColorDialog();
+            this.specularDialog = new System.Windows.Forms.ColorDialog();
             this.restartGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMaxRootDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHairLength)).BeginInit();
@@ -129,6 +135,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarAttractionRepulsionAir)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDrag)).BeginInit();
             this.tabPage3.SuspendLayout();
+            this.tabPage6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarLightIntensity)).BeginInit();
             this.SuspendLayout();
             // 
             // glControl
@@ -540,15 +548,19 @@
             // 
             // tabControl1
             // 
+            this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabControl1.Controls.Add( this.tabPage2 );
             this.tabControl1.Controls.Add( this.tabPage5 );
             this.tabControl1.Controls.Add( this.tabPage1 );
             this.tabControl1.Controls.Add( this.tabPage4 );
             this.tabControl1.Controls.Add( this.tabPage3 );
+            this.tabControl1.Controls.Add( this.tabPage6 );
             this.tabControl1.Location = new System.Drawing.Point( 818, 36 );
+            this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size( 311, 541 );
+            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 33;
             // 
             // tabPage2
@@ -560,10 +572,10 @@
             this.tabPage2.Controls.Add( this.restartGroupBox );
             this.tabPage2.Controls.Add( this.buttonRestart );
             this.tabPage2.Controls.Add( this.label1 );
-            this.tabPage2.Location = new System.Drawing.Point( 4, 22 );
+            this.tabPage2.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPage2.Size = new System.Drawing.Size( 303, 515 );
+            this.tabPage2.Size = new System.Drawing.Size( 303, 488 );
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Initialization";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -623,9 +635,9 @@
             // tabPage5
             // 
             this.tabPage5.Controls.Add( this.groupBox1 );
-            this.tabPage5.Location = new System.Drawing.Point( 4, 22 );
+            this.tabPage5.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size( 303, 515 );
+            this.tabPage5.Size = new System.Drawing.Size( 303, 488 );
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Environment";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -706,10 +718,10 @@
             // tabPage1
             // 
             this.tabPage1.Controls.Add( this.groupBox2 );
-            this.tabPage1.Location = new System.Drawing.Point( 4, 22 );
+            this.tabPage1.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPage1.Size = new System.Drawing.Size( 303, 515 );
+            this.tabPage1.Size = new System.Drawing.Size( 303, 488 );
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Hair";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -717,10 +729,10 @@
             // tabPage4
             // 
             this.tabPage4.Controls.Add( this.groupBox4 );
-            this.tabPage4.Location = new System.Drawing.Point( 4, 22 );
+            this.tabPage4.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPage4.Size = new System.Drawing.Size( 303, 515 );
+            this.tabPage4.Size = new System.Drawing.Size( 303, 488 );
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Air";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -844,10 +856,10 @@
             // tabPage3
             // 
             this.tabPage3.Controls.Add( this.propertyGridRenderer );
-            this.tabPage3.Location = new System.Drawing.Point( 4, 22 );
+            this.tabPage3.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPage3.Size = new System.Drawing.Size( 303, 515 );
+            this.tabPage3.Size = new System.Drawing.Size( 303, 488 );
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Rendering";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -859,9 +871,56 @@
             this.propertyGridRenderer.Size = new System.Drawing.Size( 291, 503 );
             this.propertyGridRenderer.TabIndex = 0;
             // 
+            // tabPage6
+            // 
+            this.tabPage6.Controls.Add( this.label16 );
+            this.tabPage6.Controls.Add( this.trackBarLightIntensity );
+            this.tabPage6.Location = new System.Drawing.Point( 4, 49 );
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Size = new System.Drawing.Size( 303, 488 );
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "Light";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point( 11, 12 );
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size( 72, 13 );
+            this.label16.TabIndex = 6;
+            this.label16.Text = "Light Intensity";
+            // 
+            // trackBarLightIntensity
+            // 
+            this.trackBarLightIntensity.AutoSize = false;
+            this.trackBarLightIntensity.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.trackBarLightIntensity.LargeChange = 30;
+            this.trackBarLightIntensity.Location = new System.Drawing.Point( 89, 12 );
+            this.trackBarLightIntensity.Maximum = 153;
+            this.trackBarLightIntensity.Name = "trackBarLightIntensity";
+            this.trackBarLightIntensity.Size = new System.Drawing.Size( 154, 20 );
+            this.trackBarLightIntensity.SmallChange = 5;
+            this.trackBarLightIntensity.TabIndex = 5;
+            this.trackBarLightIntensity.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBarLightIntensity.Value = 77;
+            this.trackBarLightIntensity.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            // 
             // colorDialog
             // 
             this.colorDialog.Color = System.Drawing.Color.White;
+            // 
+            // diffuseDialog
+            // 
+            this.diffuseDialog.Color = System.Drawing.Color.White;
+            // 
+            // ambientDialog
+            // 
+            this.ambientDialog.Color = System.Drawing.Color.White;
+            // 
+            // specularDialog
+            // 
+            this.specularDialog.Color = System.Drawing.Color.White;
             // 
             // ControlsWindow
             // 
@@ -914,6 +973,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarAttractionRepulsionAir)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDrag)).EndInit();
             this.tabPage3.ResumeLayout( false );
+            this.tabPage6.ResumeLayout( false );
+            this.tabPage6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarLightIntensity)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -994,5 +1056,11 @@
         private System.Windows.Forms.Button buttonColor;
         private System.Windows.Forms.ColorDialog colorDialog;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.ColorDialog diffuseDialog;
+        private System.Windows.Forms.ColorDialog ambientDialog;
+        private System.Windows.Forms.ColorDialog specularDialog;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.TrackBar trackBarLightIntensity;
     }
 }

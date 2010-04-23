@@ -22,11 +22,13 @@ namespace AnimatingHair.Auxiliary
 
         public void RemoveElement( SPHParticle particle )
         {
+            //Particles.Remove( particle.ListNode );
             Particles.Remove( particle );
         }
 
         public void AddElement( SPHParticle particle )
         {
+            //Particles.AddLast( particle.ListNode );
             Particles.Add( particle );
         }
     }

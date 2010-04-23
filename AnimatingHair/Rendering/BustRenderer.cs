@@ -9,12 +9,12 @@ namespace AnimatingHair.Rendering
     /// </summary>
     class BustRenderer
     {
-        private static readonly float[] SkinColor = { 0.93f, 0.76f, 0.66f, 1 };
+        private static readonly float[] SkinColor = { 0.47f, 0.38f, 0.33f, 1 };
+        private static readonly float[] SpecularColor = { 0.1f, 0.05f, 0.05f, 1 };
 
         private readonly Bust bust;
         private readonly TriangleMesh femaleHead;
         private int eyeballTexture;
-        private readonly float[] specularColor;
 
         public bool Wireframe { get; set; }
 
@@ -24,8 +24,6 @@ namespace AnimatingHair.Rendering
 
             femaleHead = Utility.LoadOBJ( FilePaths.HeadModelLocation );
             eyeballTexture = Utility.UploadTexture( FilePaths.EyeballTextureLocation );
-
-            specularColor = new float[] { 0.1f, 0.05f, 0.05f };
         }
 
         public void Render()
@@ -33,7 +31,7 @@ namespace AnimatingHair.Rendering
             femaleHead.Wireframe = Wireframe;
 
             GL.PushAttrib( AttribMask.AllAttribBits );
-            GL.Material( MaterialFace.Front, MaterialParameter.Specular, specularColor );
+            GL.Material( MaterialFace.Front, MaterialParameter.Specular, SpecularColor );
             GL.Material( MaterialFace.Front, MaterialParameter.Shininess, 5 );
             GL.Material( MaterialFace.Front, MaterialParameter.Diffuse, SkinColor );
             GL.Material( MaterialFace.Front, MaterialParameter.Ambient, SkinColor );

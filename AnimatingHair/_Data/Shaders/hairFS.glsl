@@ -2,7 +2,8 @@
 uniform vec3 axis;
 uniform vec3 eye;
 
-const float K_d = 0.3;
+const float K_a = 0.1;
+const float K_d = 0.2;
 const float K_s = 0.7;
 const float shininess = 180.0;
 
@@ -19,10 +20,17 @@ float vecSin(vec3 a, vec3 b) // a and b are normalized
 
 void main()
 {
-	vec4 color = texture2D( tex, gl_TexCoord[0].st );
+	vec4 color = texture2D( tex, gl_TexCoord[0].st ); // we only need alpha information
+	color[3] = opacityFactor * color[3]; // modify alpha
+		
+	vec4 lightDiffuse = gl_LightSource[0].diffuse;
+	vec4 lightAmbient = gl_LightSource[0].ambient;
 	vec4 lightSpec = gl_LightSource[0].specular;
 	
 	color.xyz = gl_FrontMaterial.diffuse.xyz;
+	color.x *= lightDiffuse.x;
+	color.y *= lightDiffuse.y;
+	color.z *= lightDiffuse.z;
 	
 	
 	vec3 t = normalize( axis );
@@ -53,7 +61,7 @@ void main()
 	
 	color.xyz = f_dir * (diffuse + specular);
 	
-	color[3] = opacityFactor * color[3];
+	color.xyz += K_a * gl_FrontMaterial.ambient.xyz;
 	
 	gl_FragColor = color;
 }

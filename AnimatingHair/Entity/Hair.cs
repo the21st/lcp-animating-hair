@@ -33,7 +33,8 @@ namespace AnimatingHair.Entity
 
         public Hair()
         {
-            Clr = new float[] { 0.55f, 0.26f, 0.13f };
+            //Clr = new float[] { 0.55f, 0.26f, 0.13f };
+            Clr = new float[] { 1f, 0.47f, 0.24f };
             alphaT = new float[ Const.HairParticleCount ];
             alphaR = new float[ Const.HairParticleCount ];
             ParticlePairsIteration = new List<ParticlePair>();
