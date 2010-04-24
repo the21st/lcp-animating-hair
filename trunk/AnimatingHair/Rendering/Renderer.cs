@@ -27,11 +27,13 @@ namespace AnimatingHair.Rendering
         private readonly MetaBustRenderer metaBustRenderer;
         private readonly VoxelGridRenderer voxelGridRenderer;
 
+        private readonly OpacityMapsRenderer opacityMapsRenderer;
+
         // auxiliary
         private readonly float[] lightDiffuse;
         private readonly float[] lightAmbient;
         private readonly float[] lightSpecular;
-        private float angle = -1.5f;
+        private float angle = 0;
 
         #region Rendering options
 
@@ -60,6 +62,10 @@ namespace AnimatingHair.Rendering
 
         public float LightIntensity
         {
+            get
+            {
+                return light.Intensity;
+            }
             set
             {
                 light.Intensity = value;
@@ -67,21 +73,6 @@ namespace AnimatingHair.Rendering
             }
         }
 
-        private void refreshLight()
-        {
-            lightDiffuse[ 0 ] = light.Intensity;
-            lightDiffuse[ 1 ] = light.Intensity;
-            lightDiffuse[ 2 ] = light.Intensity;
-            lightAmbient[ 0 ] = light.Intensity / 10f;
-            lightAmbient[ 1 ] = light.Intensity / 10f;
-            lightAmbient[ 2 ] = light.Intensity / 10f;
-            lightSpecular[ 0 ] = light.Intensity;
-            lightSpecular[ 1 ] = light.Intensity;
-            lightSpecular[ 2 ] = light.Intensity;
-            GL.Light( LightName.Light0, LightParameter.Diffuse, lightDiffuse );
-            GL.Light( LightName.Light0, LightParameter.Ambient, lightAmbient );
-            GL.Light( LightName.Light0, LightParameter.Specular, lightSpecular );
-        }
 
         #endregion
 
@@ -92,7 +83,7 @@ namespace AnimatingHair.Rendering
 
             light = new Light
             {
-                Intensity = 0.5f,
+                Intensity = 1f,
                 Position = new Vector3( 5, 0, 5 )
             };
 
@@ -105,6 +96,8 @@ namespace AnimatingHair.Rendering
             metaBustRenderer = new MetaBustRenderer( scene.Bust );
 
             voxelGridRenderer = new VoxelGridRenderer( scene.VoxelGrid );
+
+            opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light );
 
             ShowBust = true;
             WireFrame = false;
@@ -123,15 +116,19 @@ namespace AnimatingHair.Rendering
             initializeOpenGL();
         }
 
-        /// <summary>
-        /// The main rendering method. Called after each simulation step.
-        /// </summary>
-        /// <remarks>
-        /// Calls the components' Render() methods according to rendering options.
-        /// </remarks>
         public void Render()
         {
-            renderScene();
+            if ( CruisingLight )
+                angle += 0.001f;
+
+            light.Position = new Vector3( -5 * (float)Math.Sin( angle ), 5, 5 * (float)Math.Cos( angle ) );
+            GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
+
+            opacityMapsRenderer.RenderOpacityTexture();
+
+            //setTextureMatrix();
+
+            //renderScene();
         }
 
         private void renderScene()
@@ -143,20 +140,6 @@ namespace AnimatingHair.Rendering
                 GL.Enable( EnableCap.Blend );
             else
                 GL.Disable( EnableCap.Blend );
-
-            if ( CruisingLight )
-                angle += 0.005f;
-
-            if ( DebugHair && ShowHair )
-            {
-                light.Position = camera.Eye;
-                GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
-            }
-            else
-            {
-                light.Position = new Vector3( -10 * (float)Math.Sin( angle ), 10, 10 * (float)Math.Cos( angle ) );
-                GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
-            }
 
             GL.Enable( EnableCap.DepthTest );
             GL.Disable( EnableCap.Texture2D );
@@ -202,6 +185,33 @@ namespace AnimatingHair.Rendering
             GL.PopMatrix();
         }
 
+        private void setTextureMatrix()
+        {
+            // This is matrix transform every coordinate x,y,z
+            // x = x* 0.5 + 0.5 
+            // y = y* 0.5 + 0.5 
+            // z = z* 0.5 + 0.5 
+            // Moving from unit cube [-1,1] to [0,1]  
+            Matrix4 bias = new Matrix4(	
+                0.5f, 0.0f, 0.0f, 0.0f, 
+                0.0f, 0.5f, 0.0f, 0.0f,
+                0.0f, 0.0f, 0.5f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f); // NOTE: transpose?
+
+            GL.MatrixMode( MatrixMode.Texture );
+            GL.ActiveTexture( TextureUnit.Texture7 );
+
+            GL.LoadIdentity();
+            GL.LoadMatrix( ref bias );
+
+            // concatating all matrice into one.
+            GL.MultMatrix( ref opacityMapsRenderer.LightProjectionMatrix );
+            GL.MultMatrix( ref opacityMapsRenderer.LightModelViewMatrix );
+
+            // Go back to normal matrix mode
+            GL.MatrixMode( MatrixMode.Modelview );
+        }
+
         private void initializeOpenGL()
         {
             //GL.ClearColor( Color.CornflowerBlue );
@@ -240,6 +250,22 @@ namespace AnimatingHair.Rendering
                 GL.Vertex3( Vector3.UnitZ );
             }
             GL.End();
+        }
+
+        private void refreshLight()
+        {
+            lightDiffuse[ 0 ] = light.Intensity;
+            lightDiffuse[ 1 ] = light.Intensity;
+            lightDiffuse[ 2 ] = light.Intensity;
+            lightAmbient[ 0 ] = light.Intensity / 10f;
+            lightAmbient[ 1 ] = light.Intensity / 10f;
+            lightAmbient[ 2 ] = light.Intensity / 10f;
+            lightSpecular[ 0 ] = light.Intensity;
+            lightSpecular[ 1 ] = light.Intensity;
+            lightSpecular[ 2 ] = light.Intensity;
+            GL.Light( LightName.Light0, LightParameter.Diffuse, lightDiffuse );
+            GL.Light( LightName.Light0, LightParameter.Ambient, lightAmbient );
+            GL.Light( LightName.Light0, LightParameter.Specular, lightSpecular );
         }
     }
 }

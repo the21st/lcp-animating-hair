@@ -142,6 +142,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Rendering\Debug\AirRenderer.cs" />
     <Compile Include="Rendering\Debug\MetaBustRenderer.cs" />
+    <Compile Include="Rendering\OpacityMapsRenderer.cs" />
     <Compile Include="Rendering\TriangleMesh.cs" />
     <Compile Include="Rendering\HairRenderer.cs" />
     <Compile Include="Rendering\BustRenderer.cs" />
@@ -187,7 +188,9 @@
     <None Include="Properties\app.manifest" />
     <None Include="_Data\Models\hlava.obj" />
     <None Include="_Data\Shaders\billboardVS.glsl" />
+    <None Include="_Data\Shaders\depthVS.glsl" />
     <None Include="_Data\Shaders\hairFS.glsl" />
+    <None Include="_Data\Shaders\opacityMapsFS.glsl" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

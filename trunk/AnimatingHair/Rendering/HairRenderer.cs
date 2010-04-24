@@ -41,22 +41,20 @@ namespace AnimatingHair.Rendering
             splatTexture = Utility.UploadTexture( FilePaths.HairTextureLocation );
 
             // shader loading
-            using ( StreamReader vs = new StreamReader( FilePaths.VertexShaderLocation ) )
+            using ( StreamReader vs = new StreamReader( FilePaths.BillboardShaderLocation ) )
             {
-                using ( StreamReader fs = new StreamReader( FilePaths.FragmentShaderLocation ) )
+                using ( StreamReader fs = new StreamReader( FilePaths.HairShaderLocation ) )
                     createShaders( vs.ReadToEnd(), fs.ReadToEnd(),
                                    out vertexShaderObject, out fragmentShaderObject,
                                    out shaderProgram );
             }
 
-            getShaderLocations();
+            getShaderVariableLocations();
 
             sorted = new HairParticle[ hair.Particles.Length ];
-            int i = 0;
             for ( int index = 0; index < hair.Particles.Length; index++ )
             {
-                sorted[ i ] = hair.Particles[ index ];
-                i++;
+                sorted[ index ] = hair.Particles[ index ];
             }
         }
 
@@ -66,7 +64,7 @@ namespace AnimatingHair.Rendering
             GL.Enable( EnableCap.Blend );
             GL.Enable( EnableCap.Lighting );
             GL.Material( MaterialFace.FrontAndBack, MaterialParameter.AmbientAndDiffuse, hair.Clr );
-            renderWithVS();
+            renderWithShaders();
         }
 
         private static int particleCompare( HairParticle hp1, HairParticle hp2 )
@@ -74,7 +72,7 @@ namespace AnimatingHair.Rendering
             return hp2.DistanceFromCamera.CompareTo( hp1.DistanceFromCamera );
         }
 
-        private void renderWithVS()
+        private void renderWithShaders()
         {
             // link the shader program
             GL.UseProgram( shaderProgram );
@@ -141,7 +139,7 @@ namespace AnimatingHair.Rendering
 
         #region Private auxiliary methods
 
-        private void getShaderLocations()
+        private void getShaderVariableLocations()
         {
             axisLoc = GL.GetUniformLocation( shaderProgram, "axis" );
             sign1Loc = GL.GetAttribLocation( shaderProgram, "sign1" );

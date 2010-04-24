@@ -2,9 +2,9 @@
 uniform vec3 axis;
 uniform vec3 eye;
 
-const float K_a = 0.1;
+const float K_a = 0.05;
 const float K_d = 0.2;
-const float K_s = 0.7;
+const float K_s = 0.8;
 const float shininess = 180.0;
 
 const float rho_reflect = 0.75;

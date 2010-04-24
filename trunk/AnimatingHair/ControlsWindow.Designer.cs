@@ -1,4 +1,4 @@
-﻿namespace AnimatingHair
+namespace AnimatingHair
 {
     partial class ControlsWindow
     {
@@ -194,7 +194,7 @@
             this.trackBarMaxRootDepth.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarMaxRootDepth.TabIndex = 9;
             this.trackBarMaxRootDepth.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarMaxRootDepth.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarMaxRootDepth.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // textBoxHairLength
             // 
@@ -223,7 +223,7 @@
             this.trackBarHairLength.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarHairLength.TabIndex = 6;
             this.trackBarHairLength.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarHairLength.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarHairLength.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // textBoxNumberOfParticles
             // 
@@ -254,7 +254,7 @@
             this.trackBarNumberOfParticles.SmallChange = 5;
             this.trackBarNumberOfParticles.TabIndex = 3;
             this.trackBarNumberOfParticles.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarNumberOfParticles.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarNumberOfParticles.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // buttonRestartWithRandomSeed
             // 
@@ -348,7 +348,7 @@
             this.trackBarCollisionDamping.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarCollisionDamping.TabIndex = 15;
             this.trackBarCollisionDamping.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarCollisionDamping.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarCollisionDamping.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // textBoxAverageDensity
             // 
@@ -377,7 +377,7 @@
             this.trackBarAverageDensity.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarAverageDensity.TabIndex = 24;
             this.trackBarAverageDensity.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarAverageDensity.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarAverageDensity.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // textBoxAttractionRepulsion
             // 
@@ -406,7 +406,7 @@
             this.trackBarAttractionRepulsion.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarAttractionRepulsion.TabIndex = 21;
             this.trackBarAttractionRepulsion.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarAttractionRepulsion.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarAttractionRepulsion.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // textBoxFrictionDamping
             // 
@@ -435,7 +435,7 @@
             this.trackBarFrictionDamping.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarFrictionDamping.TabIndex = 18;
             this.trackBarFrictionDamping.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarFrictionDamping.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarFrictionDamping.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // groupBox2
             // 
@@ -621,7 +621,7 @@
             this.trackBarNumberOfAirParticles.SmallChange = 5;
             this.trackBarNumberOfAirParticles.TabIndex = 3;
             this.trackBarNumberOfAirParticles.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarNumberOfAirParticles.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarNumberOfAirParticles.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // label5
             // 
@@ -676,7 +676,7 @@
             this.trackBarGravity.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarGravity.TabIndex = 6;
             this.trackBarGravity.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarGravity.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarGravity.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // textBoxGravity
             // 
@@ -696,7 +696,7 @@
             this.trackBarAirFriction.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarAirFriction.TabIndex = 9;
             this.trackBarAirFriction.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarAirFriction.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarAirFriction.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // label8
             // 
@@ -810,7 +810,7 @@
             this.trackBarAverageDensityAir.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarAverageDensityAir.TabIndex = 33;
             this.trackBarAverageDensityAir.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarAverageDensityAir.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarAverageDensityAir.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // trackBarAttractionRepulsionAir
             // 
@@ -822,7 +822,7 @@
             this.trackBarAttractionRepulsionAir.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarAttractionRepulsionAir.TabIndex = 30;
             this.trackBarAttractionRepulsionAir.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarAttractionRepulsionAir.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarAttractionRepulsionAir.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // textBoxAttractionRepulsionAir
             // 
@@ -842,7 +842,7 @@
             this.trackBarDrag.Size = new System.Drawing.Size( 154, 20 );
             this.trackBarDrag.TabIndex = 27;
             this.trackBarDrag.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBarDrag.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarDrag.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // label10
             // 
@@ -904,7 +904,7 @@
             this.trackBarLightIntensity.TabIndex = 5;
             this.trackBarLightIntensity.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBarLightIntensity.Value = 77;
-            this.trackBarLightIntensity.ValueChanged += new System.EventHandler( this.updateTextBoxes );
+            this.trackBarLightIntensity.ValueChanged += new System.EventHandler( this.trackBar_valueChanged );
             // 
             // colorDialog
             // 
