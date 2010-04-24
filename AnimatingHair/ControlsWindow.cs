@@ -74,8 +74,10 @@ namespace AnimatingHair
 
             glControl.MouseWheel += glControl_MouseWheel;
 
-            colorDialog.Color = Color.FromArgb( 141, 67, 33 );
+            colorDialog.Color = Color.FromArgb( (int)(scene.Hair.Clr[ 0 ] * 255), (int)(scene.Hair.Clr[ 1 ] * 255), (int)(scene.Hair.Clr[ 2 ] * 255) );
             buttonColor.BackColor = colorDialog.Color;
+
+            trackBar_valueChanged( trackBarLightIntensity, null );
 
             Text =
                 GL.GetString( StringName.Vendor ) + " " +
@@ -90,7 +92,7 @@ namespace AnimatingHair
             fpsDisplayTimer.Enabled = true;
         }
 
-        private void updateTextBoxes( object sender, EventArgs e )
+        private void trackBar_valueChanged( object sender, EventArgs e )
         {
             TrackBar tb = sender as TrackBar;
             float value = ((float)tb.Value) / tb.Maximum;
@@ -297,7 +299,7 @@ namespace AnimatingHair
             GL.Viewport( 0, 0, c.ClientSize.Width, c.ClientSize.Height );
 
             float aspectRatio = c.AspectRatio;
-            Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, aspectRatio, 1, 64 );
+            Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, aspectRatio, 1, 30 );
             GL.MatrixMode( MatrixMode.Projection );
             GL.LoadMatrix( ref perpective );
         }
@@ -467,15 +469,17 @@ namespace AnimatingHair
                            ShowHair = ((Renderer)propertyGridRenderer.SelectedObject).ShowHair,
                            WireFrame = ((Renderer)propertyGridRenderer.SelectedObject).WireFrame,
                            ShowVoxelGrid = ((Renderer)propertyGridRenderer.SelectedObject).ShowVoxelGrid,
-                           ShowAir = ((Renderer)propertyGridRenderer.SelectedObject).ShowAir
+                           ShowAir = ((Renderer)propertyGridRenderer.SelectedObject).ShowAir,
                        };
+
+            trackBar_valueChanged( trackBarLightIntensity, null );
 
             buttonColor.BackColor = colorDialog.Color;
             scene.Hair.Clr = new float[]
                                  {
-                                     colorDialog.Color.R / 256.0f, 
-                                     colorDialog.Color.G / 256.0f,
-                                     colorDialog.Color.B / 256.0f
+                                     colorDialog.Color.R / 255.0f, 
+                                     colorDialog.Color.G / 255.0f,
+                                     colorDialog.Color.B / 255.0f
                                  };
 
             propertyGridRenderer.SelectedObject = renderer;
@@ -584,9 +588,9 @@ namespace AnimatingHair
                 buttonColor.BackColor = colorDialog.Color;
                 scene.Hair.Clr = new float[]
                                  {
-                                     colorDialog.Color.R / 256.0f, 
-                                     colorDialog.Color.G / 256.0f,
-                                     colorDialog.Color.B / 256.0f
+                                     colorDialog.Color.R / 255.0f, 
+                                     colorDialog.Color.G / 255.0f,
+                                     colorDialog.Color.B / 255.0f
                                  };
             }
         }
