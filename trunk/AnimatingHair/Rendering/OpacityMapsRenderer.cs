@@ -24,6 +24,7 @@ namespace AnimatingHair.Rendering
         private int eyeLoc;
         private int sign1Loc;
         private int sign2Loc;
+        private int alphaTresholdLoc;
 
         // the opacity shader uniform locations
         private int axisLoc2;
@@ -33,6 +34,7 @@ namespace AnimatingHair.Rendering
         private int depthMapLoc2;
         private int hairTextureLoc2;
         private int distLoc2;
+        private int alphaTresholdLoc2;
 
         // shader objects
         private readonly int depthShaderProgram;
@@ -44,6 +46,7 @@ namespace AnimatingHair.Rendering
 
         public Matrix4 LightProjectionMatrix, LightModelViewMatrix;
         public float Dist = 0.1f;
+        public float AlphaTreshold = 0.15f;
 
         public OpacityMapsRenderer( Hair hair, Light light )
         {
@@ -59,9 +62,12 @@ namespace AnimatingHair.Rendering
             Utility.UploadTexture( FilePaths.HairTextureLocation );
 
             // shader loading
-            using ( StreamReader vs = new StreamReader( FilePaths.DepthShaderLocation ) )
+            using ( StreamReader vs = new StreamReader( FilePaths.DepthVSLocation ) )
             {
-                createShaders( vs.ReadToEnd(), out depthShaderProgram );
+                using ( StreamReader fs = new StreamReader( FilePaths.DepthFSLocation ) )
+                    createShaders( vs.ReadToEnd(), fs.ReadToEnd(),
+                                   out vertexShaderObject, out fragmentShaderObject,
+                                   out depthShaderProgram );
             }
 
             using ( StreamReader vs = new StreamReader( FilePaths.OpacityVSLocation ) )
@@ -150,11 +156,14 @@ namespace AnimatingHair.Rendering
             GL.ShadeModel( ShadingModel.Flat );
             GL.ColorMask( false, false, false, false );
             GL.Enable( EnableCap.DepthTest );
+            GL.Enable( EnableCap.Texture2D );
 
             // link the shader program
             GL.UseProgram( depthShaderProgram );
 
+            GL.BindTexture( TextureTarget.Texture2D, splatTexture );
             GL.Uniform3( eyeLoc, light.Position );
+            GL.Uniform1( alphaTresholdLoc, AlphaTreshold );
 
             for ( int i = 0; i < hair.Particles.Length; i++ )
             {
@@ -192,8 +201,20 @@ namespace AnimatingHair.Rendering
 
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "dist" );
             GL.Uniform1( distLoc2, Dist );
+            GL.Uniform1( alphaTresholdLoc2, AlphaTreshold );
 
             GL.Uniform3( eyeLoc2, light.Position );
+
+            float min = 9999;
+            float max = 0;
+            foreach ( HairParticle hairParticle in hair.Particles )
+            {
+                float distance = (light.Position - hairParticle.Position).Length;
+                if ( distance < min )
+                    min = distance;
+                if ( distance > max )
+                    max = distance;
+            }
 
             for ( int i = 0; i < hair.Particles.Length; i++ )
             {
@@ -279,6 +300,7 @@ namespace AnimatingHair.Rendering
             sign1Loc = GL.GetAttribLocation( depthShaderProgram, "sign1" );
             sign2Loc = GL.GetAttribLocation( depthShaderProgram, "sign2" );
             eyeLoc = GL.GetUniformLocation( depthShaderProgram, "eye" );
+            alphaTresholdLoc = GL.GetUniformLocation( depthShaderProgram, "alphaTreshold" );
 
             axisLoc2 = GL.GetUniformLocation( opacityShaderProgram, "axis" );
             sign1Loc2 = GL.GetAttribLocation( opacityShaderProgram, "sign1" );
@@ -287,6 +309,7 @@ namespace AnimatingHair.Rendering
             depthMapLoc2 = GL.GetUniformLocation( opacityShaderProgram, "depthMap" );
             hairTextureLoc2 = GL.GetUniformLocation( opacityShaderProgram, "hairTexture" );
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "distt" );
+            alphaTresholdLoc2 = GL.GetUniformLocation( opacityShaderProgram, "alphaTreshold" );
         }
 
         #region Private auxiliary methods

@@ -153,6 +153,14 @@ namespace AnimatingHair
             {
                 renderer.LightIntensity = value * 2;
             }
+            if ( tb == trackBarMisc1 )
+            {
+                renderer.Misc1 = value * 2;
+            }
+            if ( tb == trackBarMisc2 )
+            {
+                renderer.Misc2 = value * 2;
+            }
 
             updateConstants( tb );
         }

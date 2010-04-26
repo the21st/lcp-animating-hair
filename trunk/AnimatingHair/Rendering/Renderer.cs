@@ -70,10 +70,24 @@ namespace AnimatingHair.Rendering
             {
                 light.Intensity = value;
                 refreshLight();
+            }
+        }
+
+        public float Misc1
+        {
+            set
+            {
                 opacityMapsRenderer.Dist = value / 10.0f;
             }
         }
 
+        public float Misc2
+        {
+            set
+            {
+                opacityMapsRenderer.AlphaTreshold = value / 2.0f;
+            }
+        }
 
         #endregion
 
