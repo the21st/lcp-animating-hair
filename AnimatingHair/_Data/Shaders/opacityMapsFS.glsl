@@ -1,9 +1,10 @@
 ﻿uniform sampler2D depthMap;
 uniform sampler2D hairTexture;
 uniform vec3 eye;
-uniform float dist;
+uniform float dist; // TODO: debugging, will be removed
+uniform float alphaTreshold;
 
-varying float billboardDepth;
+varying float opacityFactor;
 
 // TODO: change to uniforms
 const float n = 1.0;
@@ -14,11 +15,18 @@ void main()
 {
 	vec4 color;
 	
-	float delta = 0.06;
+	vec3 delta;
+	delta[0] = 0.03;
+	delta[1] = 0.05;
+	delta[2] = 0.07;
 	
 	float intensity = texture2D( hairTexture, gl_TexCoord[0].st ).a; // intensity of shadow is the alpha value from texture
+	intensity *= opacityFactor;
+	if ( intensity < alphaTreshold )
+	{
+		discard;
+	}
 	
-	//float depth = length( vec4(eye, 1) - pos ); // medzi 5 a 10
 	float depth = (2.0 * n) / (f + n - gl_FragCoord.z * (f - n)); // linearny depth medzi 0 a 1
 	
 	vec2 scrCoord = vec2 (1.0 / size, 1.0 / size) * gl_FragCoord.xy;
@@ -26,40 +34,23 @@ void main()
 	depthStart = (2.0 * n) / (f + n - depthStart * (f - n)); // linearny depth medzi 0 a 1
 	depthStart -= 0.01;
 	
-	float depthEnd = depthStart + 3 * delta;
+	//if ( depthStart > 0.98 )
+	//{
+		//discard;
+	//}
 	
-	//float z = gl_FragCoord.z / gl_FragCoord.w;
-	
-	float bDepth = billboardDepth;
-	bDepth -= n;
-	bDepth /= (f - n);
-	
+	float depthEnd = depthStart + delta[0] + delta[1] + delta[2];
+	//float depthEnd = depthStart + delta[0] + delta[1];
+	//float depthEnd = depthStart + delta[0];
+		
 	color.r = intensity;
 	color.g = intensity;
 	color.b = intensity;
-	//color.r = depth;
-	//color.g = depth;
-	//color.b = depth;
 	
-	//vec3 pos2 = pos.xyz;
-	//pos2 /= pos.w;
-	//float depth2 = length( eye - pos2 );
-	//depth2 -= n;
-	//depth2 /= (f - n);
-	//
-	if ( depth > depthStart + 0.15 - dist )
-	//if ( bDepth > depthStart + 0.015 - dist )
+	if ( depth > depthStart + 0.2 - dist )
 	{
 		discard;
 	}
-	
-	//asd -= 3.0 * delta;
-	//if ( asd > 0 )
-	//{
-		//color.r = intensity;
-		//color.g = intensity;
-		//color.b = intensity;
-	//}
 	
 	gl_FragColor = color;
 }

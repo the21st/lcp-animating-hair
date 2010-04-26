@@ -4,7 +4,8 @@
     {
         public const string BillboardShaderLocation = @"../../_Data/Shaders/billboardVS.glsl";
         public const string HairShaderLocation = @"../../_Data/Shaders/hairFS.glsl";
-        public const string DepthShaderLocation = @"../../_Data/Shaders/depthVS.glsl";
+        public const string DepthVSLocation = @"../../_Data/Shaders/depthVS.glsl";
+        public const string DepthFSLocation = @"../../_Data/Shaders/depthFS.glsl";
         public const string OpacityVSLocation = @"../../_Data/Shaders/opacityMapsVS.glsl";
         public const string OpacityFSLocation = @"../../_Data/Shaders/opacityMapsFS.glsl";
 
@@ -14,7 +15,7 @@
         public const string EyeballTextureLocation = @"../../_Data/Models/eyeball.png";
 
         //public const string BillboardShaderLocation = @"Data/Shaders/billboardVS.glsl";
-        //public const string DepthShaderLocation = @"Data/Shaders/hairFS.glsl";
+        //public const string DepthVSLocation = @"Data/Shaders/hairFS.glsl";
 
         //public const string HairTextureLocation = @"Data/Models/vlas.png";
 

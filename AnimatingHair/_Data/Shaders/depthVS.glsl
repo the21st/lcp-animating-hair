@@ -7,6 +7,7 @@ const float renderSizeVertical = 0.5;
 
 void main()
 {
+	gl_TexCoord[0] = gl_MultiTexCoord0;
 	vec4 v = gl_ModelViewMatrix * gl_Vertex;
 	
 	vec4 a = gl_ModelViewMatrix * vec4(axis, 1);
