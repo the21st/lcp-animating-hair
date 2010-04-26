@@ -191,6 +191,7 @@
     <None Include="_Data\Shaders\depthVS.glsl" />
     <None Include="_Data\Shaders\hairFS.glsl" />
     <None Include="_Data\Shaders\opacityMapsFS.glsl" />
+    <None Include="_Data\Shaders\opacityMapsVS.glsl" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

@@ -5,7 +5,8 @@
         public const string BillboardShaderLocation = @"../../_Data/Shaders/billboardVS.glsl";
         public const string HairShaderLocation = @"../../_Data/Shaders/hairFS.glsl";
         public const string DepthShaderLocation = @"../../_Data/Shaders/depthVS.glsl";
-        public const string OpacityShaderLocation = @"../../_Data/Shaders/opacityMapsFS.glsl";
+        public const string OpacityVSLocation = @"../../_Data/Shaders/opacityMapsVS.glsl";
+        public const string OpacityFSLocation = @"../../_Data/Shaders/opacityMapsFS.glsl";
 
         public const string HairTextureLocation = @"../../_Data/Models/vlas.png";
 

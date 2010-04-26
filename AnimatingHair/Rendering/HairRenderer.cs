@@ -14,6 +14,7 @@ namespace AnimatingHair.Rendering
         // keeps references to object it needs
         private readonly Hair hair;
         private readonly Camera camera;
+        private readonly Light light;
 
         // the openGL texture reference
         private readonly int splatTexture;
@@ -21,6 +22,7 @@ namespace AnimatingHair.Rendering
         // the shader uniform locations
         private int axisLoc;
         private int eyeLoc;
+        private int lightLoc;
         private int sign1Loc;
         private int sign2Loc;
 
@@ -32,10 +34,11 @@ namespace AnimatingHair.Rendering
         // an auxiliary array of particles for correct rendering of blended billboards
         private readonly HairParticle[] sorted;
 
-        public HairRenderer( Camera camera, Hair hair )
+        public HairRenderer( Camera camera, Hair hair, Light light )
         {
             this.hair = hair;
             this.camera = camera;
+            this.light = light;
 
             // texture loading
             splatTexture = Utility.UploadTexture( FilePaths.HairTextureLocation );
@@ -89,6 +92,7 @@ namespace AnimatingHair.Rendering
             GL.BindTexture( TextureTarget.Texture2D, splatTexture );
 
             GL.Uniform3( eyeLoc, camera.Eye );
+            GL.Uniform3( lightLoc, light.Position );
 
             for ( int i = 0; i < sorted.Length; i++ )
             {
@@ -142,9 +146,10 @@ namespace AnimatingHair.Rendering
         private void getShaderVariableLocations()
         {
             axisLoc = GL.GetUniformLocation( shaderProgram, "axis" );
+            eyeLoc = GL.GetUniformLocation( shaderProgram, "eye" );
+            lightLoc = GL.GetUniformLocation( shaderProgram, "light" );
             sign1Loc = GL.GetAttribLocation( shaderProgram, "sign1" );
             sign2Loc = GL.GetAttribLocation( shaderProgram, "sign2" );
-            eyeLoc = GL.GetAttribLocation( shaderProgram, "eye" );
         }
 
         // Creates, compiles and links a vertex shader.

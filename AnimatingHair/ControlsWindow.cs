@@ -411,10 +411,10 @@ namespace AnimatingHair
                     azimuth -= 360;
 
                 elevation += 0.1f * (e.Y - mouseY);
-                if ( elevation > 89.99 )
-                    elevation = 89.99f;
-                if ( elevation < -89.99 )
-                    elevation = -89.99f;
+                if ( elevation > 89.99999 )
+                    elevation = 89.99999f;
+                if ( elevation < -89.99999 )
+                    elevation = -89.99999f;
             }
 
             if ( e.Button == MouseButtons.Right )
