@@ -70,6 +70,7 @@ namespace AnimatingHair.Rendering
             {
                 light.Intensity = value;
                 refreshLight();
+                opacityMapsRenderer.Dist = value / 10.0f;
             }
         }
 
@@ -87,7 +88,7 @@ namespace AnimatingHair.Rendering
                 Position = new Vector3( 5, 0, 5 )
             };
 
-            hairRenderer = new HairRenderer( camera, scene.Hair );
+            hairRenderer = new HairRenderer( camera, scene.Hair, light );
             simpleHairRenderer = new SimpleHairRenderer( scene.Hair );
 
             airRenderer = new AirRenderer( scene.Air );
@@ -145,6 +146,12 @@ namespace AnimatingHair.Rendering
             GL.Disable( EnableCap.Texture2D );
             GL.Disable( EnableCap.Lighting );
             drawAxes();
+            GL.PointSize( 10 );
+            GL.Color3( Color.White );
+            GL.Begin( BeginMode.Points );
+            GL.Vertex3( light.Position );
+            GL.End();
+            GL.PointSize( 1 );
 
             GL.Enable( EnableCap.Lighting );
 
@@ -214,8 +221,8 @@ namespace AnimatingHair.Rendering
 
         private void initializeOpenGL()
         {
-            //GL.ClearColor( Color.CornflowerBlue );
-            GL.ClearColor( Color.Gray );
+            GL.ClearColor( Color.CornflowerBlue );
+            //GL.ClearColor( Color.Gray );
 
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );

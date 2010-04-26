@@ -30,6 +30,9 @@ namespace AnimatingHair.Rendering
         private int eyeLoc2;
         private int sign1Loc2;
         private int sign2Loc2;
+        private int depthMapLoc2;
+        private int hairTextureLoc2;
+        private int distLoc2;
 
         // shader objects
         private readonly int depthShaderProgram;
@@ -40,6 +43,7 @@ namespace AnimatingHair.Rendering
         private readonly Vector3 centerPosition;
 
         public Matrix4 LightProjectionMatrix, LightModelViewMatrix;
+        public float Dist = 0.1f;
 
         public OpacityMapsRenderer( Hair hair, Light light )
         {
@@ -60,9 +64,9 @@ namespace AnimatingHair.Rendering
                 createShaders( vs.ReadToEnd(), out depthShaderProgram );
             }
 
-            using ( StreamReader vs = new StreamReader( FilePaths.BillboardShaderLocation ) )
+            using ( StreamReader vs = new StreamReader( FilePaths.OpacityVSLocation ) )
             {
-                using ( StreamReader fs = new StreamReader( FilePaths.OpacityShaderLocation ) )
+                using ( StreamReader fs = new StreamReader( FilePaths.OpacityFSLocation ) )
                     createShaders( vs.ReadToEnd(), fs.ReadToEnd(),
                                    out vertexShaderObject, out fragmentShaderObject,
                                    out opacityShaderProgram );
@@ -167,15 +171,27 @@ namespace AnimatingHair.Rendering
         private void renderOpacityMaps()
         {
             GL.Disable( EnableCap.DepthTest );
-            //GL.Enable( EnableCap.Blend );
-            GL.Disable( EnableCap.Blend );
+            GL.Enable( EnableCap.Blend );
             GL.BlendFunc( BlendingFactorSrc.One, BlendingFactorDest.One );
             GL.Enable( EnableCap.Texture2D );
-            //GL.BindTexture( TextureTarget.Texture2D, splatTexture );
-            GL.BindTexture( TextureTarget.Texture2D, depthTexture );
 
             // link the shader program
             GL.UseProgram( opacityShaderProgram );
+
+            int loc1 = GL.GetUniformLocation( opacityShaderProgram, "hairTexture" );
+            GL.ActiveTexture( TextureUnit.Texture3 );
+            GL.BindTexture( TextureTarget.Texture2D, splatTexture );
+            //GL.Uniform1( hairTextureLoc2, splatTexture );
+            GL.Uniform1( loc1, 3 );
+
+            int loc2 = GL.GetUniformLocation( opacityShaderProgram, "depthMap" );
+            GL.ActiveTexture( TextureUnit.Texture4 );
+            GL.BindTexture( TextureTarget.Texture2D, depthTexture );
+            //GL.Uniform1( depthMapLoc2, 4 );
+            GL.Uniform1( loc2, 4 );
+
+            distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "dist" );
+            GL.Uniform1( distLoc2, Dist );
 
             GL.Uniform3( eyeLoc2, light.Position );
 
@@ -257,20 +273,23 @@ namespace AnimatingHair.Rendering
             return sum / hair.Particles.Length;
         }
 
-        #region Private auxiliary methods
-
         private void getShaderVariableLocations()
         {
             axisLoc = GL.GetUniformLocation( depthShaderProgram, "axis" );
             sign1Loc = GL.GetAttribLocation( depthShaderProgram, "sign1" );
             sign2Loc = GL.GetAttribLocation( depthShaderProgram, "sign2" );
-            eyeLoc = GL.GetAttribLocation( depthShaderProgram, "eye" );
+            eyeLoc = GL.GetUniformLocation( depthShaderProgram, "eye" );
 
             axisLoc2 = GL.GetUniformLocation( opacityShaderProgram, "axis" );
             sign1Loc2 = GL.GetAttribLocation( opacityShaderProgram, "sign1" );
             sign2Loc2 = GL.GetAttribLocation( opacityShaderProgram, "sign2" );
-            eyeLoc2 = GL.GetAttribLocation( opacityShaderProgram, "eye" );
+            eyeLoc2 = GL.GetUniformLocation( opacityShaderProgram, "eye" );
+            depthMapLoc2 = GL.GetUniformLocation( opacityShaderProgram, "depthMap" );
+            hairTextureLoc2 = GL.GetUniformLocation( opacityShaderProgram, "hairTexture" );
+            distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "distt" );
         }
+
+        #region Private auxiliary methods
 
         // Creates, compiles and links a vertex shader.
         // Fragment shader is not needed for now; it's commented out.
