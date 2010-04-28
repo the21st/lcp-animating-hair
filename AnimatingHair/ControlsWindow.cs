@@ -288,8 +288,8 @@ namespace AnimatingHair
         {
             while ( glControl.IsIdle )
             {
-                render();
                 polarToCartesian();
+                render();
             }
         }
 
@@ -297,19 +297,14 @@ namespace AnimatingHair
 
         #region GLControl.Resize event handler
 
-        static void glControl_Resize( object sender, EventArgs e )
+        void glControl_Resize( object sender, EventArgs e )
         {
             GLControl c = sender as GLControl;
 
             if ( c.ClientSize.Height == 0 )
                 c.ClientSize = new Size( c.ClientSize.Width, 1 );
 
-            GL.Viewport( 0, 0, c.ClientSize.Width, c.ClientSize.Height );
-
-            float aspectRatio = c.AspectRatio;
-            Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, aspectRatio, 1, 30 );
-            GL.MatrixMode( MatrixMode.Projection );
-            GL.LoadMatrix( ref perpective );
+            renderer.Resize( c.ClientSize.Width, c.ClientSize.Height, c.AspectRatio );
         }
 
         #endregion
@@ -375,8 +370,8 @@ namespace AnimatingHair
 
         void glControl_Paint( object sender, PaintEventArgs e )
         {
-            render();
             polarToCartesian();
+            render();
         }
 
         #endregion

@@ -15,13 +15,13 @@ void main()
 {
 	vec4 color;
 	
-	vec3 delta;
-	delta[0] = 0.03;
-	delta[1] = 0.05;
-	delta[2] = 0.07;
+	vec3 delta; // TODO: prisposob okolnostiam
+	delta[0] = 0.02;
+	delta[1] = 0.04;
+	delta[2] = 0.06;
 	
 	float intensity = texture2D( hairTexture, gl_TexCoord[0].st ).a; // intensity of shadow is the alpha value from texture
-	intensity *= opacityFactor;
+	intensity *= opacityFactor; // times opacity factor from Vertex shader
 	if ( intensity < alphaTreshold )
 	{
 		discard;
@@ -32,24 +32,29 @@ void main()
 	vec2 scrCoord = vec2 (1.0 / size, 1.0 / size) * gl_FragCoord.xy;
 	float depthStart = texture2D( depthMap, scrCoord ).x;
 	depthStart = (2.0 * n) / (f + n - depthStart * (f - n)); // linearny depth medzi 0 a 1
-	depthStart -= 0.01;
+	depthStart -= 0.001; // TODO : vyladit
 	
 	//if ( depthStart > 0.98 )
 	//{
-		//discard;
+	//	discard;
 	//}
 	
-	float depthEnd = depthStart + delta[0] + delta[1] + delta[2];
-	//float depthEnd = depthStart + delta[0] + delta[1];
-	//float depthEnd = depthStart + delta[0];
-		
-	color.r = intensity;
-	color.g = intensity;
+	float depthEnd = depthStart + delta[0] + delta[1];
+	
+	color.r = 0.0;
+	color.g = 0.0;
 	color.b = intensity;
 	
-	if ( depth > depthStart + 0.2 - dist )
+	if ( depth < depthEnd )
 	{
-		discard;
+		color.g = intensity;
+	}
+	
+	depthEnd -= delta[1];
+	
+	if ( depth < depthEnd )
+	{
+		color.r = intensity;
 	}
 	
 	gl_FragColor = color;

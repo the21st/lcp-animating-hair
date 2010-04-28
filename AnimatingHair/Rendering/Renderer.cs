@@ -34,6 +34,11 @@ namespace AnimatingHair.Rendering
         private readonly float[] lightAmbient;
         private readonly float[] lightSpecular;
         private float angle = 0;
+        private int shadowTexture;
+        private int depthTexture;
+        private int viewportWidth = 800, viewportHeight = 600;
+        private float aspectRatio = 800f / 600f;
+        private float near = 1, far = 30;
 
         #region Rendering options
 
@@ -77,7 +82,7 @@ namespace AnimatingHair.Rendering
         {
             set
             {
-                opacityMapsRenderer.Dist = value / 10.0f;
+                //opacityMapsRenderer.Dist = value / 10.0f;
             }
         }
 
@@ -85,7 +90,7 @@ namespace AnimatingHair.Rendering
         {
             set
             {
-                opacityMapsRenderer.AlphaTreshold = value / 2.0f;
+                //opacityMapsRenderer.AlphaTreshold = value / 2.0f;
             }
         }
 
@@ -114,12 +119,12 @@ namespace AnimatingHair.Rendering
 
             opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light );
 
-            ShowBust = true;
+            ShowBust = false;
             WireFrame = false;
             ShowMetaBust = false;
             ShowHair = true;
             DebugHair = false;
-            CruisingLight = false;
+            CruisingLight = true;
             ShowVoxelGrid = false;
             ShowAir = false;
 
@@ -134,22 +139,51 @@ namespace AnimatingHair.Rendering
         public void Render()
         {
             if ( CruisingLight )
-                angle += 0.001f;
+                angle += 0.002f;
 
             light.Position = new Vector3( -5 * (float)Math.Sin( angle ), 5, 5 * (float)Math.Cos( angle ) );
             GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
 
             opacityMapsRenderer.RenderOpacityTexture();
+            shadowTexture = opacityMapsRenderer.ShadowTexture;
+            depthTexture = opacityMapsRenderer.DepthTexture;
+            hairRenderer.DepthMap = depthTexture;
+            hairRenderer.DeepOpacityMap = shadowTexture;
 
-            //setTextureMatrix();
+            setTextureMatrix(); // NOTE: vnutri funkcie
 
-            //renderScene();
+            initializeOpenGL();
+
+            renderScene();
         }
 
         private void renderScene()
         {
             // clears buffer, sets modelview matrix to LookAt from camera
             prepareBufferAndMatrix();
+
+            GL.Enable( EnableCap.Texture2D );
+            GL.Disable( EnableCap.Blend );
+            GL.Disable( EnableCap.Lighting );
+            GL.ActiveTexture( TextureUnit.Texture0 );
+            GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
+
+            GL.Begin( BeginMode.Quads );
+            {
+                GL.TexCoord2( 1, 0 );
+                GL.Vertex3( -2, -2, 0 );
+
+                GL.TexCoord2( 1, 1 );
+                GL.Vertex3( -2, 2, 0 );
+
+                GL.TexCoord2( 0, 1 );
+                GL.Vertex3( 2, 2, 0 );
+
+                GL.TexCoord2( 0, 0 );
+                GL.Vertex3( 2, -2, 0 );
+            }
+            GL.End();
+            return;
 
             if ( !DebugHair )
                 GL.Enable( EnableCap.Blend );
@@ -213,11 +247,16 @@ namespace AnimatingHair.Rendering
             // y = y* 0.5 + 0.5 
             // z = z* 0.5 + 0.5 
             // Moving from unit cube [-1,1] to [0,1]  
-            Matrix4 bias = new Matrix4(	
-                0.5f, 0.0f, 0.0f, 0.0f, 
+            Matrix4 bias = new Matrix4(
+                0.5f, 0.0f, 0.0f, 0.0f,
                 0.0f, 0.5f, 0.0f, 0.0f,
                 0.0f, 0.0f, 0.5f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f); // NOTE: transpose?
+                0.5f, 0.5f, 0.5f, 1.0f ); // NOTE: transpose?
+            //Matrix4 bias = new Matrix4(
+            //    0.5f, 0.0f, 0.0f, 0.5f,
+            //    0.0f, 0.5f, 0.0f, 0.5f,
+            //    0.0f, 0.0f, 0.5f, 0.5f,
+            //    0.0f, 0.0f, 0.0f, 1.0f ); // transpose
 
             GL.MatrixMode( MatrixMode.Texture );
             GL.ActiveTexture( TextureUnit.Texture7 );
@@ -233,8 +272,27 @@ namespace AnimatingHair.Rendering
             GL.MatrixMode( MatrixMode.Modelview );
         }
 
+        public void Resize( int width, int height, float ratio )
+        {
+            viewportWidth = width;
+            viewportHeight = height;
+            aspectRatio = ratio;
+
+            refreshViewport();
+        }
+
+        private void refreshViewport()
+        {
+            GL.Viewport( 0, 0, viewportWidth, viewportHeight );
+            Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, aspectRatio, near, far );
+            GL.MatrixMode( MatrixMode.Projection );
+            GL.LoadMatrix( ref perpective );
+        }
+
         private void initializeOpenGL()
         {
+            refreshViewport();
+
             GL.ClearColor( Color.CornflowerBlue );
             //GL.ClearColor( Color.Gray );
 
