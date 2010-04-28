@@ -11,11 +11,13 @@ varying vec3 lightPos;
 varying vec3 eyePos;
 varying vec3 hairTangent;
 varying float opacityFactor;
+varying vec4 shadowCoord;
 
 void main()
 {
 	gl_TexCoord[0] = gl_MultiTexCoord0;
-	
+	//shadowCoord = gl_TextureMatrix[7] * gl_Vertex;
+
 	vec4 v = gl_ModelViewMatrix * gl_Vertex;
 	
 	lightPos = light;
@@ -28,6 +30,7 @@ void main()
 	
 	vertexPos.x += sign1 * renderSizeHorizontal * (-aProj2.y) + sign2 * renderSizeVertical * aProj2.x;
 	vertexPos.y += sign1 * renderSizeHorizontal * aProj2.x + sign2 * renderSizeVertical * aProj2.y;
+	shadowCoord = gl_TextureMatrix[7] * vec4( vertexPos, 1 );
 	
 	vec3 a = normalize( vec3( gl_ModelViewMatrix * vec4(axis, 1) ) );
 	vec2 aProj = a.xy;

@@ -18,6 +18,8 @@ namespace AnimatingHair.Rendering
 
         // the openGL texture reference
         private readonly int splatTexture;
+        public int DeepOpacityMap;
+        public int DepthMap;
 
         // the shader uniform locations
         private int axisLoc;
@@ -25,6 +27,9 @@ namespace AnimatingHair.Rendering
         private int lightLoc;
         private int sign1Loc;
         private int sign2Loc;
+        private int hairTextureLoc;
+        private int shadowMapLoc;
+        private int depthMapLoc;
 
         // shader objects
         private readonly int shaderProgram;
@@ -33,6 +38,7 @@ namespace AnimatingHair.Rendering
 
         // an auxiliary array of particles for correct rendering of blended billboards
         private readonly HairParticle[] sorted;
+
 
         public HairRenderer( Camera camera, Hair hair, Light light )
         {
@@ -89,10 +95,26 @@ namespace AnimatingHair.Rendering
 
             Array.Sort( sorted, particleCompare );
 
+
+            GL.ActiveTexture( TextureUnit.Texture5 );
             GL.BindTexture( TextureTarget.Texture2D, splatTexture );
+            GL.Uniform1( hairTextureLoc, 5 );
+
+            GL.ActiveTexture( TextureUnit.Texture6 );
+            GL.BindTexture( TextureTarget.Texture2D, DeepOpacityMap );
+            GL.Uniform1( shadowMapLoc, 6 );
+
+            GL.ActiveTexture( TextureUnit.Texture7 );
+            GL.BindTexture( TextureTarget.Texture2D, DepthMap );
+            GL.Uniform1( depthMapLoc, 7 );
+
+            //GL.BindTexture( TextureTarget.Texture2D, splatTexture );
 
             GL.Uniform3( eyeLoc, camera.Eye );
             GL.Uniform3( lightLoc, light.Position );
+
+            GL.Disable( EnableCap.Blend );
+            GL.Enable( EnableCap.DepthTest );
 
             for ( int i = 0; i < sorted.Length; i++ )
             {
@@ -148,6 +170,9 @@ namespace AnimatingHair.Rendering
             axisLoc = GL.GetUniformLocation( shaderProgram, "axis" );
             eyeLoc = GL.GetUniformLocation( shaderProgram, "eye" );
             lightLoc = GL.GetUniformLocation( shaderProgram, "light" );
+            hairTextureLoc = GL.GetUniformLocation( shaderProgram, "hairTexture" );
+            shadowMapLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMap" );
+            depthMapLoc = GL.GetUniformLocation( shaderProgram, "depthMap" );
             sign1Loc = GL.GetAttribLocation( shaderProgram, "sign1" );
             sign2Loc = GL.GetAttribLocation( shaderProgram, "sign2" );
         }

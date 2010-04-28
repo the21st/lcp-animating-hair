@@ -42,11 +42,15 @@ namespace AnimatingHair.Rendering
         private int vertexShaderObject;
         private int fragmentShaderObject;
 
-        private readonly Vector3 centerPosition;
+        private Vector3 centerPosition;
+
+        private int depthFBO, shadowFBO;
+        public int ShadowTexture, DepthTexture;
 
         public Matrix4 LightProjectionMatrix, LightModelViewMatrix;
         public float Dist = 0.1f;
         public float AlphaTreshold = 0.15f;
+        private float near = 1, far = 30;
 
         public OpacityMapsRenderer( Hair hair, Light light )
         {
@@ -80,7 +84,8 @@ namespace AnimatingHair.Rendering
 
             getShaderVariableLocations();
 
-            generateShadowFBO();
+            generateDepthFBO();
+            generateShadowMapFBO();
         }
 
         private void setupMatrices()
@@ -92,9 +97,7 @@ namespace AnimatingHair.Rendering
             GL.LoadMatrix( ref LightModelViewMatrix );
         }
 
-        private int FBO, depthTexture;
-
-        private void generateShadowFBO()
+        private void generateDepthFBO()
         {
             const int shadowMapWidth = opacityMapSize;
             const int shadowMapHeight = opacityMapSize;
@@ -102,8 +105,8 @@ namespace AnimatingHair.Rendering
             FramebufferErrorCode FBOstatus;
 
             // Try to use a texture depth component
-            depthTexture = GL.GenTexture();
-            GL.BindTexture( TextureTarget.Texture2D, depthTexture );
+            DepthTexture = GL.GenTexture();
+            GL.BindTexture( TextureTarget.Texture2D, DepthTexture );
 
             // GL_LINEAR does not make sense for depth texture. However, next tutorial shows usage of GL_LINEAR and PCF
             GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest );
@@ -115,20 +118,52 @@ namespace AnimatingHair.Rendering
             GL.BindTexture( TextureTarget.Texture2D, 0 );
 
             // create a framebuffer object
-            GL.GenFramebuffers( 1, out FBO );
-            GL.BindFramebuffer( FramebufferTarget.Framebuffer, FBO );
+            GL.GenFramebuffers( 1, out depthFBO );
+            GL.BindFramebuffer( FramebufferTarget.Framebuffer, depthFBO );
 
-            // Instruct openGL that we won't bind a color texture with the currently binded FBO
+            // Instruct openGL that we won't bind a color texture with the currently binded depthFBO
             GL.DrawBuffer( DrawBufferMode.None );
             // glReadBuffer( GL_NONE );
 
-            // attach the texture to FBO depth attachment point
-            GL.FramebufferTexture2D( FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, depthTexture, 0 );
+            // attach the texture to depthFBO depth attachment point
+            GL.FramebufferTexture2D( FramebufferTarget.Framebuffer, FramebufferAttachment.DepthAttachment, TextureTarget.Texture2D, DepthTexture, 0 );
+
+            // check depthFBO status
+            FBOstatus = GL.CheckFramebufferStatus( FramebufferTarget.Framebuffer );
+            if ( FBOstatus != FramebufferErrorCode.FramebufferComplete )
+                throw new Exception( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use depthFBO\n" );
+
+            // switch back to window-system-provided framebuffer
+            GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );
+        }
+
+        private void generateShadowMapFBO()
+        {
+            const int shadowMapWidth = opacityMapSize;
+            const int shadowMapHeight = opacityMapSize;
+
+            FramebufferErrorCode FBOstatus;
+
+            ShadowTexture = GL.GenTexture();
+            GL.BindTexture( TextureTarget.Texture2D, ShadowTexture );
+
+            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear );
+            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear );
+
+            GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, shadowMapWidth, shadowMapHeight, 0,
+                PixelFormat.Rgba, PixelType.UnsignedByte, new IntPtr() );
+            GL.BindTexture( TextureTarget.Texture2D, 0 );
+
+            // create a framebuffer object
+            GL.GenFramebuffers( 1, out shadowFBO );
+            GL.BindFramebuffer( FramebufferTarget.Framebuffer, shadowFBO );
+
+            GL.FramebufferTexture2D( FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, ShadowTexture, 0 );
 
             // check FBO status
             FBOstatus = GL.CheckFramebufferStatus( FramebufferTarget.Framebuffer );
             if ( FBOstatus != FramebufferErrorCode.FramebufferComplete )
-                throw new Exception( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO\n" );
+                throw new Exception( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use shadowFBO\n" );
 
             // switch back to window-system-provided framebuffer
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );
@@ -136,24 +171,28 @@ namespace AnimatingHair.Rendering
 
         public void RenderOpacityTexture()
         {
-            LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, 1, 30 );
+            LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, near, far );
             LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY );
 
-            GL.BindFramebuffer( FramebufferTarget.Framebuffer, FBO );
+            GL.BindFramebuffer( FramebufferTarget.Framebuffer, depthFBO );
             GL.Viewport( 0, 0, opacityMapSize, opacityMapSize );
-            GL.Clear( ClearBufferMask.DepthBufferBit );
             GL.Clear( ClearBufferMask.DepthBufferBit );
             setupMatrices();
             renderDepthMap();
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );
 
-            GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
+
+            GL.BindFramebuffer( FramebufferTarget.Framebuffer, shadowFBO );
+            //GL.Viewport( 0, 0, opacityMapSize, opacityMapSize );
+            GL.Clear( ClearBufferMask.ColorBufferBit );
+            //setupMatrices();
             renderOpacityMaps();
+            GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );
         }
 
         private void renderDepthMap()
         {
-            GL.ShadeModel( ShadingModel.Flat );
+            //GL.ShadeModel( ShadingModel.Flat ); // NOTE: ?
             GL.ColorMask( false, false, false, false );
             GL.Enable( EnableCap.DepthTest );
             GL.Enable( EnableCap.Texture2D );
@@ -173,8 +212,9 @@ namespace AnimatingHair.Rendering
 
             // unlink the shader program
             GL.UseProgram( 0 );
+            GL.BindTexture( TextureTarget.Texture2D, 0 );
             GL.ColorMask( true, true, true, true );
-            GL.ShadeModel( ShadingModel.Smooth );
+            //GL.ShadeModel( ShadingModel.Smooth );
         }
 
         private void renderOpacityMaps()
@@ -187,34 +227,19 @@ namespace AnimatingHair.Rendering
             // link the shader program
             GL.UseProgram( opacityShaderProgram );
 
-            int loc1 = GL.GetUniformLocation( opacityShaderProgram, "hairTexture" );
             GL.ActiveTexture( TextureUnit.Texture3 );
             GL.BindTexture( TextureTarget.Texture2D, splatTexture );
-            //GL.Uniform1( hairTextureLoc2, splatTexture );
-            GL.Uniform1( loc1, 3 );
+            GL.Uniform1( hairTextureLoc2, 3 );
 
-            int loc2 = GL.GetUniformLocation( opacityShaderProgram, "depthMap" );
             GL.ActiveTexture( TextureUnit.Texture4 );
-            GL.BindTexture( TextureTarget.Texture2D, depthTexture );
-            //GL.Uniform1( depthMapLoc2, 4 );
-            GL.Uniform1( loc2, 4 );
+            GL.BindTexture( TextureTarget.Texture2D, DepthTexture );
+            GL.Uniform1( depthMapLoc2, 4 );
 
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "dist" );
             GL.Uniform1( distLoc2, Dist );
             GL.Uniform1( alphaTresholdLoc2, AlphaTreshold );
 
             GL.Uniform3( eyeLoc2, light.Position );
-
-            float min = 9999;
-            float max = 0;
-            foreach ( HairParticle hairParticle in hair.Particles )
-            {
-                float distance = (light.Position - hairParticle.Position).Length;
-                if ( distance < min )
-                    min = distance;
-                if ( distance > max )
-                    max = distance;
-            }
 
             for ( int i = 0; i < hair.Particles.Length; i++ )
             {

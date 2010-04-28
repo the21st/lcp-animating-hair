@@ -15,6 +15,13 @@ void main()
 	
 	vec3 vertexPos = vec3( gl_Vertex );
 	
+	vec3 hairTangent = normalize( axis );
+	vec2 aProj2 = hairTangent.xy;
+	aProj2 = normalize(aProj2);
+	
+	vertexPos.x += sign1 * renderSizeHorizontal * (-aProj2.y) + sign2 * renderSizeVertical * aProj2.x;
+	vertexPos.y += sign1 * renderSizeHorizontal * aProj2.x + sign2 * renderSizeVertical * aProj2.y;
+	
 	vec3 a = normalize( vec3( gl_ModelViewMatrix * vec4(axis, 1) ) );
 	vec2 aProj = a.xy;
 	aProj = normalize(aProj);
@@ -27,7 +34,7 @@ void main()
 	
 	
 	vec3 d_p = eye - vertexPos;
-	float cosTheta = dot( normalize(d_p), normalize( axis ) );
+	float cosTheta = dot( normalize(d_p), hairTangent );
 	float sinTheta = sqrt( 1 - (cosTheta * cosTheta) );
 	opacityFactor = sinTheta;
 }
