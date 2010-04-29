@@ -20,7 +20,7 @@ namespace AnimatingHair
         private SceneInitializer sceneInitializer;
         private Renderer renderer;
         private Camera camera;
-        private float distance = 10, elevation = 0, azimuth = 0, mouseX, mouseY;
+        private float distance = 10, elevation = 0, azimuth = 90, mouseX, mouseY;
         private readonly Random r = new Random();
         private bool loaded = false;
         private bool paused = true;

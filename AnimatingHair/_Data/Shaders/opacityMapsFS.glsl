@@ -32,30 +32,33 @@ void main()
 	vec2 scrCoord = vec2 (1.0 / size, 1.0 / size) * gl_FragCoord.xy;
 	float depthStart = texture2D( depthMap, scrCoord ).x;
 	depthStart = (2.0 * n) / (f + n - depthStart * (f - n)); // linearny depth medzi 0 a 1
-	depthStart -= 0.001; // TODO : vyladit
+	//depthStart -= 0.001; // TODO : vyladit
 	
 	//if ( depthStart > 0.98 )
 	//{
 	//	discard;
 	//}
 	
-	float depthEnd = depthStart + delta[0] + delta[1];
+	//float depthEnd = depthStart + delta[0] + delta[1];
+	float depthEnd = depthStart + delta[0];
 	
-	color.r = 0.0;
-	color.g = 0.0;
-	color.b = intensity;
+	color.r = depthStart;
+	color.g = depthStart;
+	color.b = depthStart;
+	color.a = depthStart;
 	
-	if ( depth < depthEnd )
-	{
-		color.g = intensity;
-	}
 	
-	depthEnd -= delta[1];
-	
-	if ( depth < depthEnd )
-	{
-		color.r = intensity;
-	}
+	//if ( depth < depthEnd )
+	//{
+		//color.b = intensity;
+	//}
+	//
+	//depthEnd -= delta[1];
+	//
+	//if ( depth < depthEnd )
+	//{
+		//color.g = intensity;
+	//}
 	
 	gl_FragColor = color;
 }

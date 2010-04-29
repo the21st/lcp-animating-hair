@@ -124,7 +124,7 @@ namespace AnimatingHair.Rendering
             ShowMetaBust = false;
             ShowHair = true;
             DebugHair = false;
-            CruisingLight = true;
+            CruisingLight = false;
             ShowVoxelGrid = false;
             ShowAir = false;
 
@@ -162,28 +162,29 @@ namespace AnimatingHair.Rendering
             // clears buffer, sets modelview matrix to LookAt from camera
             prepareBufferAndMatrix();
 
-            GL.Enable( EnableCap.Texture2D );
-            GL.Disable( EnableCap.Blend );
-            GL.Disable( EnableCap.Lighting );
-            GL.ActiveTexture( TextureUnit.Texture0 );
-            GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
+            //GL.Enable( EnableCap.Texture2D );
+            //GL.Disable( EnableCap.Blend );
+            //GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
+            //GL.Disable( EnableCap.Lighting );
+            //GL.ActiveTexture( TextureUnit.Texture0 );
+            //GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
 
-            GL.Begin( BeginMode.Quads );
-            {
-                GL.TexCoord2( 1, 0 );
-                GL.Vertex3( -2, -2, 0 );
+            //GL.Begin( BeginMode.Quads );
+            //{
+            //    GL.TexCoord2( 1, 0 );
+            //    GL.Vertex3( 00, -2, -2 );
 
-                GL.TexCoord2( 1, 1 );
-                GL.Vertex3( -2, 2, 0 );
+            //    GL.TexCoord2( 1, 1 );
+            //    GL.Vertex3( 00, 2, -2 );
 
-                GL.TexCoord2( 0, 1 );
-                GL.Vertex3( 2, 2, 0 );
+            //    GL.TexCoord2( 0, 1 );
+            //    GL.Vertex3( 00, 2, 02 );
 
-                GL.TexCoord2( 0, 0 );
-                GL.Vertex3( 2, -2, 0 );
-            }
-            GL.End();
-            return;
+            //    GL.TexCoord2( 0, 0 );
+            //    GL.Vertex3( 00, -2, 02 );
+            //}
+            //GL.End();
+            //return;
 
             if ( !DebugHair )
                 GL.Enable( EnableCap.Blend );
@@ -293,8 +294,8 @@ namespace AnimatingHair.Rendering
         {
             refreshViewport();
 
-            GL.ClearColor( Color.CornflowerBlue );
-            //GL.ClearColor( Color.Gray );
+            //GL.ClearColor( Color.CornflowerBlue );
+            GL.ClearColor( Color.Gray );
 
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );

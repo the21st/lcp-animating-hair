@@ -120,6 +120,6 @@ void main()
 	//
 	//color.xyz *= shadow;
 	
-	//color.xyz = texture2D( deepOpacityMap, gl_TexCoord[0].st ).xyz; // we only need alpha information
+	//color.xyz = texture2D( deepOpacityMap, gl_TexCoord[0].st ).xyz;
 	gl_FragColor = color;
 }
