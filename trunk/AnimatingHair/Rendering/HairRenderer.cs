@@ -113,8 +113,8 @@ namespace AnimatingHair.Rendering
             GL.Uniform3( eyeLoc, camera.Eye );
             GL.Uniform3( lightLoc, light.Position );
 
-            GL.Disable( EnableCap.Blend );
-            GL.Enable( EnableCap.DepthTest );
+            //GL.Disable( EnableCap.Blend );
+            //GL.Enable( EnableCap.DepthTest );
 
             for ( int i = 0; i < sorted.Length; i++ )
             {

@@ -172,7 +172,8 @@ namespace AnimatingHair.Rendering
         public void RenderOpacityTexture()
         {
             LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, near, far );
-            LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY );
+            //LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY ); // NOTE: toto nefunguje, ale preco???
+            LightModelViewMatrix = Matrix4.LookAt( light.Position, Vector3.Zero, Vector3.UnitY );
 
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, depthFBO );
             GL.Viewport( 0, 0, opacityMapSize, opacityMapSize );
@@ -219,8 +220,8 @@ namespace AnimatingHair.Rendering
 
         private void renderOpacityMaps()
         {
-            GL.Disable( EnableCap.DepthTest );
-            GL.Enable( EnableCap.Blend );
+            GL.Enable( EnableCap.DepthTest );
+            GL.Disable( EnableCap.Blend );
             GL.BlendFunc( BlendingFactorSrc.One, BlendingFactorDest.One );
             GL.Enable( EnableCap.Texture2D );
 
