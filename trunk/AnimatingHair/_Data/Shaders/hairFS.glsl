@@ -1,10 +1,9 @@
 ﻿uniform sampler2D hairTexture;
 uniform sampler2D deepOpacityMap;
-uniform sampler2D depthMap;
 
 const float K_a = 0.05;
-const float K_d = 0.2;
-const float K_s = 0.75;
+const float K_d = 0.3;
+const float K_s = 0.65;
 const float shininess = 180.0;
 
 const float rho_reflect = 0.75;
@@ -15,11 +14,14 @@ varying vec3 lightPos;
 varying vec3 eyePos;
 varying vec3 hairTangent;
 varying float opacityFactor;
+//varying vec3 shadowCoord;
 varying vec4 shadowCoord;
 
 // TODO: change to uniforms
 const float n = 1.0;
 const float f = 30.0;
+const float width = 800.0;
+const float height = 600.0;
 
 float vecSin(vec3 a, vec3 b) // a and b are normalized
 {
@@ -34,7 +36,7 @@ void main()
 	vec4 lightDiffuse = gl_LightSource[0].diffuse;
 	vec4 lightAmbient = gl_LightSource[0].ambient;
 	vec4 lightSpec = gl_LightSource[0].specular;
-	//lightSpec = vec4(0.0);
+	//lightSpec = vec4( 0.0 );
 	
 	color.xyz = gl_FrontMaterial.diffuse.xyz;
 	color.x *= lightDiffuse.x;
@@ -76,50 +78,67 @@ void main()
 	delta[0] = 0.02;
 	delta[1] = 0.04;
 	delta[2] = 0.06;
-	vec4 shadowCoordinateWdivide = shadowCoord / shadowCoord.w;
-	float depth = shadowCoordinateWdivide.z;
+	vec3 lightCoord = shadowCoord.xyz / shadowCoord.w;
+	lightCoord = vec3(0.5) * ( lightCoord + vec3(1.0) );
+	float depth = lightCoord.z;
 	depth = (2.0 * n) / (f + n - depth * (f - n)); // linearny depth medzi 0 a 1
-	float depthStart = texture2D( depthMap, shadowCoordinateWdivide.st ).x;
-	depthStart = (2.0 * n) / (f + n - depthStart * (f - n)); // linearny depth medzi 0 a 1
-	depthStart -= 0.001; // TODO : vyladit
-	float asd = depth;
+	float depthStart = texture2D( deepOpacityMap, lightCoord.xy ).a;
+	
+	//DEBUG:
+	//vec2 coord = vec2( 0.4, 0.5 );
+	//float depthStart = texture2D( deepOpacityMap, coord ).a;
+	
+	//float depth = (2.0 * n) / (f + n - lightCoord.z * (f - n)); // linearny depth medzi 0 a 1
+	//depth = shadowCoord.z / shadowCoord.w;
+	//float depth = lightCoord.z;
+	//float depth = gl_FragCoord.z;
+	
+	//depth = shadowCoord.z - 6.0;
+	//depth = (2.0 * n) / (f + n - depth * (f - n)); // linearny depth medzi 0 a 1
+	//depthStart -= 0.001; // TODO : vyladit
+	//float asd = depth;
 	//color.r = asd;
 	//color.g = asd;
 	//color.b = asd;
 	
-	//depthStart += delta[0];
-	//if ( depth < depthStart )
-	//{
-		//tmp = (depthStart - depth) / delta[0];
-		//shadow = (1.0 - tmp) * texture2D( deepOpacityMap, shadowCoordinateWdivide.st ).r;
-	//}
-	//else
-	//{
-		//depthStart += delta[1];
-		//if ( depth < depthStart )
-		//{
-			//tmp = (depthStart - depth) / delta[1];
-			//shadow = tmp * texture2D( deepOpacityMap, shadowCoordinateWdivide.st ).r;
-			//shadow += (1 - tmp) * texture2D( deepOpacityMap, shadowCoordinateWdivide.st ).g;
-		//}
-		//else
-		//{
-			//depthStart += delta[2];
-			//if ( depth < depthStart )
-			//{
-				//tmp = (depthStart - depth) / delta[2];
-				//shadow = tmp * texture2D( deepOpacityMap, shadowCoordinateWdivide.st ).g;
-				//shadow += (1 - tmp) * texture2D( deepOpacityMap, shadowCoordinateWdivide.st ).b;
-			//}
-			//else
-			//{
-				//shadow = texture2D( deepOpacityMap, shadowCoordinateWdivide.st ).b;
-			//}
-		//}
-	//}
-	//
-	//color.xyz *= shadow;
+	depthStart += delta[0];
+	if ( depth < depthStart )
+	{
+		tmp = (depthStart - depth) / delta[0];
+		shadow = (1.0 - tmp) * texture2D( deepOpacityMap, lightCoord.xy ).r;
+		//shadow = tmp*0.25 + 0.5;
+	}
+	else
+	{
+		depthStart += delta[1];
+		if ( depth < depthStart )
+		{
+			tmp = (depthStart - depth) / delta[1];
+			shadow = tmp * texture2D( deepOpacityMap, lightCoord.xy ).r;
+			shadow += (1 - tmp) * texture2D( deepOpacityMap, lightCoord.xy ).g;
+			//shadow = tmp*0.25+0.25;
+		}
+		else
+		{
+			depthStart += delta[2];
+			if ( depth < depthStart )
+			{
+				tmp = (depthStart - depth) / delta[2];
+				shadow = tmp * texture2D( deepOpacityMap, lightCoord.xy ).g;
+				shadow += (1 - tmp) * texture2D( deepOpacityMap, lightCoord.xy ).b;
+				//shadow = tmp*0.25;
+			}
+			else
+			{
+				shadow = texture2D( deepOpacityMap, lightCoord.xy ).b;
+				//shadow = 0.0;
+			}
+		}
+	}
 	
-	//color.xyz = texture2D( deepOpacityMap, gl_TexCoord[0].st ).xyz;
+	color.rgb *= ( 1.0 - shadow );
+	
+	//color.rgb = vec3( tmp );
+	
 	gl_FragColor = color;
 }

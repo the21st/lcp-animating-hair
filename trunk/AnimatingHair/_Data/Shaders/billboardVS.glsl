@@ -17,6 +17,7 @@ void main()
 {
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	//shadowCoord = gl_TextureMatrix[7] * gl_Vertex;
+	//shadowCoord = gl_ModelViewProjectionMatrix * gl_Vertex;
 
 	vec4 v = gl_ModelViewMatrix * gl_Vertex;
 	
@@ -30,9 +31,10 @@ void main()
 	
 	vertexPos.x += sign1 * renderSizeHorizontal * (-aProj2.y) + sign2 * renderSizeVertical * aProj2.x;
 	vertexPos.y += sign1 * renderSizeHorizontal * aProj2.x + sign2 * renderSizeVertical * aProj2.y;
+	//shadowCoord = gl_ModelViewProjectionMatrix * vec4( vertexPos, 1 );
 	shadowCoord = gl_TextureMatrix[7] * vec4( vertexPos, 1 );
 	
-	vec3 a = normalize( vec3( gl_ModelViewMatrix * vec4(axis, 1) ) );
+	vec3 a = normalize( vec3( gl_ModelViewMatrix * vec4( axis, 1 ) ) );
 	vec2 aProj = a.xy;
 	aProj = normalize(aProj);
 	
