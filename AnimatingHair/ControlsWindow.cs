@@ -155,11 +155,11 @@ namespace AnimatingHair
             }
             if ( tb == trackBarMisc1 )
             {
-                renderer.Misc1 = value * 2;
+                renderer.Misc1 = value;
             }
             if ( tb == trackBarMisc2 )
             {
-                renderer.Misc2 = value * 2;
+                renderer.Misc2 = value;
             }
 
             updateConstants( tb );
@@ -601,6 +601,16 @@ namespace AnimatingHair
         private void button1_Click_1( object sender, EventArgs e )
         {
             scene.Fan = !scene.Fan;
+        }
+
+        private void radioButton1_CheckedChanged( object sender, EventArgs e )
+        {
+            if ( radioButton1.Checked )
+                renderer.Mode = 0;
+            if ( radioButton2.Checked )
+                renderer.Mode = 1;
+            if ( radioButton3.Checked )
+                renderer.Mode = 2;
         }
     }
 }

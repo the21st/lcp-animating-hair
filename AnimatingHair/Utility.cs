@@ -139,6 +139,42 @@ namespace AnimatingHair
         }
 
         /// <summary>
+        /// Creates, compiles and links a vertex shader.
+        /// </summary>
+        public static void CreateShaders( string vs, string fs, out int program )
+        {
+            int statusCode, vertexObject, fragmentObject;
+            string info;
+
+            vertexObject = GL.CreateShader( ShaderType.VertexShader );
+            fragmentObject = GL.CreateShader( ShaderType.FragmentShader );
+
+            // Compile vertex shader
+            GL.ShaderSource( vertexObject, vs );
+            GL.CompileShader( vertexObject );
+            GL.GetShaderInfoLog( vertexObject, out info );
+            GL.GetShader( vertexObject, ShaderParameter.CompileStatus, out statusCode );
+
+            if ( statusCode != 1 )
+                throw new ApplicationException( info );
+
+            // Compile fragment shader
+            GL.ShaderSource( fragmentObject, fs );
+            GL.CompileShader( fragmentObject );
+            GL.GetShaderInfoLog( fragmentObject, out info );
+            GL.GetShader( fragmentObject, ShaderParameter.CompileStatus, out statusCode );
+
+            if ( statusCode != 1 )
+                throw new ApplicationException( info );
+
+            program = GL.CreateProgram();
+            GL.AttachShader( program, fragmentObject );
+            GL.AttachShader( program, vertexObject );
+
+            GL.LinkProgram( program );
+        }
+
+        /// <summary>
         /// Links an image from the specified file to an OpenGL texture
         /// and returns the reference.
         /// </summary>

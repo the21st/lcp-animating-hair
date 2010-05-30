@@ -17,9 +17,8 @@ namespace AnimatingHair.Rendering
         private readonly Light light;
 
         // the openGL texture reference
-        private readonly int splatTexture;
+        public readonly int splatTexture;
         public int DeepOpacityMap;
-        public int DepthMap;
 
         // the shader uniform locations
         private int axisLoc;
@@ -28,8 +27,7 @@ namespace AnimatingHair.Rendering
         private int sign1Loc;
         private int sign2Loc;
         private int hairTextureLoc;
-        private int shadowMapLoc;
-        private int depthMapLoc;
+        private int deepOpacityMapLoc;
 
         // shader objects
         private readonly int shaderProgram;
@@ -53,9 +51,7 @@ namespace AnimatingHair.Rendering
             using ( StreamReader vs = new StreamReader( FilePaths.BillboardShaderLocation ) )
             {
                 using ( StreamReader fs = new StreamReader( FilePaths.HairShaderLocation ) )
-                    createShaders( vs.ReadToEnd(), fs.ReadToEnd(),
-                                   out vertexShaderObject, out fragmentShaderObject,
-                                   out shaderProgram );
+                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
             }
 
             getShaderVariableLocations();
@@ -95,20 +91,17 @@ namespace AnimatingHair.Rendering
 
             Array.Sort( sorted, particleCompare );
 
-
-            GL.ActiveTexture( TextureUnit.Texture5 );
-            GL.BindTexture( TextureTarget.Texture2D, splatTexture );
-            GL.Uniform1( hairTextureLoc, 5 );
-
-            GL.ActiveTexture( TextureUnit.Texture6 );
+            // tieto 2 riadky neviem preco tu musia byt, bez nich mi ale neprecita z deepOpacityMap alpha kanal (z-buffer svetla)
+            GL.ActiveTexture( TextureUnit.Texture0 );
             GL.BindTexture( TextureTarget.Texture2D, DeepOpacityMap );
-            GL.Uniform1( shadowMapLoc, 6 );
 
-            GL.ActiveTexture( TextureUnit.Texture7 );
-            GL.BindTexture( TextureTarget.Texture2D, DepthMap );
-            GL.Uniform1( depthMapLoc, 7 );
+            GL.ActiveTexture( TextureUnit.Texture1 );
+            GL.BindTexture( TextureTarget.Texture2D, splatTexture );
+            GL.Uniform1( hairTextureLoc, 1 );
 
-            //GL.BindTexture( TextureTarget.Texture2D, splatTexture );
+            GL.ActiveTexture( TextureUnit.Texture2 );
+            GL.BindTexture( TextureTarget.Texture2D, DeepOpacityMap );
+            GL.Uniform1( deepOpacityMapLoc, 2 );
 
             GL.Uniform3( eyeLoc, camera.Eye );
             GL.Uniform3( lightLoc, light.Position );
@@ -163,58 +156,15 @@ namespace AnimatingHair.Rendering
             GL.End();
         }
 
-        #region Private auxiliary methods
-
         private void getShaderVariableLocations()
         {
             axisLoc = GL.GetUniformLocation( shaderProgram, "axis" );
             eyeLoc = GL.GetUniformLocation( shaderProgram, "eye" );
             lightLoc = GL.GetUniformLocation( shaderProgram, "light" );
             hairTextureLoc = GL.GetUniformLocation( shaderProgram, "hairTexture" );
-            shadowMapLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMap" );
-            depthMapLoc = GL.GetUniformLocation( shaderProgram, "depthMap" );
+            deepOpacityMapLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMap" );
             sign1Loc = GL.GetAttribLocation( shaderProgram, "sign1" );
             sign2Loc = GL.GetAttribLocation( shaderProgram, "sign2" );
         }
-
-        // Creates, compiles and links a vertex shader.
-        // Fragment shader is not needed for now; it's commented out.
-        private static void createShaders(
-            string vs, string fs,
-            out int vertexObject, out int fragmentObject,
-            out int program )
-        {
-            int statusCode;
-            string info;
-
-            vertexObject = GL.CreateShader( ShaderType.VertexShader );
-            fragmentObject = GL.CreateShader( ShaderType.FragmentShader );
-
-            // Compile vertex shader
-            GL.ShaderSource( vertexObject, vs );
-            GL.CompileShader( vertexObject );
-            GL.GetShaderInfoLog( vertexObject, out info );
-            GL.GetShader( vertexObject, ShaderParameter.CompileStatus, out statusCode );
-
-            if ( statusCode != 1 )
-                throw new ApplicationException( info );
-
-            // Compile fragment shader
-            GL.ShaderSource( fragmentObject, fs );
-            GL.CompileShader( fragmentObject );
-            GL.GetShaderInfoLog( fragmentObject, out info );
-            GL.GetShader( fragmentObject, ShaderParameter.CompileStatus, out statusCode );
-
-            if ( statusCode != 1 )
-                throw new ApplicationException( info );
-
-            program = GL.CreateProgram();
-            GL.AttachShader( program, fragmentObject );
-            GL.AttachShader( program, vertexObject );
-
-            GL.LinkProgram( program );
-        }
-
-        #endregion
     }
 }

@@ -35,6 +35,7 @@ namespace AnimatingHair.Rendering
         private int hairTextureLoc2;
         private int distLoc2;
         private int alphaTresholdLoc2;
+        private int intensityFactorLoc2;
 
         // shader objects
         private readonly int depthShaderProgram;
@@ -49,7 +50,8 @@ namespace AnimatingHair.Rendering
 
         public Matrix4 LightProjectionMatrix, LightModelViewMatrix;
         public float Dist = 0.1f;
-        public float AlphaTreshold = 0.15f;
+        public float AlphaTreshold = 0.0f;
+        public float IntensityFactor = 1f;
         private float near = 1, far = 30;
 
         public OpacityMapsRenderer( Hair hair, Light light )
@@ -69,17 +71,13 @@ namespace AnimatingHair.Rendering
             using ( StreamReader vs = new StreamReader( FilePaths.DepthVSLocation ) )
             {
                 using ( StreamReader fs = new StreamReader( FilePaths.DepthFSLocation ) )
-                    createShaders( vs.ReadToEnd(), fs.ReadToEnd(),
-                                   out vertexShaderObject, out fragmentShaderObject,
-                                   out depthShaderProgram );
+                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out depthShaderProgram );
             }
 
             using ( StreamReader vs = new StreamReader( FilePaths.OpacityVSLocation ) )
             {
                 using ( StreamReader fs = new StreamReader( FilePaths.OpacityFSLocation ) )
-                    createShaders( vs.ReadToEnd(), fs.ReadToEnd(),
-                                   out vertexShaderObject, out fragmentShaderObject,
-                                   out opacityShaderProgram );
+                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out opacityShaderProgram );
             }
 
             getShaderVariableLocations();
@@ -189,6 +187,8 @@ namespace AnimatingHair.Rendering
             //setupMatrices();
             renderOpacityMaps();
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );
+            GL.ActiveTexture( TextureUnit.Texture0 );
+            GL.BindTexture( TextureTarget.Texture2D, 0 );
         }
 
         private void renderDepthMap()
@@ -220,25 +220,27 @@ namespace AnimatingHair.Rendering
 
         private void renderOpacityMaps()
         {
-            GL.Enable( EnableCap.DepthTest );
-            GL.Disable( EnableCap.Blend );
+            GL.Disable( EnableCap.DepthTest );
+            GL.Enable( EnableCap.Blend );
             GL.BlendFunc( BlendingFactorSrc.One, BlendingFactorDest.One );
+            GL.BlendEquationSeparate( BlendEquationMode.FuncAdd, BlendEquationMode.Min );
             GL.Enable( EnableCap.Texture2D );
 
             // link the shader program
             GL.UseProgram( opacityShaderProgram );
 
-            GL.ActiveTexture( TextureUnit.Texture3 );
+            GL.ActiveTexture( TextureUnit.Texture0 );
             GL.BindTexture( TextureTarget.Texture2D, splatTexture );
-            GL.Uniform1( hairTextureLoc2, 3 );
+            GL.Uniform1( hairTextureLoc2, 0 );
 
-            GL.ActiveTexture( TextureUnit.Texture4 );
+            GL.ActiveTexture( TextureUnit.Texture1 );
             GL.BindTexture( TextureTarget.Texture2D, DepthTexture );
-            GL.Uniform1( depthMapLoc2, 4 );
+            GL.Uniform1( depthMapLoc2, 1 );
 
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "dist" );
             GL.Uniform1( distLoc2, Dist );
             GL.Uniform1( alphaTresholdLoc2, AlphaTreshold );
+            GL.Uniform1( intensityFactorLoc2, IntensityFactor );
 
             GL.Uniform3( eyeLoc2, light.Position );
 
@@ -336,72 +338,7 @@ namespace AnimatingHair.Rendering
             hairTextureLoc2 = GL.GetUniformLocation( opacityShaderProgram, "hairTexture" );
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "distt" );
             alphaTresholdLoc2 = GL.GetUniformLocation( opacityShaderProgram, "alphaTreshold" );
+            intensityFactorLoc2 = GL.GetUniformLocation( opacityShaderProgram, "intensityFactor" );
         }
-
-        #region Private auxiliary methods
-
-        // Creates, compiles and links a vertex shader.
-        // Fragment shader is not needed for now; it's commented out.
-        private static void createShaders( string vs, out int program )
-        {
-            int statusCode;
-            string info;
-
-            int vertexObject = GL.CreateShader( ShaderType.VertexShader );
-
-            // Compile vertex shader
-            GL.ShaderSource( vertexObject, vs );
-            GL.CompileShader( vertexObject );
-            GL.GetShaderInfoLog( vertexObject, out info );
-            GL.GetShader( vertexObject, ShaderParameter.CompileStatus, out statusCode );
-
-            if ( statusCode != 1 )
-                throw new ApplicationException( info );
-
-            program = GL.CreateProgram();
-            GL.AttachShader( program, vertexObject );
-
-            GL.LinkProgram( program );
-        }
-
-        // Creates, compiles and links a vertex shader.
-        // Fragment shader is not needed for now; it's commented out.
-        private static void createShaders(
-            string vs, string fs,
-            out int vertexObject, out int fragmentObject,
-            out int program )
-        {
-            int statusCode;
-            string info;
-
-            vertexObject = GL.CreateShader( ShaderType.VertexShader );
-            fragmentObject = GL.CreateShader( ShaderType.FragmentShader );
-
-            // Compile vertex shader
-            GL.ShaderSource( vertexObject, vs );
-            GL.CompileShader( vertexObject );
-            GL.GetShaderInfoLog( vertexObject, out info );
-            GL.GetShader( vertexObject, ShaderParameter.CompileStatus, out statusCode );
-
-            if ( statusCode != 1 )
-                throw new ApplicationException( info );
-
-            // Compile fragment shader
-            GL.ShaderSource( fragmentObject, fs );
-            GL.CompileShader( fragmentObject );
-            GL.GetShaderInfoLog( fragmentObject, out info );
-            GL.GetShader( fragmentObject, ShaderParameter.CompileStatus, out statusCode );
-
-            if ( statusCode != 1 )
-                throw new ApplicationException( info );
-
-            program = GL.CreateProgram();
-            GL.AttachShader( program, fragmentObject );
-            GL.AttachShader( program, vertexObject );
-
-            GL.LinkProgram( program );
-        }
-
-        #endregion
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using AnimatingHair.Rendering.Debug;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
@@ -35,18 +36,23 @@ namespace AnimatingHair.Rendering
         private readonly float[] lightSpecular;
         private float angle = 0;
         private int shadowTexture;
-        private int depthTexture;
         private int viewportWidth = 800, viewportHeight = 600;
         private float aspectRatio = 800f / 600f;
-        private float near = 1, far = 30;
+        private const float near = 1, far = 30;
+        private float lightDistance = 8;
+
+        // shader objects
+        private readonly int shaderProgram;
+        private readonly int modeLoc;
+        public int Mode = 0;
 
         #region Rendering options
 
         [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether any hair is drawn." )]
         public bool ShowHair { get; set; }
-        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether the hair is rendered in debug mode." )]
+        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether the hair is rendered in debug Mode." )]
         public bool DebugHair { get; set; }
-        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether neighbor connections are shown (only applies to debug mode)." )]
+        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether neighbor connections are shown (only applies to debug Mode)." )]
         public bool RenderConnections
         {
             get { return simpleHairRenderer.RenderConnections; }
@@ -67,10 +73,6 @@ namespace AnimatingHair.Rendering
 
         public float LightIntensity
         {
-            get
-            {
-                return light.Intensity;
-            }
             set
             {
                 light.Intensity = value;
@@ -78,11 +80,13 @@ namespace AnimatingHair.Rendering
             }
         }
 
+        #endregion
+
         public float Misc1
         {
             set
             {
-                //opacityMapsRenderer.Dist = value / 10.0f;
+                angle = value * MathHelper.TwoPi + MathHelper.Pi;
             }
         }
 
@@ -91,10 +95,10 @@ namespace AnimatingHair.Rendering
             set
             {
                 //opacityMapsRenderer.AlphaTreshold = value / 2.0f;
+                opacityMapsRenderer.IntensityFactor = value;
             }
         }
 
-        #endregion
 
         public Renderer( Camera camera, Scene scene )
         {
@@ -133,6 +137,14 @@ namespace AnimatingHair.Rendering
             lightSpecular = new float[ 3 ];
             refreshLight();
 
+            // shader loading
+            using ( StreamReader vs = new StreamReader( FilePaths.DebugVSLocation ) )
+            {
+                using ( StreamReader fs = new StreamReader( FilePaths.DebugFSLocation ) )
+                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
+            }
+            modeLoc = GL.GetUniformLocation( shaderProgram, "Mode" );
+
             initializeOpenGL();
         }
 
@@ -141,16 +153,14 @@ namespace AnimatingHair.Rendering
             if ( CruisingLight )
                 angle += 0.002f;
 
-            light.Position = new Vector3( -5 * (float)Math.Sin( angle ), 5, 5 * (float)Math.Cos( angle ) );
+            light.Position = new Vector3( -lightDistance * (float)Math.Sin( angle ), 0.5f * lightDistance, lightDistance * (float)Math.Cos( angle ) );
             GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
 
             opacityMapsRenderer.RenderOpacityTexture();
             shadowTexture = opacityMapsRenderer.ShadowTexture;
-            depthTexture = opacityMapsRenderer.DepthTexture;
-            hairRenderer.DepthMap = depthTexture;
             hairRenderer.DeepOpacityMap = shadowTexture;
 
-            setTextureMatrix(); // NOTE: vnutri funkcie
+            setTextureMatrix();
 
             initializeOpenGL();
 
@@ -160,31 +170,11 @@ namespace AnimatingHair.Rendering
         private void renderScene()
         {
             // clears buffer, sets modelview matrix to LookAt from camera
-            prepareBufferAndMatrix();
+            GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
 
-            //GL.Enable( EnableCap.Texture2D );
-            //GL.Disable( EnableCap.Blend );
-            //GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
-            //GL.Disable( EnableCap.Lighting );
-            //GL.ActiveTexture( TextureUnit.Texture0 );
-            //GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
-
-            //GL.Begin( BeginMode.Quads );
-            //{
-            //    GL.TexCoord2( 1, 0 );
-            //    GL.Vertex3( 00, -2, -2 );
-
-            //    GL.TexCoord2( 1, 1 );
-            //    GL.Vertex3( 00, 2, -2 );
-
-            //    GL.TexCoord2( 0, 1 );
-            //    GL.Vertex3( 00, 2, 02 );
-
-            //    GL.TexCoord2( 0, 0 );
-            //    GL.Vertex3( 00, -2, 02 );
-            //}
-            //GL.End();
-            //return;
+            Matrix4 modelview = Matrix4.LookAt( camera.Eye, camera.Target, camera.Up );
+            GL.MatrixMode( MatrixMode.Modelview );
+            GL.LoadMatrix( ref modelview );
 
             if ( !DebugHair )
                 GL.Enable( EnableCap.Blend );
@@ -203,73 +193,128 @@ namespace AnimatingHair.Rendering
             GL.PointSize( 1 );
 
             GL.Enable( EnableCap.Lighting );
+            GL.Disable( EnableCap.Blend );
 
             if ( ShowBust )
             {
                 bustRenderer.Wireframe = WireFrame;
                 bustRenderer.Render();
             }
+
             GL.PushMatrix();
-            GL.Translate( scene.Bust.Position );
-            GL.Rotate( (scene.Bust.Angle * 180 / Const.PI), Vector3.UnitY );
-
-            if ( ShowMetaBust )
-                metaBustRenderer.Render();
-
-            if ( ShowVoxelGrid )
-                voxelGridRenderer.Render();
-
-            if ( ShowAir )
             {
-                airRenderer.Render();
-            }
+                GL.Translate( scene.Bust.Position );
+                GL.Rotate( (scene.Bust.Angle * 180 / Const.PI), Vector3.UnitY );
 
-            if ( ShowHair )
-            {
-                if ( DebugHair )
+                if ( ShowMetaBust )
+                    metaBustRenderer.Render();
+
+                if ( ShowVoxelGrid )
+                    voxelGridRenderer.Render();
+
+                if ( ShowAir )
                 {
-                    simpleHairRenderer.Render();
+                    airRenderer.Render();
                 }
-                else
+
+                if ( ShowHair )
                 {
-                    GL.DepthMask( false );
-                    hairRenderer.Render();
-                    GL.DepthMask( true );
+                    if ( DebugHair )
+                    {
+                        simpleHairRenderer.Render();
+                    }
+                    else
+                    {
+                        GL.DepthMask( false );
+                        hairRenderer.Render();
+                        GL.DepthMask( true );
+                    }
                 }
             }
-
             GL.PopMatrix();
+
+            // --- HUD ---
+
+            GL.Disable( EnableCap.DepthTest );
+            GL.Disable( EnableCap.Lighting );
+            GL.Disable( EnableCap.Blend );
+            GL.DepthMask( false );
+            GL.MatrixMode( MatrixMode.Projection );
+            GL.PushMatrix();
+            GL.LoadIdentity();
+            GL.Ortho( 0, viewportWidth, viewportHeight, 0, -1, 1 );
+            GL.MatrixMode( MatrixMode.Modelview );
+            GL.PushMatrix();
+            GL.LoadIdentity();
+            { // HUD rendering here
+                GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
+                GL.UseProgram( shaderProgram );
+                renderDebugRectangle();
+                GL.UseProgram( 0 );
+            }
+            GL.Enable( EnableCap.DepthTest );
+            GL.DepthMask( true );
+            GL.MatrixMode( MatrixMode.Projection );
+            GL.PopMatrix();
+            GL.MatrixMode( MatrixMode.Modelview );
+            GL.PopMatrix();
+        }
+
+        private void renderDebugRectangle()
+        {
+            GL.Enable( EnableCap.Texture2D );
+            GL.Disable( EnableCap.Blend );
+            GL.Disable( EnableCap.Lighting );
+            GL.ActiveTexture( TextureUnit.Texture0 );
+            GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
+
+            int size = 260;
+
+            GL.Uniform1( modeLoc, 3 );
+            GL.Begin( BeginMode.Quads );
+            {
+                GL.TexCoord2( 0, 1 );
+                GL.Vertex2( 0, 0 );
+
+                GL.TexCoord2( 0, 0 );
+                GL.Vertex2( 0, size );
+
+                GL.TexCoord2( 1, 0 );
+                GL.Vertex2( size, size );
+
+                GL.TexCoord2( 1, 1 );
+                GL.Vertex2( size, 0 );
+            }
+            GL.End();
+
+            //GL.Uniform1( modeLoc, Mode );
+            //GL.Begin( BeginMode.Quads );
+            //{
+            //    GL.TexCoord2( 0, 1 );
+            //    GL.Vertex2( viewportWidth - size, 0 );
+
+            //    GL.TexCoord2( 0, 0 );
+            //    GL.Vertex2( viewportWidth - size, size );
+
+            //    GL.TexCoord2( 1, 0 );
+            //    GL.Vertex2( viewportWidth, size );
+
+            //    GL.TexCoord2( 1, 1 );
+            //    GL.Vertex2( viewportWidth, 0 );
+            //}
+            //GL.End();
         }
 
         private void setTextureMatrix()
         {
-            // This is matrix transform every coordinate x,y,z
-            // x = x* 0.5 + 0.5 
-            // y = y* 0.5 + 0.5 
-            // z = z* 0.5 + 0.5 
-            // Moving from unit cube [-1,1] to [0,1]  
-            Matrix4 bias = new Matrix4(
-                0.5f, 0.0f, 0.0f, 0.0f,
-                0.0f, 0.5f, 0.0f, 0.0f,
-                0.0f, 0.0f, 0.5f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f ); // NOTE: transpose?
-            //Matrix4 bias = new Matrix4(
-            //    0.5f, 0.0f, 0.0f, 0.5f,
-            //    0.0f, 0.5f, 0.0f, 0.5f,
-            //    0.0f, 0.0f, 0.5f, 0.5f,
-            //    0.0f, 0.0f, 0.0f, 1.0f ); // transpose
-
             GL.MatrixMode( MatrixMode.Texture );
             GL.ActiveTexture( TextureUnit.Texture7 );
 
             GL.LoadIdentity();
-            GL.LoadMatrix( ref bias );
-
-            // concatating all matrice into one.
             GL.MultMatrix( ref opacityMapsRenderer.LightProjectionMatrix );
             GL.MultMatrix( ref opacityMapsRenderer.LightModelViewMatrix );
 
-            // Go back to normal matrix mode
+            // Go back to normal matrix Mode
             GL.MatrixMode( MatrixMode.Modelview );
         }
 
@@ -294,8 +339,8 @@ namespace AnimatingHair.Rendering
         {
             refreshViewport();
 
-            //GL.ClearColor( Color.CornflowerBlue );
-            GL.ClearColor( Color.Gray );
+            GL.ClearColor( Color.CornflowerBlue );
+            //GL.ClearColor( Color.Black );
 
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
@@ -306,15 +351,6 @@ namespace AnimatingHair.Rendering
             GL.Light( LightName.Light0, LightParameter.Diffuse, lightDiffuse );
             GL.Light( LightName.Light0, LightParameter.Ambient, lightAmbient );
             //GL.Light( LightName.Light0, LightParameter.Specular, lightSpecular );
-        }
-
-        private void prepareBufferAndMatrix()
-        {
-            GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
-
-            Matrix4 modelview = Matrix4.LookAt( camera.Eye, camera.Target, camera.Up );
-            GL.MatrixMode( MatrixMode.Modelview );
-            GL.LoadMatrix( ref modelview );
         }
 
         private static void drawAxes()

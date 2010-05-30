@@ -3,6 +3,7 @@ uniform sampler2D hairTexture;
 uniform vec3 eye;
 uniform float dist; // TODO: debugging, will be removed
 uniform float alphaTreshold;
+uniform float intensityFactor;
 
 varying float opacityFactor;
 
@@ -22,6 +23,8 @@ void main()
 	
 	float intensity = texture2D( hairTexture, gl_TexCoord[0].st ).a; // intensity of shadow is the alpha value from texture
 	intensity *= opacityFactor; // times opacity factor from Vertex shader
+	intensity *= intensityFactor;
+	
 	if ( intensity < alphaTreshold )
 	{
 		discard;
@@ -39,26 +42,26 @@ void main()
 	//	discard;
 	//}
 	
-	//float depthEnd = depthStart + delta[0] + delta[1];
-	float depthEnd = depthStart + delta[0];
+	float depthEnd = depthStart + delta[0] + delta[1];
+	//float depthEnd = depthStart + delta[0];
 	
-	color.r = depthStart;
-	color.g = depthStart;
-	color.b = depthStart;
+	color.r = 0;
+	color.g = 0;
+	color.b = intensity;
 	color.a = depthStart;
 	
 	
-	//if ( depth < depthEnd )
-	//{
-		//color.b = intensity;
-	//}
-	//
-	//depthEnd -= delta[1];
-	//
-	//if ( depth < depthEnd )
-	//{
-		//color.g = intensity;
-	//}
+	if ( depth < depthEnd )
+	{
+		color.g = intensity;
+	}
+	
+	depthEnd -= delta[1];
+	
+	if ( depth < depthEnd )
+	{
+		color.r = intensity;
+	}
 	
 	gl_FragColor = color;
 }
