@@ -14,7 +14,6 @@ varying vec3 lightPos;
 varying vec3 eyePos;
 varying vec3 hairTangent;
 varying float opacityFactor;
-//varying vec3 shadowCoord;
 varying vec4 shadowCoord;
 
 // TODO: change to uniforms
@@ -84,23 +83,6 @@ void main()
 	depth = (2.0 * n) / (f + n - depth * (f - n)); // linearny depth medzi 0 a 1
 	float depthStart = texture2D( deepOpacityMap, lightCoord.xy ).a;
 	
-	//DEBUG:
-	//vec2 coord = vec2( 0.4, 0.5 );
-	//float depthStart = texture2D( deepOpacityMap, coord ).a;
-	
-	//float depth = (2.0 * n) / (f + n - lightCoord.z * (f - n)); // linearny depth medzi 0 a 1
-	//depth = shadowCoord.z / shadowCoord.w;
-	//float depth = lightCoord.z;
-	//float depth = gl_FragCoord.z;
-	
-	//depth = shadowCoord.z - 6.0;
-	//depth = (2.0 * n) / (f + n - depth * (f - n)); // linearny depth medzi 0 a 1
-	//depthStart -= 0.001; // TODO : vyladit
-	//float asd = depth;
-	//color.r = asd;
-	//color.g = asd;
-	//color.b = asd;
-	
 	depthStart += delta[0];
 	if ( depth < depthStart )
 	{
@@ -136,9 +118,8 @@ void main()
 		}
 	}
 	
-	color.rgb *= ( 1.0 - shadow );
-	
-	//color.rgb = vec3( tmp );
+	if ( depthStart < 0.999 ) // na fragmenty ktorym prislucha prave 'diera' v depth mape neaplikujem tien
+		color.rgb *= ( 1.0 - shadow );
 	
 	gl_FragColor = color;
 }
