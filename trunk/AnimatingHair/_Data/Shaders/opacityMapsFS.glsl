@@ -10,7 +10,7 @@ varying float opacityFactor;
 // TODO: change to uniforms
 const float n = 1.0;
 const float f = 30.0;
-const float size = 512.0;
+const float size = 1024.0;
 
 void main()
 {
@@ -35,7 +35,6 @@ void main()
 	vec2 scrCoord = vec2 (1.0 / size, 1.0 / size) * gl_FragCoord.xy;
 	float depthStart = texture2D( depthMap, scrCoord ).x;
 	depthStart = (2.0 * n) / (f + n - depthStart * (f - n)); // linearny depth medzi 0 a 1
-	//depthStart -= 0.001; // TODO : vyladit
 	
 	//if ( depthStart > 0.98 )
 	//{

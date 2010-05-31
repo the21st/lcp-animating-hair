@@ -122,7 +122,7 @@ namespace AnimatingHair.Rendering
 
             voxelGridRenderer = new VoxelGridRenderer( scene.VoxelGrid );
 
-            opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light );
+            opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light, camera );
 
             ShowBust = false;
             WireFrame = false;
@@ -177,11 +177,7 @@ namespace AnimatingHair.Rendering
             GL.MatrixMode( MatrixMode.Modelview );
             GL.LoadMatrix( ref modelview );
 
-            if ( !DebugHair )
-                GL.Enable( EnableCap.Blend );
-            else
-                GL.Disable( EnableCap.Blend );
-
+            GL.Disable( EnableCap.Blend );
             GL.Enable( EnableCap.DepthTest );
             GL.Disable( EnableCap.Texture2D );
             GL.Disable( EnableCap.Lighting );
@@ -194,7 +190,6 @@ namespace AnimatingHair.Rendering
             GL.PointSize( 1 );
 
             GL.Enable( EnableCap.Lighting );
-            GL.Disable( EnableCap.Blend );
 
             if ( ShowBust )
             {
@@ -265,7 +260,6 @@ namespace AnimatingHair.Rendering
             GL.Enable( EnableCap.Texture2D );
             GL.Disable( EnableCap.Blend );
             GL.Disable( EnableCap.Lighting );
-            GL.ActiveTexture( TextureUnit.Texture0 );
             GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
 
             int size = 260;

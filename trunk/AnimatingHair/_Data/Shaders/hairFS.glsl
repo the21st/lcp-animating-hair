@@ -2,7 +2,7 @@
 uniform sampler2D deepOpacityMap;
 
 const float K_a = 0.05;
-const float K_d = 0.3;
+const float K_d = 0.30;
 const float K_s = 0.65;
 const float shininess = 180.0;
 
@@ -64,9 +64,8 @@ void main()
 	
 	float f_dir = rho_reflect * (1 + K_goldman) / 2 + rho_transmit * (1 - K_goldman) / 2;
 	
-	// NOTE: je nutny tento riadok so self-shadows?
-	//color.xyz = f_dir * (K_d * diffuse * color.xyz + K_s * specular * lightSpec.xyz);
-	color.xyz = K_d * diffuse * color.xyz + K_s * max(specular, 0.0) * lightSpec.xyz;
+	color.xyz = f_dir * (K_d * diffuse * color.xyz + K_s * specular * lightSpec.xyz);
+	//color.xyz = K_d * diffuse * color.xyz + K_s * max(specular, 0.0) * lightSpec.xyz;
 	
 	color.xyz += K_a * gl_FrontMaterial.ambient.xyz;
 	
