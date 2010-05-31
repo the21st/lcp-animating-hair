@@ -187,7 +187,7 @@
   <ItemGroup>
     <None Include="Properties\app.manifest" />
     <None Include="_Data\Models\hlava.obj" />
-    <None Include="_Data\Shaders\billboardVS.glsl" />
+    <None Include="_Data\Shaders\hairVS.glsl" />
     <None Include="_Data\Shaders\debugFS.glsl" />
     <None Include="_Data\Shaders\debugVS.glsl" />
     <None Include="_Data\Shaders\depthFS.glsl" />

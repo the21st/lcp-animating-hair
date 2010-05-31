@@ -2,7 +2,7 @@
 {
     static class FilePaths
     {
-        public const string BillboardShaderLocation = @"../../_Data/Shaders/billboardVS.glsl";
+        public const string BillboardShaderLocation = @"../../_Data/Shaders/hairVS.glsl";
         public const string HairShaderLocation = @"../../_Data/Shaders/hairFS.glsl";
         public const string DepthVSLocation = @"../../_Data/Shaders/depthVS.glsl";
         public const string DepthFSLocation = @"../../_Data/Shaders/depthFS.glsl";

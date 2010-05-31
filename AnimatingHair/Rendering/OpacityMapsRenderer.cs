@@ -10,11 +10,12 @@ namespace AnimatingHair.Rendering
 {
     class OpacityMapsRenderer
     {
-        private const int opacityMapSize = 512;
+        private const int opacityMapSize = 1024;
 
         // keeps references to object it needs
         private readonly Hair hair;
         private readonly Light light;
+        private readonly Camera camera;
 
         // the openGL texture reference
         private readonly int splatTexture;
@@ -54,10 +55,11 @@ namespace AnimatingHair.Rendering
         public float IntensityFactor = 1f;
         private float near = 1, far = 30;
 
-        public OpacityMapsRenderer( Hair hair, Light light )
+        public OpacityMapsRenderer( Hair hair, Light light, Camera camera )
         {
             this.hair = hair;
             this.light = light;
+            this.camera = camera;
 
             // texture loading
             splatTexture = Utility.UploadTexture( FilePaths.HairTextureLocation );
@@ -174,6 +176,7 @@ namespace AnimatingHair.Rendering
             LightModelViewMatrix = Matrix4.LookAt( light.Position, Vector3.Zero, Vector3.UnitY );
 
             GL.ClearColor( 0, 0, 0, 1 );
+            GL.ActiveTexture( TextureUnit.Texture0 ); // NOTE: jak funguje tento prikaz ?? skus vypnut / zapnut
 
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, depthFBO );
             GL.Viewport( 0, 0, opacityMapSize, opacityMapSize );
@@ -195,7 +198,7 @@ namespace AnimatingHair.Rendering
 
         private void renderDepthMap()
         {
-            //GL.ShadeModel( ShadingModel.Flat ); // NOTE: ?
+            //GL.ShadeModel( ShadingModel.Flat ); // NOTE: performance boost?
             GL.ColorMask( false, false, false, false );
             GL.Enable( EnableCap.DepthTest );
             GL.Enable( EnableCap.Texture2D );
@@ -204,7 +207,10 @@ namespace AnimatingHair.Rendering
             GL.UseProgram( depthShaderProgram );
 
             GL.BindTexture( TextureTarget.Texture2D, splatTexture );
+
             GL.Uniform3( eyeLoc, light.Position );
+            //GL.Uniform3( eyeLoc, camera.Eye );
+
             GL.Uniform1( alphaTresholdLoc, AlphaTreshold );
 
             for ( int i = 0; i < hair.Particles.Length; i++ )
@@ -217,7 +223,7 @@ namespace AnimatingHair.Rendering
             GL.UseProgram( 0 );
             GL.BindTexture( TextureTarget.Texture2D, 0 );
             GL.ColorMask( true, true, true, true );
-            //GL.ShadeModel( ShadingModel.Smooth );
+            //GL.ShadeModel( ShadingModel.Smooth ); // NOTE: performance boost?
         }
 
         private void renderOpacityMaps()
@@ -245,6 +251,7 @@ namespace AnimatingHair.Rendering
             GL.Uniform1( intensityFactorLoc2, IntensityFactor );
 
             GL.Uniform3( eyeLoc2, light.Position );
+            //GL.Uniform3( eyeLoc2, camera.Eye );
 
             for ( int i = 0; i < hair.Particles.Length; i++ )
             {
