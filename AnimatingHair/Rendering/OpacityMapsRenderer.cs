@@ -145,8 +145,8 @@ namespace AnimatingHair.Rendering
             ShadowTexture = GL.GenTexture();
             GL.BindTexture( TextureTarget.Texture2D, ShadowTexture );
 
-            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear );
-            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear );
+            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest );
+            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest );
 
             GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, shadowMapWidth, shadowMapHeight, 0,
                 PixelFormat.Rgba, PixelType.UnsignedByte, new IntPtr() );
@@ -170,8 +170,10 @@ namespace AnimatingHair.Rendering
         public void RenderOpacityTexture()
         {
             LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, near, far );
-            //LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY ); // NOTE: toto nefunguje, ale preco???
+            //LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY ); // NOTE: toto nefunguje, ale preco??? Uz viem: lebo mam zle billboardy (funguju len ked sa kamera pozera na Origin
             LightModelViewMatrix = Matrix4.LookAt( light.Position, Vector3.Zero, Vector3.UnitY );
+
+            GL.ClearColor( 0, 0, 0, 1 );
 
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, depthFBO );
             GL.Viewport( 0, 0, opacityMapSize, opacityMapSize );

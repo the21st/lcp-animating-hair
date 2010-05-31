@@ -75,8 +75,9 @@ namespace AnimatingHair.Rendering
         {
             set
             {
-                light.Intensity = value;
-                refreshLight();
+                //light.Intensity = value;
+                //refreshLight();
+                lightDistance = value * 5;
             }
         }
 
@@ -94,8 +95,8 @@ namespace AnimatingHair.Rendering
         {
             set
             {
-                //opacityMapsRenderer.AlphaTreshold = value / 2.0f;
-                opacityMapsRenderer.IntensityFactor = value;
+                opacityMapsRenderer.AlphaTreshold = value;
+                //opacityMapsRenderer.IntensityFactor = value;
             }
         }
 
@@ -107,7 +108,7 @@ namespace AnimatingHair.Rendering
 
             light = new Light
             {
-                Intensity = 1f,
+                Intensity = 1.5f,
                 Position = new Vector3( 5, 0, 5 )
             };
 
@@ -143,7 +144,7 @@ namespace AnimatingHair.Rendering
                 using ( StreamReader fs = new StreamReader( FilePaths.DebugFSLocation ) )
                     Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
             }
-            modeLoc = GL.GetUniformLocation( shaderProgram, "Mode" );
+            modeLoc = GL.GetUniformLocation( shaderProgram, "mode" );
 
             initializeOpenGL();
         }
@@ -234,7 +235,6 @@ namespace AnimatingHair.Rendering
             GL.PopMatrix();
 
             // --- HUD ---
-
             GL.Disable( EnableCap.DepthTest );
             GL.Disable( EnableCap.Lighting );
             GL.Disable( EnableCap.Blend );
@@ -287,22 +287,22 @@ namespace AnimatingHair.Rendering
             }
             GL.End();
 
-            //GL.Uniform1( modeLoc, Mode );
-            //GL.Begin( BeginMode.Quads );
-            //{
-            //    GL.TexCoord2( 0, 1 );
-            //    GL.Vertex2( viewportWidth - size, 0 );
+            GL.Uniform1( modeLoc, Mode );
+            GL.Begin( BeginMode.Quads );
+            {
+                GL.TexCoord2( 0, 1 );
+                GL.Vertex2( viewportWidth - size, 0 );
 
-            //    GL.TexCoord2( 0, 0 );
-            //    GL.Vertex2( viewportWidth - size, size );
+                GL.TexCoord2( 0, 0 );
+                GL.Vertex2( viewportWidth - size, size );
 
-            //    GL.TexCoord2( 1, 0 );
-            //    GL.Vertex2( viewportWidth, size );
+                GL.TexCoord2( 1, 0 );
+                GL.Vertex2( viewportWidth, size );
 
-            //    GL.TexCoord2( 1, 1 );
-            //    GL.Vertex2( viewportWidth, 0 );
-            //}
-            //GL.End();
+                GL.TexCoord2( 1, 1 );
+                GL.Vertex2( viewportWidth, 0 );
+            }
+            GL.End();
         }
 
         private void setTextureMatrix()
