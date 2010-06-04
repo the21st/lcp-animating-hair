@@ -194,6 +194,7 @@ namespace AnimatingHair.Rendering
             if ( ShowBust )
             {
                 bustRenderer.Wireframe = WireFrame;
+                //GL.ActiveTexture( TextureUnit.Texture3 ); // NOTE: preco tu toto musi byt?
                 bustRenderer.Render();
             }
 
