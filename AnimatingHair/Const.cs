@@ -45,7 +45,7 @@ namespace AnimatingHair
 
         #region Custom properties of hair
 
-        public static int HairParticleCount = 1000;
+        public static int HairParticleCount = 1500;
         public static float HairLength = 2.5f;
         public static float s_r = 0.5f; // hlbka do ktorej maximalne idu root particles
 

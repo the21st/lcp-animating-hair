@@ -51,7 +51,7 @@ namespace AnimatingHair.Rendering
 
         public Matrix4 LightProjectionMatrix, LightModelViewMatrix;
         public float Dist = 0.1f;
-        public float AlphaTreshold = 0.0f;
+        public float AlphaTreshold = 0.15f;
         public float IntensityFactor = 1f;
         private float near = 1, far = 30;
 
@@ -172,8 +172,8 @@ namespace AnimatingHair.Rendering
         public void RenderOpacityTexture()
         {
             LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, near, far );
-            //LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY ); // NOTE: toto nefunguje, ale preco??? Uz viem: lebo mam zle billboardy (funguju len ked sa kamera pozera na Origin
-            LightModelViewMatrix = Matrix4.LookAt( light.Position, Vector3.Zero, Vector3.UnitY );
+            LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY );
+            //LightModelViewMatrix = Matrix4.LookAt( light.Position, Vector3.Zero, Vector3.UnitY );
 
             GL.ClearColor( 0, 0, 0, 1 );
             GL.ActiveTexture( TextureUnit.Texture0 ); // NOTE: jak funguje tento prikaz ?? skus vypnut / zapnut
