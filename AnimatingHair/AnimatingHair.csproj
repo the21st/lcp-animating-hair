@@ -107,6 +107,7 @@
     <Compile Include="Auxiliary\Cylinder.cs" />
     <Compile Include="Auxiliary\Geometry.cs" />
     <Compile Include="Auxiliary\KernelEvaluator.cs" />
+    <Compile Include="Auxiliary\Parallel.cs" />
     <Compile Include="Auxiliary\Sphere.cs" />
     <Compile Include="ControlsWindow.cs">
       <SubType>Form</SubType>

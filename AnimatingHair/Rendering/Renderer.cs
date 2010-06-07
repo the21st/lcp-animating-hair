@@ -124,7 +124,7 @@ namespace AnimatingHair.Rendering
 
             opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light, camera );
 
-            ShowBust = false;
+            ShowBust = true;
             WireFrame = false;
             ShowMetaBust = false;
             ShowHair = true;
@@ -153,13 +153,16 @@ namespace AnimatingHair.Rendering
         {
             if ( CruisingLight )
                 angle += 0.002f;
-
             light.Position = new Vector3( -lightDistance * (float)Math.Sin( angle ), 0.5f * lightDistance, lightDistance * (float)Math.Cos( angle ) );
             GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
+
+            GL.PushAttrib( AttribMask.AllAttribBits );
 
             opacityMapsRenderer.RenderOpacityTexture();
             shadowTexture = opacityMapsRenderer.ShadowTexture;
             hairRenderer.DeepOpacityMap = shadowTexture;
+
+            GL.PopAttrib();
 
             setTextureMatrix();
 
@@ -194,7 +197,7 @@ namespace AnimatingHair.Rendering
             if ( ShowBust )
             {
                 bustRenderer.Wireframe = WireFrame;
-                //GL.ActiveTexture( TextureUnit.Texture3 ); // NOTE: preco tu toto musi byt?
+                //GL.ActiveTexture( TextureUnit.Texture0 ); // NOTE: co s tym?
                 bustRenderer.Render();
             }
 

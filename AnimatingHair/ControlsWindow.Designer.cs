@@ -102,6 +102,10 @@ namespace AnimatingHair
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.propertyGridRenderer = new System.Windows.Forms.PropertyGrid();
             this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.radioButton3 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.label18 = new System.Windows.Forms.Label();
             this.trackBarMisc2 = new System.Windows.Forms.TrackBar();
             this.label17 = new System.Windows.Forms.Label();
@@ -112,10 +116,6 @@ namespace AnimatingHair
             this.diffuseDialog = new System.Windows.Forms.ColorDialog();
             this.ambientDialog = new System.Windows.Forms.ColorDialog();
             this.specularDialog = new System.Windows.Forms.ColorDialog();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
             this.restartGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMaxRootDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHairLength)).BeginInit();
@@ -144,10 +144,10 @@ namespace AnimatingHair
             ((System.ComponentModel.ISupportInitialize)(this.trackBarDrag)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.tabPage6.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMisc2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMisc1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarLightIntensity)).BeginInit();
-            this.groupBox5.SuspendLayout();
             this.SuspendLayout();
             // 
             // glControl
@@ -898,14 +898,61 @@ namespace AnimatingHair
             this.tabPage6.Text = "Light";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
+            // groupBox5
+            // 
+            this.groupBox5.Controls.Add( this.radioButton3 );
+            this.groupBox5.Controls.Add( this.radioButton2 );
+            this.groupBox5.Controls.Add( this.radioButton1 );
+            this.groupBox5.Location = new System.Drawing.Point( 14, 109 );
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size( 229, 107 );
+            this.groupBox5.TabIndex = 11;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Opacity map layer display";
+            // 
+            // radioButton3
+            // 
+            this.radioButton3.AutoSize = true;
+            this.radioButton3.Location = new System.Drawing.Point( 22, 72 );
+            this.radioButton3.Name = "radioButton3";
+            this.radioButton3.Size = new System.Drawing.Size( 60, 17 );
+            this.radioButton3.TabIndex = 2;
+            this.radioButton3.Text = "Layer 3";
+            this.radioButton3.UseVisualStyleBackColor = true;
+            this.radioButton3.CheckedChanged += new System.EventHandler( this.radioButton1_CheckedChanged );
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point( 22, 49 );
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size( 60, 17 );
+            this.radioButton2.TabIndex = 1;
+            this.radioButton2.Text = "Layer 2";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler( this.radioButton1_CheckedChanged );
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Location = new System.Drawing.Point( 22, 26 );
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size( 60, 17 );
+            this.radioButton1.TabIndex = 0;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Layer 1";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler( this.radioButton1_CheckedChanged );
+            // 
             // label18
             // 
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point( 11, 73 );
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size( 34, 13 );
+            this.label18.Size = new System.Drawing.Size( 74, 13 );
             this.label18.TabIndex = 10;
-            this.label18.Text = "misc2";
+            this.label18.Text = "Alpha treshold";
             // 
             // trackBarMisc2
             // 
@@ -927,9 +974,9 @@ namespace AnimatingHair
             this.label17.AutoSize = true;
             this.label17.Location = new System.Drawing.Point( 11, 47 );
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size( 34, 13 );
+            this.label17.Size = new System.Drawing.Size( 59, 13 );
             this.label17.TabIndex = 8;
-            this.label17.Text = "misc1";
+            this.label17.Text = "Light angle";
             // 
             // trackBarMisc1
             // 
@@ -951,9 +998,9 @@ namespace AnimatingHair
             this.label16.AutoSize = true;
             this.label16.Location = new System.Drawing.Point( 11, 12 );
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size( 72, 13 );
+            this.label16.Size = new System.Drawing.Size( 73, 13 );
             this.label16.TabIndex = 6;
-            this.label16.Text = "Light Intensity";
+            this.label16.Text = "Light distance";
             // 
             // trackBarLightIntensity
             // 
@@ -985,53 +1032,6 @@ namespace AnimatingHair
             // specularDialog
             // 
             this.specularDialog.Color = System.Drawing.Color.White;
-            // 
-            // groupBox5
-            // 
-            this.groupBox5.Controls.Add( this.radioButton3 );
-            this.groupBox5.Controls.Add( this.radioButton2 );
-            this.groupBox5.Controls.Add( this.radioButton1 );
-            this.groupBox5.Location = new System.Drawing.Point( 14, 109 );
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size( 229, 107 );
-            this.groupBox5.TabIndex = 11;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "Map layer display";
-            // 
-            // radioButton1
-            // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point( 22, 26 );
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size( 60, 17 );
-            this.radioButton1.TabIndex = 0;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "Layer 1";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler( this.radioButton1_CheckedChanged );
-            // 
-            // radioButton2
-            // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point( 22, 49 );
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size( 60, 17 );
-            this.radioButton2.TabIndex = 1;
-            this.radioButton2.Text = "Layer 2";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler( this.radioButton1_CheckedChanged );
-            // 
-            // radioButton3
-            // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point( 22, 72 );
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size( 60, 17 );
-            this.radioButton3.TabIndex = 2;
-            this.radioButton3.Text = "Layer 3";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler( this.radioButton1_CheckedChanged );
             // 
             // ControlsWindow
             // 
@@ -1086,11 +1086,11 @@ namespace AnimatingHair
             this.tabPage3.ResumeLayout( false );
             this.tabPage6.ResumeLayout( false );
             this.tabPage6.PerformLayout();
+            this.groupBox5.ResumeLayout( false );
+            this.groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMisc2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMisc1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarLightIntensity)).EndInit();
-            this.groupBox5.ResumeLayout( false );
-            this.groupBox5.PerformLayout();
             this.ResumeLayout( false );
             this.PerformLayout();
 

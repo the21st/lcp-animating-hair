@@ -223,6 +223,7 @@ namespace AnimatingHair.Entity
                 dN /= dNLength;
             }
 
+
             // ATTRACTION/REPULUSION FORCE
             float P_i = Const.k_a * (hpI.Density - Const.rho_0);
             float P_j = Const.k_a * (hpJ.Density - Const.rho_0);
@@ -232,11 +233,13 @@ namespace AnimatingHair.Entity
             float d2 = P_j / (hpJ.Density * hpJ.Density);
             Vector3 fA = -hpI.Mass * hpJ.Mass * (d1 + d2) * wgrad;
 
+
             // COLLISION FORCE
             Vector3 fC = Vector3.Zero;
             float sign = (Vector3.Dot( xIJ, dN ) * Vector3.Dot( vIJ, dN ));
             if ( sign < 0 )
                 fC = Const.d_c * kernelH2 * Vector3.Dot( vIJ, dN ) * dN;
+
 
             // FRICTION FORCE
             Vector3 fF = Vector3.Zero;
@@ -246,6 +249,7 @@ namespace AnimatingHair.Entity
                 dT.Normalize();
                 fF = Const.d_f * kernelH2 * (Vector3.Dot( vIJ, dT ) * dT);
             }
+
 
             return fA + fC + fF;
         }

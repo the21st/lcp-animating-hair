@@ -107,9 +107,9 @@ namespace AnimatingHair.Entity
             float result = 0;
 
             if ( RotateClockwise )
-                result += 0.02f;
+                result += 0.1f;
             if ( RotateAntiClockwise )
-                result -= 0.02f;
+                result -= 0.1f;
 
             if ( (result == 0) || Math.Abs( Bust.AngularVelocity ) > 0.2 )
             {

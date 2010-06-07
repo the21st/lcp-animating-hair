@@ -10,7 +10,7 @@ namespace AnimatingHair
         #region Simulation variables
         public static int Seed = 0;
         public static long Time = 0;
-        public static float TimeStep = 0.1f;
+        public static float TimeStep = 0.01f;
         public static float H1;
         public static float H2;
         #endregion
@@ -45,7 +45,7 @@ namespace AnimatingHair
 
         #region Custom properties of hair
 
-        public static int HairParticleCount = 1500;
+        public static int HairParticleCount = 2000;
         public static float HairLength = 2.5f;
         public static float s_r = 0.5f; // hlbka do ktorej maximalne idu root particles
 
