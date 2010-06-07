@@ -23,7 +23,7 @@ namespace AnimatingHair
         private float distance = 10, elevation = 0, azimuth = 90, mouseX, mouseY;
         private readonly Random r = new Random();
         private bool loaded = false;
-        private bool paused = true;
+        private bool paused = false;
         private string saveFile = "";
         private readonly LinkedList<float> fpsHistory = new LinkedList<float>();
 
