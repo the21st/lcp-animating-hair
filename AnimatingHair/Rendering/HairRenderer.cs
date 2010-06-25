@@ -49,10 +49,8 @@ namespace AnimatingHair.Rendering
 
             // shader loading
             using ( StreamReader vs = new StreamReader( FilePaths.BillboardShaderLocation ) )
-            {
                 using ( StreamReader fs = new StreamReader( FilePaths.HairShaderLocation ) )
                     Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
-            }
 
             getShaderVariableLocations();
 
@@ -91,7 +89,7 @@ namespace AnimatingHair.Rendering
 
             Array.Sort( sorted, particleCompare );
 
-            // tieto 2 riadky neviem preco tu musia byt, bez nich mi ale neprecita z deepOpacityMap alpha kanal (z-buffer svetla)
+            // tieto 2 riadky neviem preco tu musia byt, bez nich mi nevykresli debug obdlzniky (HUD) do bufferu
             GL.ActiveTexture( TextureUnit.Texture0 );
             GL.BindTexture( TextureTarget.Texture2D, DeepOpacityMap );
 

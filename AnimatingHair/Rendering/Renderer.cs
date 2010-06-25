@@ -117,14 +117,14 @@ namespace AnimatingHair.Rendering
 
             airRenderer = new AirRenderer( scene.Air );
 
-            bustRenderer = new BustRenderer( scene.Bust );
+            bustRenderer = new BustRenderer( scene.Bust, camera, light );
             metaBustRenderer = new MetaBustRenderer( scene.Bust );
 
             voxelGridRenderer = new VoxelGridRenderer( scene.VoxelGrid );
 
             opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light, camera );
 
-            ShowBust = true;
+            ShowBust = false;
             WireFrame = false;
             ShowMetaBust = false;
             ShowHair = true;
@@ -161,6 +161,7 @@ namespace AnimatingHair.Rendering
             opacityMapsRenderer.RenderOpacityTexture();
             shadowTexture = opacityMapsRenderer.ShadowTexture;
             hairRenderer.DeepOpacityMap = shadowTexture;
+            bustRenderer.DeepOpacityMap = shadowTexture;
 
             GL.PopAttrib();
 
@@ -337,8 +338,8 @@ namespace AnimatingHair.Rendering
         {
             refreshViewport();
 
-            GL.ClearColor( Color.CornflowerBlue );
-            //GL.ClearColor( Color.Black );
+            //GL.ClearColor( Color.CornflowerBlue );
+            GL.ClearColor( Color.Black );
 
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );

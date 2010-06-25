@@ -182,10 +182,22 @@ namespace AnimatingHair.Entity
 
         private void applyNeighborForces()
         {
-            for ( int i = 0; i < Particles.Length; i++ )
+            //for ( int i = 0; i < Particles.Length; i++ )
+            //{
+            //    HairParticle particle = Particles[ i ];
+
+            //    for ( int j = 0; j < particle.NeighborsHair.Count; j++ )
+            //    {
+            //        Vector3 f = calculateHairHairForces(
+            //            particle, particle.NeighborsHair[ j ],
+            //            particle.DistancesHair[ j ], particle.KernelH2DistancesHair[ j ] );
+            //        particle.Force += f;
+            //    }
+            //}
+
+            Parallel2.For( 0, Particles.Length, i =>
             {
                 HairParticle particle = Particles[ i ];
-
                 for ( int j = 0; j < particle.NeighborsHair.Count; j++ )
                 {
                     Vector3 f = calculateHairHairForces(
@@ -193,7 +205,7 @@ namespace AnimatingHair.Entity
                         particle.DistancesHair[ j ], particle.KernelH2DistancesHair[ j ] );
                     particle.Force += f;
                 }
-            }
+            } );
         }
 
         /// <summary>
@@ -235,10 +247,12 @@ namespace AnimatingHair.Entity
 
 
             // COLLISION FORCE
-            Vector3 fC = Vector3.Zero;
+            Vector3 fC;
             float sign = (Vector3.Dot( xIJ, dN ) * Vector3.Dot( vIJ, dN ));
             if ( sign < 0 )
                 fC = Const.d_c * kernelH2 * Vector3.Dot( vIJ, dN ) * dN;
+            else
+                fC = Vector3.Zero;
 
 
             // FRICTION FORCE
