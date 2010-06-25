@@ -139,7 +139,7 @@ namespace AnimatingHair
         }
 
         /// <summary>
-        /// Creates, compiles and links a vertex shader.
+        /// Creates, compiles and links a vertex shader and a fragment shader.
         /// </summary>
         public static void CreateShaders( string vs, string fs, out int program )
         {
@@ -170,6 +170,31 @@ namespace AnimatingHair
             program = GL.CreateProgram();
             GL.AttachShader( program, fragmentObject );
             GL.AttachShader( program, vertexObject );
+
+            GL.LinkProgram( program );
+        }
+
+        /// <summary>
+        /// Creates, compiles and links a fragment shader.
+        /// </summary>
+        public static void CreateShaders( string fs, out int program )
+        {
+            int statusCode, fragmentObject;
+            string info;
+
+            fragmentObject = GL.CreateShader( ShaderType.FragmentShader );
+
+            // Compile fragment shader
+            GL.ShaderSource( fragmentObject, fs );
+            GL.CompileShader( fragmentObject );
+            GL.GetShaderInfoLog( fragmentObject, out info );
+            GL.GetShader( fragmentObject, ShaderParameter.CompileStatus, out statusCode );
+
+            if ( statusCode != 1 )
+                throw new ApplicationException( info );
+
+            program = GL.CreateProgram();
+            GL.AttachShader( program, fragmentObject );
 
             GL.LinkProgram( program );
         }

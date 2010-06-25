@@ -119,8 +119,10 @@ void main()
 	
 	if (shadow < 0 || shadow > 1)
 		shadow = 0;
-	
-	if ( depthStart > 0.999 ) // na fragmenty ktorym prislucha prave 'diera' v depth mape neaplikujem tien
+		
+	// na fragmenty ktorym prislucha prave 'diera' v depth mape neaplikujem tien
+	// (diery = dosledok alpha thresholdingu)
+	if ( depthStart > 0.999 )
 		shadow = 0;
 	
 	color.rgb *= ( 1.0 - shadow );

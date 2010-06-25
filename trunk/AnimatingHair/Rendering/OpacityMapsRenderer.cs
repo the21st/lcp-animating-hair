@@ -66,21 +66,14 @@ namespace AnimatingHair.Rendering
 
             centerPosition = calculateCenterPosition();
 
-            // texture loading
-            Utility.UploadTexture( FilePaths.HairTextureLocation );
-
             // shader loading
             using ( StreamReader vs = new StreamReader( FilePaths.DepthVSLocation ) )
-            {
                 using ( StreamReader fs = new StreamReader( FilePaths.DepthFSLocation ) )
                     Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out depthShaderProgram );
-            }
 
             using ( StreamReader vs = new StreamReader( FilePaths.OpacityVSLocation ) )
-            {
                 using ( StreamReader fs = new StreamReader( FilePaths.OpacityFSLocation ) )
                     Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out opacityShaderProgram );
-            }
 
             getShaderVariableLocations();
 

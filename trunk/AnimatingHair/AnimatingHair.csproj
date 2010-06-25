@@ -189,6 +189,7 @@
     <None Include="Properties\app.manifest" />
     <None Include="_Data\Models\hlava.obj" />
     <None Include="_Data\Shaders\bustFS.glsl" />
+    <None Include="_Data\Shaders\bustVS.glsl" />
     <None Include="_Data\Shaders\hairVS.glsl" />
     <None Include="_Data\Shaders\debugFS.glsl" />
     <None Include="_Data\Shaders\debugVS.glsl" />
