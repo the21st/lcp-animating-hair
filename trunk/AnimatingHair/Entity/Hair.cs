@@ -67,10 +67,11 @@ namespace AnimatingHair.Entity
         /// </summary>
         public void UpdateDirections()
         {
-            for ( int i = 0; i < Particles.Length; i++ )
+            Parallel.For( 0, Particles.Length, i =>
+            //for ( int i = 0; i < Particles.Length; i++ )
             {
                 updateDirection( Particles[ i ] );
-            }
+            } );
         }
 
         /// <summary>
@@ -128,7 +129,8 @@ namespace AnimatingHair.Entity
 
         private void prepareParticlePairs()
         {
-            for ( int i = 0; i < ParticlePairsIteration.Count; i++ )
+            Parallel.For( 0, ParticlePairsIteration.Count, i =>
+            //for ( int i = 0; i < ParticlePairsIteration.Count; i++ )
             {
                 ParticlePair pair = ParticlePairsIteration[ i ];
                 ParticlePair oppositePair = pair.OppositePair;
@@ -144,12 +146,13 @@ namespace AnimatingHair.Entity
 
                 pair.T = findTIJ( pair );
                 oppositePair.T = findTIJ( oppositePair );
-            }
+            } );
         }
 
         private void prepareParticles()
         {
-            for ( int i = 0; i < Particles.Length; i++ )
+            Parallel.For( 0, Particles.Length, i =>
+            //for ( int i = 0; i < Particles.Length; i++ )
             {
                 HairParticle hp = Particles[ i ];
 
@@ -158,7 +161,7 @@ namespace AnimatingHair.Entity
                 calculateNewKX( hp );
 
                 calculateAlphas( hp );
-            }
+            } );
         }
 
         private void applyGravitationalForce()
@@ -195,7 +198,8 @@ namespace AnimatingHair.Entity
             //    }
             //}
 
-            Parallel2.For( 0, Particles.Length, i =>
+            Parallel.For( 0, Particles.Length, i =>
+            //for ( int i = 0; i < Particles.Length; i++ )
             {
                 HairParticle particle = Particles[ i ];
                 for ( int j = 0; j < particle.NeighborsHair.Count; j++ )

@@ -310,7 +310,7 @@ namespace AnimatingHair
             // 
             // fpsDisplayTimer
             // 
-            this.fpsDisplayTimer.Interval = 1000;
+            this.fpsDisplayTimer.Interval = 500;
             this.fpsDisplayTimer.Tick += new System.EventHandler( this.fpsDisplayTimer_Tick );
             // 
             // FPSLabel

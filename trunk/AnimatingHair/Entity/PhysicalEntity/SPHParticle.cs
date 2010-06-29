@@ -19,14 +19,14 @@ namespace AnimatingHair.Entity.PhysicalEntity
         public Voxel ContainedIn { get; set; }
 
         // list of the current HairParticle neighbors, along with list of corresponding pre-computed distances and kernel values for efficiency
-        public readonly List<HairParticle> NeighborsHair = new List<HairParticle>();
-        public readonly List<float> DistancesHair = new List<float>();
-        public readonly List<float> KernelH2DistancesHair = new List<float>();
+        public volatile List<HairParticle> NeighborsHair = new List<HairParticle>();
+        public volatile List<float> DistancesHair = new List<float>();
+        public volatile List<float> KernelH2DistancesHair = new List<float>();
 
         // list of the current AirParticle neighbors, along with list of corresponding pre-computed distances and kernel values for efficiency
-        public readonly List<AirParticle> NeighborsAir = new List<AirParticle>();
-        public readonly List<float> DistancesAir = new List<float>();
-        public readonly List<float> KernelH2DistancesAir = new List<float>();
+        public volatile List<AirParticle> NeighborsAir = new List<AirParticle>();
+        public volatile List<float> DistancesAir = new List<float>();
+        public volatile List<float> KernelH2DistancesAir = new List<float>();
 
         public override void RKStep( int stepNumber )
         {

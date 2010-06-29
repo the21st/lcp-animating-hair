@@ -36,7 +36,7 @@ namespace AnimatingHair.Entity
 
         /// <summary>
         /// A collection of all SPH particles in the scene.
-        /// These are just references to the same object that are in the specific fluids.
+        /// These are just references to the same objects that are in the specific fluids.
         /// </summary>
         public SPHParticle[] Particles;
 
@@ -107,9 +107,9 @@ namespace AnimatingHair.Entity
             float result = 0;
 
             if ( RotateClockwise )
-                result += 0.1f;
+                result += 0.5f;
             if ( RotateAntiClockwise )
-                result -= 0.1f;
+                result -= 0.5f;
 
             if ( (result == 0) || Math.Abs( Bust.AngularVelocity ) > 0.2 )
             {
@@ -142,7 +142,8 @@ namespace AnimatingHair.Entity
         private void neighborSearchVoxelGrid()
         {
             // clear old values
-            for ( int i = 0; i < Particles.Length; i++ )
+            Parallel.For( 0, Particles.Length, i =>
+            //for ( int i = 0; i < Particles.Length; i++ )
             {
                 SPHParticle particle = Particles[ i ];
 
@@ -153,14 +154,15 @@ namespace AnimatingHair.Entity
                 particle.NeighborsAir.Clear();
                 particle.DistancesAir.Clear();
                 particle.KernelH2DistancesAir.Clear();
-            }
+            } );
 
             // find current neighbors
-            for ( int i = 0; i < Hair.Particles.Length + Air.Particles.Length; i++ )
+            Parallel.For( 0, Particles.Length, i =>
+            //for ( int i = 0; i < Particles.Length; i++ )
             {
                 SPHParticle particle = Particles[ i ];
                 VoxelGrid.FindNeighbors( particle );
-            }
+            } );
         }
 
         private void updateVoxelGrid()

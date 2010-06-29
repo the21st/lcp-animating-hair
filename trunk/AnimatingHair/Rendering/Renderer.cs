@@ -124,7 +124,7 @@ namespace AnimatingHair.Rendering
 
             opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light, camera );
 
-            ShowBust = false;
+            ShowBust = true;
             WireFrame = false;
             ShowMetaBust = false;
             ShowHair = true;
@@ -249,7 +249,7 @@ namespace AnimatingHair.Rendering
             { // HUD rendering here
                 GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
                 GL.UseProgram( shaderProgram );
-                renderDebugRectangle();
+                //renderDebugRectangle();
                 GL.UseProgram( 0 );
             }
             GL.Enable( EnableCap.DepthTest );
@@ -338,8 +338,8 @@ namespace AnimatingHair.Rendering
         {
             refreshViewport();
 
-            //GL.ClearColor( Color.CornflowerBlue );
-            GL.ClearColor( Color.Black );
+            GL.ClearColor( Color.CornflowerBlue );
+            //GL.ClearColor( Color.Black );
 
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );

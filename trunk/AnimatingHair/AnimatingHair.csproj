@@ -152,7 +152,6 @@
     <Compile Include="Auxiliary\ParticlePair.cs" />
     <Compile Include="Rendering\Debug\SimpleHairRenderer.cs" />
     <Compile Include="Rendering\Debug\VoxelGridRenderer.cs" />
-    <Compile Include="Timer.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>

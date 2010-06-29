@@ -16,6 +16,7 @@ namespace AnimatingHair.Entity
         /// </summary>
         public void CalculateDensity()
         {
+            //Parallel.For( 0, Particles.Length, index =>
             for ( int index = 0; index < Particles.Length; index++ )
             {
                 SPHParticle particle = Particles[ index ];

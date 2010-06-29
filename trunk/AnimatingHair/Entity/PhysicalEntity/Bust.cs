@@ -20,7 +20,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         public void CalculateForcesOnParticles( SPHParticle[] particles )
         {
-            for ( int i = 0; i < particles.Length; i++ )
+            Parallel.For( 0, particles.Length, i =>
+            //for ( int i = 0; i < particles.Length; i++ )
             {
                 SPHParticle particle = particles[ i ];
 
@@ -33,7 +34,7 @@ namespace AnimatingHair.Entity.PhysicalEntity
                     applySphereCollisionForce( ShoulderTipLeft, particle );
                     applySphereCollisionForce( ShoulderTipRight, particle );
                 }
-            }
+            } );
         }
 
         private static void applySphereCollisionForce( Sphere sphere, SPHParticle particle )
