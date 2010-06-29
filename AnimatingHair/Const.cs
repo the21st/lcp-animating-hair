@@ -10,7 +10,7 @@ namespace AnimatingHair
         #region Simulation variables
         public static int Seed = 0;
         public static long Time = 0;
-        public static float TimeStep = 0.01f;
+        public static float TimeStep = 0.03f;
         public static float H1;
         public static float H2;
         #endregion

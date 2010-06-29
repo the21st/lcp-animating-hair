@@ -9,6 +9,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace AnimatingHair
 {
@@ -23,9 +24,10 @@ namespace AnimatingHair
         private float distance = 10, elevation = 0, azimuth = 90, mouseX, mouseY;
         private readonly Random r = new Random();
         private bool loaded = false;
-        private bool paused = true;
+        private bool paused = false;
         private string saveFile = "";
         private readonly LinkedList<float> fpsHistory = new LinkedList<float>();
+        Stopwatch stopwatch = new Stopwatch();
 
         #endregion
 
@@ -59,8 +61,6 @@ namespace AnimatingHair
             propertyGridRenderer.SelectedObject = renderer;
 
             Application.Idle += applicationIdle;
-
-            Timer.GetETime();
 
             loaded = true;
         }
@@ -380,17 +380,20 @@ namespace AnimatingHair
 
         private void render()
         {
-            fpsHistory.AddFirst( 1000.0f / Timer.GetETime() );
+            stopwatch.Start();
 
             renderer.Render();
-
-            glControl.SwapBuffers();
 
             if ( !paused )
             {
                 scene.Step();
                 Const.Time++;
             }
+
+            fpsHistory.AddFirst( 1000.0f / stopwatch.ElapsedMilliseconds );
+            stopwatch.Reset();
+
+            glControl.SwapBuffers();
         }
 
         #endregion
