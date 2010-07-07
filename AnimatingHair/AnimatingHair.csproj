@@ -181,7 +181,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="hair_icon.ico" />
-    <Content Include="_Data\Models\eyeball.png" />
     <Content Include="_Data\Models\vlas.png" />
   </ItemGroup>
   <ItemGroup>
