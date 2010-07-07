@@ -17,6 +17,5 @@
         public const string ShadowTextureLocation = @"../../_Data/Models/shadow.png";
 
         public const string HeadModelLocation = @"../../_Data/Models/hlava.obj";
-        public const string EyeballTextureLocation = @"../../_Data/Models/eyeball.png";
     }
 }

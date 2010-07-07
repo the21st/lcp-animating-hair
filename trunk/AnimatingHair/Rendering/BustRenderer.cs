@@ -20,7 +20,6 @@ namespace AnimatingHair.Rendering
 
         private readonly Bust bust;
         private readonly TriangleMesh femaleHead;
-        private int eyeballTexture;
 
         // shader objects
         private readonly int shaderProgram;
@@ -47,7 +46,6 @@ namespace AnimatingHair.Rendering
             getShaderVariableLocations();
 
             femaleHead = Utility.LoadOBJ( FilePaths.HeadModelLocation );
-            eyeballTexture = Utility.UploadTexture( FilePaths.EyeballTextureLocation );
         }
 
         public void Render()

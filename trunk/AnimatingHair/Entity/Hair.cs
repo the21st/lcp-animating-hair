@@ -11,7 +11,6 @@ namespace AnimatingHair.Entity
     /// </summary>
     class Hair : Fluid<HairParticle>
     {
-
         /// <summary>
         /// A collection for direct access of the pairs established in the beginning. 
         /// </summary>
