@@ -16,7 +16,7 @@ namespace AnimatingHair.Initialization
 
         public Bust InitializeBust()
         {
-            bust = new Bust
+            bust = new Bust( 1 )
                    {
                        Head = new Sphere(
                            new Vector3( 0, 0, 0 ),

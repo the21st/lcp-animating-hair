@@ -9,6 +9,8 @@
         public float AngularVelocity;
         public float Angle;
 
+        public RigidBody( float mass ) : base( mass ) { }
+
         #region Runge-Kutta members
 
         private readonly float[] kAngularVelocity = new float[ 5 ];

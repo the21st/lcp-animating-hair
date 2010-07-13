@@ -130,6 +130,12 @@
     <Compile Include="Auxiliary\VoxelGrid.cs" />
     <Compile Include="Auxiliary\Voxel.cs" />
     <Compile Include="FilePaths.cs" />
+    <Compile Include="GUI\VisualTrackBar.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GUI\VisualTrackBar.Designer.cs">
+      <DependentUpon>VisualTrackBar.cs</DependentUpon>
+    </Compile>
     <Compile Include="Initialization\AirInitializer.cs" />
     <Compile Include="Initialization\CantileverBeamDistributor.cs" />
     <Compile Include="Initialization\CylinderDistributor.cs" />
@@ -176,6 +182,10 @@
   <ItemGroup>
     <EmbeddedResource Include="ControlsWindow.resx">
       <DependentUpon>ControlsWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\VisualTrackBar.resx">
+      <DependentUpon>VisualTrackBar.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

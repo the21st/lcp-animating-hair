@@ -67,8 +67,6 @@ void main()
 	color.xyz = f_dir * (K_d * diffuse * color.xyz + K_s * specular * lightSpec.xyz);
 	//color.xyz = K_d * diffuse * color.xyz + K_s * max(specular, 0.0) * lightSpec.xyz;
 	
-	color.xyz += K_a * gl_FrontMaterial.ambient.xyz;
-	
 	
 	float shadow = 1.0;
 	float tmp;
@@ -126,6 +124,8 @@ void main()
 		shadow = 0;
 	
 	color.rgb *= ( 1.0 - shadow );
+	
+	color.xyz += K_a * gl_FrontMaterial.ambient.xyz;
 	
 	gl_FragColor = color;
 }

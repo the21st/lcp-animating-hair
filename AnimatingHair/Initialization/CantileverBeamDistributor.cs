@@ -174,7 +174,7 @@ namespace AnimatingHair.Initialization
                                                 S = length
                                             };
 
-                Vector3 startPosition = polarToCartesian( azimuth, elevation, sphere.Radius);
+                Vector3 startPosition = polarToCartesian( azimuth, elevation, sphere.Radius );
 
                 startPosition = Geometry.RotateVectorAroundAxis( startPosition, Vector3.UnitX, 0.6f ); // NOTE: constant
 

@@ -116,6 +116,7 @@ namespace AnimatingHair
             this.diffuseDialog = new System.Windows.Forms.ColorDialog();
             this.ambientDialog = new System.Windows.Forms.ColorDialog();
             this.specularDialog = new System.Windows.Forms.ColorDialog();
+            this.visualTrackBar1 = new AnimatingHair.GUI.VisualTrackBar();
             this.restartGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarMaxRootDepth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarHairLength)).BeginInit();
@@ -884,6 +885,7 @@ namespace AnimatingHair
             // 
             // tabPage6
             // 
+            this.tabPage6.Controls.Add( this.visualTrackBar1 );
             this.tabPage6.Controls.Add( this.groupBox5 );
             this.tabPage6.Controls.Add( this.label18 );
             this.tabPage6.Controls.Add( this.trackBarMisc2 );
@@ -1032,6 +1034,14 @@ namespace AnimatingHair
             // specularDialog
             // 
             this.specularDialog.Color = System.Drawing.Color.White;
+            // 
+            // visualTrackBar1
+            // 
+            this.visualTrackBar1.Label = "Elastic modulus";
+            this.visualTrackBar1.Location = new System.Drawing.Point( 3, 298 );
+            this.visualTrackBar1.Name = "visualTrackBar1";
+            this.visualTrackBar1.Size = new System.Drawing.Size( 297, 26 );
+            this.visualTrackBar1.TabIndex = 12;
             // 
             // ControlsWindow
             // 
@@ -1185,5 +1195,6 @@ namespace AnimatingHair
         private System.Windows.Forms.RadioButton radioButton3;
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
+        private AnimatingHair.GUI.VisualTrackBar visualTrackBar1;
     }
 }

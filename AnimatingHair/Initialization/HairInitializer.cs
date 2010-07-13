@@ -81,12 +81,11 @@ namespace AnimatingHair.Initialization
             int i = 0;
             foreach ( ParticleCoordinate coordinate in coordinates )
             {
-                HairParticle hp = new HairParticle( i )
+                HairParticle hp = new HairParticle( i, Const.HairParticleMass() )
                                   {
                                       Position = coordinate.Position,
                                       Direction = coordinate.Direction,
                                       RootDirection = coordinate.RootDirection,
-                                      Mass = Const.HairParticleMass(),
                                       U = coordinate.U,
                                       V = coordinate.V,
                                       S = coordinate.S
@@ -103,7 +102,7 @@ namespace AnimatingHair.Initialization
         {
             foreach ( HairParticle hp in hair.Particles )
             {
-                hp.Area = (float)Math.Pow( hp.Mass / Const.DensityOfHairMaterial, 2.0 / 3.0 );
+                hp.Area = (float)Math.Pow( hp.Mass * Const.DensityOfHairMaterialInverse, 2.0 / 3.0 );
             }
         }
 

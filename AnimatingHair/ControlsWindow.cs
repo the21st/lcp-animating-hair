@@ -27,7 +27,7 @@ namespace AnimatingHair
         private bool paused = false;
         private string saveFile = "";
         private readonly LinkedList<float> fpsHistory = new LinkedList<float>();
-        Stopwatch stopwatch = new Stopwatch();
+        readonly Stopwatch stopwatch = new Stopwatch();
 
         #endregion
 
@@ -58,6 +58,8 @@ namespace AnimatingHair
 
             initControls();
 
+            visualTrackBar1.BindFloatData( Const, "E", 0, 1000 );
+
             propertyGridRenderer.SelectedObject = renderer;
 
             Application.Idle += applicationIdle;
@@ -73,6 +75,8 @@ namespace AnimatingHair
             glControl.Paint += glControl_Paint;
 
             glControl.MouseWheel += glControl_MouseWheel;
+
+            glControl.KeyPress += new KeyPressEventHandler( glControl_KeyPress );
 
             colorDialog.Color = Color.FromArgb( (int)(scene.Hair.Clr[ 0 ] * 255), (int)(scene.Hair.Clr[ 1 ] * 255), (int)(scene.Hair.Clr[ 2 ] * 255) );
             buttonColor.BackColor = colorDialog.Color;
@@ -90,6 +94,12 @@ namespace AnimatingHair
             initializeTrackBars();
 
             fpsDisplayTimer.Enabled = true;
+        }
+
+        void glControl_KeyPress( object sender, System.Windows.Forms.KeyPressEventArgs e )
+        {
+            if ( e.KeyChar == ' ' )
+                scene.Step();
         }
 
         private void trackBar_valueChanged( object sender, EventArgs e )
@@ -111,11 +121,11 @@ namespace AnimatingHair
             }
             if ( tb == trackBarAverageDensity )
             {
-                textBoxAverageDensity.Text = (value * 49 + 1).ToString();
+                textBoxAverageDensity.Text = (value * 99 + 1).ToString();
             }
             if ( tb == trackBarAverageDensityAir )
             {
-                textBoxAverageDensityAir.Text = (value * 3 + 0.1).ToString();
+                textBoxAverageDensityAir.Text = (value * 9.9 + 0.1).ToString();
             }
             if ( tb == trackBarCollisionDamping )
             {
@@ -171,8 +181,8 @@ namespace AnimatingHair
             trackBarAirFriction.Value = Convert.ToInt32( maxValue * Const.AirFriction );
             trackBarAttractionRepulsion.Value = Convert.ToInt32( maxValue * Const.k_a * 2 );
             trackBarAttractionRepulsionAir.Value = Convert.ToInt32( maxValue * Const.k_a_air * 2 );
-            trackBarAverageDensity.Value = Convert.ToInt32( maxValue * (Const.rho_0 - 1) / 49 );
-            trackBarAverageDensityAir.Value = Convert.ToInt32( maxValue * (Const.rho_0_air - 0.1) / 3 );
+            trackBarAverageDensity.Value = Convert.ToInt32( maxValue * (Const.rho_0 - 1) / 99 );
+            trackBarAverageDensityAir.Value = Convert.ToInt32( maxValue * (Const.rho_0_air - 0.1) / 9.9 );
             trackBarCollisionDamping.Value = Convert.ToInt32( maxValue * Const.d_c );
             trackBarDrag.Value = Convert.ToInt32( maxValue * Const.DragCoefficient * 3 );
             trackBarFrictionDamping.Value = Convert.ToInt32( maxValue * Const.d_f );

@@ -23,7 +23,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         public readonly int ID;
 
-        public HairParticle( int id )
+        public HairParticle( int id, float mass )
+            : base( mass )
         {
             NeighborsTip = new List<HairParticle>();
             NeighborsRoot = new List<HairParticle>();
@@ -43,20 +44,19 @@ namespace AnimatingHair.Entity.PhysicalEntity
             }
         }
 
-        public void ApplyAngularAcceleration( float angularAcceleration )
+        public void ApplyAngularAcceleration( float angularAcceleration, float angularVelocity )
         {
-            Vector3 pos = Position;
-            pos.Y = 0;
-            float r = pos.Length;
-            Vector3 positionNormalized = pos / r;
-            Vector3 direction = Vector3.Cross( positionNormalized, Vector3.UnitY );
-            Force += -Mass * direction * angularAcceleration * r;
-            Force += Mass * positionNormalized * angularAcceleration * angularAcceleration * r;
+            Vector3 pos = Vector3.Zero;
+            pos.X = Position.X;
+            pos.Z = Position.Z;
+            Vector3 direction = Vector3.Cross( pos, Vector3.UnitY );
+            Force += -Mass * direction * angularAcceleration;
+            Force += Mass * pos * angularVelocity * angularVelocity;
         }
 
         public override void RKStep( int stepNumber )
         {
-            if (!IsRoot)
+            if ( !IsRoot )
                 base.RKStep( stepNumber );
         }
 

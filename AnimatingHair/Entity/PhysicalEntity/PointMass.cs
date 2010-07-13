@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 
 namespace AnimatingHair.Entity.PhysicalEntity
 {
@@ -9,16 +10,23 @@ namespace AnimatingHair.Entity.PhysicalEntity
     abstract class PointMass
     {
         public float Mass;
+        public float MassInverse;
         public Vector3 Force;
         public Vector3 Acceleration;
         public Vector3 Velocity;
         public Vector3 Position;
 
+        public PointMass( float mass )
+        {
+            Mass = mass;
+            MassInverse = 1.0f / mass;
+        }
+
         #region Euler integration methods
 
         public virtual void IntegrateForce( float timeStep )
         {
-            Acceleration = Force / Mass;
+            Acceleration = Force * MassInverse;
 
             eulerIntegration( timeStep );
         }
@@ -110,7 +118,7 @@ namespace AnimatingHair.Entity.PhysicalEntity
             kVelocity[ 3 ] = Acceleration * Const.TimeStep;
             kPosition[ 3 ] = (startVelocity + kVelocity[ 2 ] / 2) * Const.TimeStep;
 
-            // priprava na k3:
+            // priprava na k4:
             Position = startPosition + kPosition[ 3 ];
             Velocity = startVelocity + kVelocity[ 3 ];
         }
@@ -124,6 +132,20 @@ namespace AnimatingHair.Entity.PhysicalEntity
         private void rkFinalize()
         {
             Velocity = startVelocity + (1.0f / 6.0f) * (kVelocity[ 1 ] + 2 * (kVelocity[ 2 ] + kVelocity[ 3 ]) + kVelocity[ 4 ]);
+
+            // TODO: !!! trimming !!!
+            if ( this is SPHParticle )
+            {
+                SPHParticle sphParticle = this as SPHParticle;
+                float trim = 0.3f;
+                float length = sphParticle.Velocity.Length;
+                if ( length > trim )
+                {
+                    float factor = trim / length;
+                    sphParticle.Velocity *= factor;
+                }
+            }
+
             Position = startPosition + (1.0f / 6.0f) * (kPosition[ 1 ] + 2 * (kPosition[ 2 ] + kPosition[ 3 ]) + kPosition[ 4 ]);
         }
 
