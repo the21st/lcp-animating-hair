@@ -10,14 +10,14 @@ namespace AnimatingHair
         #region Simulation variables
         public static int Seed = 0;
         public static long Time = 0;
-        public static float TimeStep = 0.04f;
+        public static float TimeStep = 0.05f;
         public static float H1;
         public static float H2;
         #endregion
 
         #region Global variables
-        public static float AirFriction = 0.2f;
-        public static float Gravity = 0.1f;
+        public static float AirFriction = 0.05f;
+        public static float Gravity = 0.9f;
         #endregion
 
         #region Initialization constants
@@ -29,7 +29,8 @@ namespace AnimatingHair
 
         #region Physical properties of hair
 
-        public const float DensityOfHairMaterial = 120f;
+        public const float DensityOfHairMaterial = 10f;
+        public const float DensityOfHairMaterialInverse = 1.0f / DensityOfHairMaterial;
         //public const float SecondMomentOfArea = 1.5e-10f;
         //public const float E = 6e9f; // elastic modulus - zodpoveda materialu
         public const float SecondMomentOfArea = 0.002f;
@@ -46,7 +47,7 @@ namespace AnimatingHair
         #region Custom properties of hair
 
         public static int HairParticleCount = 1000;
-        public static float HairLength = 2.5f;
+        public static float HairLength = 2.3f;
         public static float s_r = 0.5f; // hlbka do ktorej maximalne idu root particles
 
         public static float d_c = 0.9f; // collision damping
@@ -64,7 +65,7 @@ namespace AnimatingHair
         private const float airMassFactor = 100;
         public static float AirParticleMass()
         {
-            return airMassFactor / HairParticleCount;
+            return airMassFactor / AirParticleCount;
         }
         #endregion
 

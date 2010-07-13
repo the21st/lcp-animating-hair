@@ -128,7 +128,7 @@ namespace AnimatingHair.Rendering
             WireFrame = false;
             ShowMetaBust = false;
             ShowHair = true;
-            DebugHair = false;
+            DebugHair = true;
             CruisingLight = false;
             ShowVoxelGrid = false;
             ShowAir = false;

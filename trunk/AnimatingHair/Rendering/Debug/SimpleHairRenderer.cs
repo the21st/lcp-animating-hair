@@ -52,7 +52,7 @@ namespace AnimatingHair.Rendering.Debug
 
             const float renderSize = 0.05f;
 
-            if ( hp.NeighborsRoot.Count == 0 && hp.NeighborsTip.Count == 0 )
+            if ( hp.NeighborsRoot.Count + hp.NeighborsTip.Count == 0 )
                 GL.Color3( Color.White );
 
             GL.Begin( BeginMode.Triangles );
@@ -82,6 +82,7 @@ namespace AnimatingHair.Rendering.Debug
             if ( !hp.IsRoot )
             {
                 GL.Color3( 0.9, 0.1, 0.1 );
+
                 GL.Begin( BeginMode.Lines );
                 {
                     GL.Vertex3( hp.Position );

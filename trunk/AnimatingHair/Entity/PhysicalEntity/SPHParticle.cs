@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using AnimatingHair.Auxiliary;
 
@@ -8,6 +9,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
     /// </summary>
     abstract class SPHParticle : PointMass
     {
+        protected SPHParticle( float mass ) : base( mass ) { }
+
         /// <summary>
         /// The density of the fluid volume at the position of this particle
         /// </summary>
@@ -30,7 +33,7 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         public override void RKStep( int stepNumber )
         {
-            Acceleration = Force / Mass;
+            Acceleration = Force * MassInverse;
             base.RKStep( stepNumber );
         }
     }

@@ -101,13 +101,13 @@ namespace AnimatingHair.Entity
         /// to the local coordinate system attached to the head.
         /// </remarks>
         /// <param name="angularAcceleration">The angular acceleration in radians per second squared.</param>
-        public void ApplyInertialAngularAcceleration( float angularAcceleration )
+        public void ApplyInertialAngularAcceleration( float angularAcceleration, float angularVelocity )
         {
             for ( int i = 0; i < Particles.Length; i++ )
             {
                 HairParticle particle = Particles[ i ];
                 if ( !particle.IsRoot )
-                    particle.ApplyAngularAcceleration( angularAcceleration );
+                    particle.ApplyAngularAcceleration( angularAcceleration, angularVelocity );
             }
         }
 
@@ -228,7 +228,7 @@ namespace AnimatingHair.Entity
 
             Vector3 dN = Vector3.Cross( hpI.Direction, hpJ.Direction );
             float dNLength = dN.Length;
-            if ( dNLength < 0.001 ) // NOTE: constant, "if ||dN|| << 1"
+            if ( dNLength < 0.01 ) // NOTE: constant, "if ||dN|| << 1"
             {
                 dN = xIJ - (Vector3.Dot( xIJ, hpI.Direction ) * hpI.Direction);
                 dN.Normalize();
@@ -243,10 +243,10 @@ namespace AnimatingHair.Entity
             float P_i = Const.k_a * (hpI.Density - Const.rho_0);
             float P_j = Const.k_a * (hpJ.Density - Const.rho_0);
 
-            Vector3 wgrad = KernelEvaluator.ComputeKernelGradientH2( hpI.Position - hpJ.Position, distance );
+            Vector3 kernelGradientH2 = KernelEvaluator.ComputeKernelGradientH2( -xIJ, distance );
             float d1 = P_i / (hpI.Density * hpI.Density);
             float d2 = P_j / (hpJ.Density * hpJ.Density);
-            Vector3 fA = -hpI.Mass * hpJ.Mass * (d1 + d2) * wgrad;
+            Vector3 fA = -hpI.Mass * hpJ.Mass * (d1 + d2) * kernelGradientH2;
 
 
             // COLLISION FORCE

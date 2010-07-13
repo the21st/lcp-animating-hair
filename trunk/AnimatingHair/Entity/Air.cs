@@ -53,7 +53,7 @@ namespace AnimatingHair.Entity
             applyPressureForces();
 
             // apply fan force, if it is turned on
-            if (Fan)
+            if ( Fan )
                 applyFanForce();
         }
 

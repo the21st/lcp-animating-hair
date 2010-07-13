@@ -31,10 +31,9 @@ namespace AnimatingHair.Initialization
             int i = 0;
             foreach ( ParticleCoordinate coordinate in coordinates )
             {
-                AirParticle airParticle = new AirParticle( i )
+                AirParticle airParticle = new AirParticle( i, Const.AirParticleMass() )
                                           {
-                                              Position = coordinate.Position,
-                                              Mass = Const.AirParticleMass()
+                                              Position = coordinate.Position
                                           };
 
                 air.Particles[ i ] = airParticle;

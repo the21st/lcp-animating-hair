@@ -12,6 +12,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         private const float interactionDistance = 0.3f;
 
+        public Bust( float mass ) : base( mass ) { }
+
         public Sphere Head { get; set; }
         public Cylinder Neck { get; set; }
         public Cylinder Shoulders { get; set; }
@@ -68,22 +70,22 @@ namespace AnimatingHair.Entity.PhysicalEntity
             float distance = normal.Length;
             normal = normal / distance;
 
-                if ( distance < cylinder.Radius )
+            if ( distance < cylinder.Radius )
+            {
+                particle.Force += particle.Mass * normal;
+                return true;
+            }
+            else if ( (distance < cylinder.Radius + interactionDistance) && (distance > cylinder.Radius) )
+            {
+                float magnitude = 1;
+                float dot = Vector3.Dot( particle.Velocity, -normal );
+                if ( dot > 0 )
                 {
-                    particle.Force += particle.Mass * normal;
+                    magnitude *= dot;
+                    particle.Force += particle.Mass * magnitude * normal;
                     return true;
                 }
-                else if ( (distance < cylinder.Radius + interactionDistance) && (distance > cylinder.Radius) )
-                {
-                    float magnitude = 1;
-                    float dot = Vector3.Dot( particle.Velocity, -normal );
-                    if ( dot > 0 )
-                    {
-                        magnitude *= dot;
-                        particle.Force += particle.Mass * magnitude * normal;
-                        return true;
-                    }
-                }
+            }
 
             return false;
         }

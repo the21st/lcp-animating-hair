@@ -97,7 +97,7 @@ namespace AnimatingHair.Entity
             applyInteractionForces( Hair.Particles, Air.Particles );
 
             Hair.ApplyInertialAcceleration( -bustMovementAcceleration );
-            Hair.ApplyInertialAngularAcceleration( -bustAngularAcceleration );
+            Hair.ApplyInertialAngularAcceleration( -bustAngularAcceleration, Bust.AngularVelocity );
             Bust.Acceleration = bustMovementAcceleration;
             Bust.AngularAcceleration = bustAngularAcceleration;
         }
@@ -107,13 +107,21 @@ namespace AnimatingHair.Entity
             float result = 0;
 
             if ( RotateClockwise )
-                result += 0.5f;
-            if ( RotateAntiClockwise )
-                result -= 0.5f;
+                result += 1.5f;
+            else
+                if ( RotateAntiClockwise )
+                    result -= 1.5f;
+                else
+                    result -= 5 * Bust.AngularVelocity;
 
-            if ( (result == 0) || Math.Abs( Bust.AngularVelocity ) > 0.2 )
+            if ( Bust.AngularVelocity > 1.0 && result > 0 )
             {
-                result -= Bust.AngularVelocity;
+                result = 0;
+            }
+
+            if ( Bust.AngularVelocity < -1.0 && result < 0 )
+            {
+                result = 0;
             }
 
             return result;
@@ -123,13 +131,13 @@ namespace AnimatingHair.Entity
         {
             Vector3 result = new Vector3();
             if ( Up )
-                result.Z += 0.02f;
+                result.Z += 0.2f;
             if ( Down )
-                result.Z -= 0.02f;
+                result.Z -= 0.2f;
             if ( Left )
-                result.X += 0.02f;
+                result.X += 0.2f;
             if ( Right )
-                result.X -= 0.02f;
+                result.X -= 0.2f;
 
             if ( (result.X == 0 && result.Z == 0) || Bust.Velocity.Length > 0.2 )
             {
