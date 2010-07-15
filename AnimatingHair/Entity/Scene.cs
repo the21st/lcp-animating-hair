@@ -42,7 +42,7 @@ namespace AnimatingHair.Entity
 
         /// <summary>
         /// Makes the simulation progress by one step (with runge-kutta 4 integration).
-        /// The "delta time" of this discrete step is specified by the value of Const.TimeStep.
+        /// The "delta time" of this discrete step is specified by the value of Const.Instance.TimeStep.
         /// </summary>
         internal void Step()
         {
@@ -210,7 +210,7 @@ namespace AnimatingHair.Entity
                 }
 
                 Vector3 force;
-                force = hairParticle.Mass * Const.DragCoefficient * (velocityEstimate - hairParticle.Velocity);
+                force = hairParticle.Mass * Const.Instance.DragCoefficient * (velocityEstimate - hairParticle.Velocity);
                 hairParticle.Force += force;
             }
 
@@ -226,7 +226,7 @@ namespace AnimatingHair.Entity
                 }
 
                 Vector3 force;
-                force = airParticle.Mass * Const.DragCoefficient * (velocityEstimate - airParticle.Velocity);
+                force = airParticle.Mass * Const.Instance.DragCoefficient * (velocityEstimate - airParticle.Velocity);
                 airParticle.Force += force;
             }
         }
@@ -263,7 +263,7 @@ namespace AnimatingHair.Entity
         {
             for ( int i = 0; i < Particles.Length; i++ )
             {
-                Particles[ i ].IntegrateForce( Const.TimeStep );
+                Particles[ i ].IntegrateForce( Const.Instance.TimeStep );
             }
         }
     }

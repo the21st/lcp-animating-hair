@@ -78,7 +78,7 @@ namespace AnimatingHair.Initialization
                 Vector3 result = Vector3.Zero;
 
                 float radius = cylinder.Radius * (float)r.NextDouble();
-                float angle = 2 * Const.PI * (float)r.NextDouble();
+                float angle = 2 * MathHelper.Pi * (float)r.NextDouble();
                 result.X = radius * (float)Math.Cos( angle );
                 result.Y = radius * (float)Math.Sin( angle );
 

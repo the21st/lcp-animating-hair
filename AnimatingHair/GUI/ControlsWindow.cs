@@ -11,7 +11,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace AnimatingHair
+namespace AnimatingHair.GUI
 {
     public partial class ControlsWindow : Form
     {
@@ -42,6 +42,10 @@ namespace AnimatingHair
 
             checkOpenGLVersion();
 
+            RenderingOptions.Instance.RenderWidth = glControl.Width;
+            RenderingOptions.Instance.RenderHeight = glControl.Height;
+            RenderingOptions.Instance.AspectRatio = (float)RenderingOptions.Instance.RenderWidth / RenderingOptions.Instance.RenderHeight;
+
             sceneInitializer = new SceneInitializer();
             scene = sceneInitializer.InitializeScene();
             camera = new Camera();
@@ -56,11 +60,49 @@ namespace AnimatingHair
                 Close();
             }
 
+            numericUpDownSeed.DataBindings.Add( "Text", Const.Instance, "Seed", true, DataSourceUpdateMode.OnPropertyChanged );
+            visualTrackBarHairParticleCount.BindIntData( Const.Instance, "HairParticleCount", 1, 2000 );
+            visualTrackBarMaxNeighbors.BindIntData( Const.Instance, "MaxNeighbors", 0, 25 );
+            visualTrackBarAirParticleCount.BindIntData( Const.Instance, "AirParticleCount", 1, 1000 );
+            visualTrackBarTimeStep.BindFloatData( Const.Instance, "TimeStep", 0.001f, 0.1f );
+            visualTrackBarGravity.BindFloatData( Const.Instance, "Gravity", -2, 2 );
+            visualTrackBarAirFriction.BindFloatData( Const.Instance, "AirFriction", 0.01f, 0.3f );
+            visualTrackBarHairLength.BindFloatData( Const.Instance, "HairLength", 0.1f, 4 );
+            visualTrackBarMaxRootDepth.BindFloatData( Const.Instance, "MaxRootDepth", 0, 1 );
+            visualTrackBarNeighborAlignmentTreshold.BindFloatData( Const.Instance, "NeighborAlignmentTreshold", 0, 1 );
+            visualTrackBarDensityOfHairMaterial.BindFloatData( Const.Instance, "DensityOfHairMaterial", 1, 300 );
+            visualTrackBarElasticModulus.BindFloatData( Const.Instance, "ElasticModulus", 500, 15000 );
+            visualTrackBarSecondMomentOfArea.BindFloatData( Const.Instance, "SecondMomentOfArea", 0.0005f, 0.01f );
+            visualTrackBarHairMassFactor.BindFloatData( Const.Instance, "HairMassFactor", 100, 10000 );
+            visualTrackBarCollisionDamp.BindFloatData( Const.Instance, "CollisionDamp", 0, 1 );
+            visualTrackBarFrictionDamp.BindFloatData( Const.Instance, "FrictionDamp", 0, 1 );
+            visualTrackBarAverageHairDensity.BindFloatData( Const.Instance, "AverageHairDensity", 3, 300 );
+            visualTrackBarHairDensityForceMagnitude.BindFloatData( Const.Instance, "HairDensityForceMagnitude", 0.1f, 10 );
+            visualTrackBarDragCoefficient.BindFloatData( Const.Instance, "DragCoefficient", 0.01f, 0.5f );
+            visualTrackBarAverageAirDensity.BindFloatData( Const.Instance, "AverageAirDensity", 0.01f, 3 );
+            visualTrackBarAirDensityForceMagnitude.BindFloatData( Const.Instance, "AirDensityForceMagnitude", 0.01f, 0.5f );
+            visualTrackBarAirMassFactor.BindFloatData( Const.Instance, "AirMassFactor", 20, 500 );
+
+            checkBoxShowHair.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowHair", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxDebugHair.DataBindings.Add( "Checked", RenderingOptions.Instance, "DebugHair", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxShowConnections.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowConnections", true, DataSourceUpdateMode.OnPropertyChanged );
+            //checkBoxDirectionalOpacity.DataBindings.Add( "Checked", RenderingOptions.Instance, "DirectionalOpacity", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxShowBust.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowBust", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxShowMetaBust.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowMetaBust", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxCruisingLight.DataBindings.Add( "Checked", RenderingOptions.Instance, "LightCruising", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxShowVoxelGrid.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowVoxelGrid", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxOnlyShowOccupiedVoxels.DataBindings.Add( "Checked", RenderingOptions.Instance, "OnlyShowOccupiedVoxels", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxShowDebugAir.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowDebugAir", true, DataSourceUpdateMode.OnPropertyChanged );
+            //visualTrackBarBillboardLength.BindFloatData( RenderingOptions.Instance, "BillboardLength", 0, 1 );
+            //visualTrackBarBillboardWidth.BindFloatData( RenderingOptions.Instance, "BillboardWidth", 0, 1 );
+            visualTrackBarAlphaTreshold.BindFloatData( RenderingOptions.Instance, "AlphaTreshold", 0, 1 );
+            //visualTrackBarDeepOpacityMapDistance.BindFloatData( RenderingOptions.Instance, "DeepOpacityMapDistance", 0.001f, 0.1f );
+            visualTrackBarLightCruiseSpeed.BindFloatData( RenderingOptions.Instance, "LightCruiseSpeed", 0.0005f, 0.01f );
+            visualTrackBarLightDistance.BindFloatData( RenderingOptions.Instance, "LightDistance", 1, 20 );
+            visualTrackBarLightIntensity.BindFloatData( RenderingOptions.Instance, "LightIntensity", 0, 3 );
+
             initControls();
 
-            visualTrackBar1.BindFloatData( Const, "E", 0, 1000 );
-
-            propertyGridRenderer.SelectedObject = renderer;
 
             Application.Idle += applicationIdle;
 
@@ -76,12 +118,10 @@ namespace AnimatingHair
 
             glControl.MouseWheel += glControl_MouseWheel;
 
-            glControl.KeyPress += new KeyPressEventHandler( glControl_KeyPress );
+            glControl.KeyPress += glControl_KeyPress;
 
             colorDialog.Color = Color.FromArgb( (int)(scene.Hair.Clr[ 0 ] * 255), (int)(scene.Hair.Clr[ 1 ] * 255), (int)(scene.Hair.Clr[ 2 ] * 255) );
             buttonColor.BackColor = colorDialog.Color;
-
-            trackBar_valueChanged( trackBarLightIntensity, null );
 
             Text =
                 GL.GetString( StringName.Vendor ) + " " +
@@ -91,7 +131,10 @@ namespace AnimatingHair
             // Ensure that the viewport and projection matrix are set correctly.
             glControl_Resize( glControl, EventArgs.Empty );
 
-            initializeTrackBars();
+            checkBoxShowHair_CheckedChanged( null, null );
+            checkBoxDebugHair_CheckedChanged( null, null );
+            checkBoxShowVoxelGrid_CheckedChanged( null, null );
+            checkBoxCruisingLight_CheckedChanged( null, null );
 
             fpsDisplayTimer.Enabled = true;
         }
@@ -102,162 +145,11 @@ namespace AnimatingHair
                 scene.Step();
         }
 
-        private void trackBar_valueChanged( object sender, EventArgs e )
-        {
-            TrackBar tb = sender as TrackBar;
-            float value = ((float)tb.Value) / tb.Maximum;
-
-            if ( tb == trackBarAirFriction )
-            {
-                textBoxAirFriction.Text = (value).ToString();
-            }
-            if ( tb == trackBarAttractionRepulsion )
-            {
-                textBoxAttractionRepulsion.Text = (value / 2).ToString();
-            }
-            if ( tb == trackBarAttractionRepulsionAir )
-            {
-                textBoxAttractionRepulsionAir.Text = (value / 2).ToString();
-            }
-            if ( tb == trackBarAverageDensity )
-            {
-                textBoxAverageDensity.Text = (value * 99 + 1).ToString();
-            }
-            if ( tb == trackBarAverageDensityAir )
-            {
-                textBoxAverageDensityAir.Text = (value * 9.9 + 0.1).ToString();
-            }
-            if ( tb == trackBarCollisionDamping )
-            {
-                textBoxCollisionDamping.Text = (value).ToString();
-            }
-            if ( tb == trackBarDrag )
-            {
-                textBoxDrag.Text = (value / 3).ToString();
-            }
-            if ( tb == trackBarFrictionDamping )
-            {
-                textBoxFrictionDamping.Text = (value).ToString();
-            }
-            if ( tb == trackBarGravity )
-            {
-                textBoxGravity.Text = (2 * value - 1).ToString();
-            }
-            if ( tb == trackBarHairLength )
-            {
-                textBoxHairLength.Text = (value * 4).ToString();
-            }
-            if ( tb == trackBarMaxRootDepth )
-            {
-                textBoxMaxRootDepth.Text = (value).ToString();
-            }
-            if ( tb == trackBarNumberOfAirParticles )
-            {
-                textBoxNumberOfAirParticles.Text = ((int)(value * 500 + 1)).ToString();
-            }
-            if ( tb == trackBarNumberOfParticles )
-            {
-                textBoxNumberOfParticles.Text = ((int)(value * 1900 + 100)).ToString();
-            }
-            if ( tb == trackBarLightIntensity )
-            {
-                renderer.LightIntensity = value * 2;
-            }
-            if ( tb == trackBarMisc1 )
-            {
-                renderer.Misc1 = value;
-            }
-            if ( tb == trackBarMisc2 )
-            {
-                renderer.Misc2 = value;
-            }
-
-            updateConstants( tb );
-        }
-
-        private void initializeTrackBars()
-        {
-            float maxValue = trackBarNumberOfParticles.Maximum;
-            trackBarAirFriction.Value = Convert.ToInt32( maxValue * Const.AirFriction );
-            trackBarAttractionRepulsion.Value = Convert.ToInt32( maxValue * Const.k_a * 2 );
-            trackBarAttractionRepulsionAir.Value = Convert.ToInt32( maxValue * Const.k_a_air * 2 );
-            trackBarAverageDensity.Value = Convert.ToInt32( maxValue * (Const.rho_0 - 1) / 99 );
-            trackBarAverageDensityAir.Value = Convert.ToInt32( maxValue * (Const.rho_0_air - 0.1) / 9.9 );
-            trackBarCollisionDamping.Value = Convert.ToInt32( maxValue * Const.d_c );
-            trackBarDrag.Value = Convert.ToInt32( maxValue * Const.DragCoefficient * 3 );
-            trackBarFrictionDamping.Value = Convert.ToInt32( maxValue * Const.d_f );
-            trackBarGravity.Value = Convert.ToInt32( maxValue * (Const.Gravity + 1) / 2 );
-            trackBarHairLength.Value = Convert.ToInt32( maxValue * Const.HairLength / 4 );
-            trackBarMaxRootDepth.Value = Convert.ToInt32( maxValue * Const.s_r );
-            trackBarNumberOfAirParticles.Value = Convert.ToInt32( maxValue * Const.AirParticleCount / 500.0 );
-            trackBarNumberOfParticles.Value = Convert.ToInt32( maxValue * (Const.HairParticleCount - 100) / 1900.0 );
-            numericUpDownSeed.Text = Const.Seed.ToString();
-        }
-
-        private void updateConstants( TrackBar tb )
-        {
-            if ( !loaded )
-                return;
-
-            if ( tb == trackBarAirFriction )
-            {
-                Const.AirFriction = float.Parse( textBoxAirFriction.Text );
-            }
-            if ( tb == trackBarAttractionRepulsion )
-            {
-                Const.k_a = float.Parse( textBoxAttractionRepulsion.Text );
-            }
-            if ( tb == trackBarAttractionRepulsionAir )
-            {
-                Const.k_a_air = float.Parse( textBoxAttractionRepulsionAir.Text );
-            }
-            if ( tb == trackBarAverageDensity )
-            {
-                Const.rho_0 = float.Parse( textBoxAverageDensity.Text );
-            }
-            if ( tb == trackBarAverageDensityAir )
-            {
-                Const.rho_0_air = float.Parse( textBoxAverageDensityAir.Text );
-            }
-            if ( tb == trackBarCollisionDamping )
-            {
-                Const.d_c = float.Parse( textBoxCollisionDamping.Text );
-            }
-            if ( tb == trackBarDrag )
-            {
-                Const.DragCoefficient = float.Parse( textBoxDrag.Text );
-            }
-            if ( tb == trackBarFrictionDamping )
-            {
-                Const.d_f = float.Parse( textBoxFrictionDamping.Text );
-            }
-            if ( tb == trackBarGravity )
-            {
-                Const.Gravity = float.Parse( textBoxGravity.Text );
-            }
-            if ( tb == trackBarHairLength )
-            {
-                Const.HairLength = float.Parse( textBoxHairLength.Text );
-            }
-            if ( tb == trackBarMaxRootDepth )
-            {
-                Const.s_r = float.Parse( textBoxMaxRootDepth.Text );
-            }
-            if ( tb == trackBarNumberOfAirParticles )
-            {
-                Const.AirParticleCount = int.Parse( textBoxNumberOfAirParticles.Text );
-            }
-            if ( tb == trackBarNumberOfParticles )
-            {
-                Const.HairParticleCount = int.Parse( textBoxNumberOfParticles.Text );
-            }
-        }
-
         private void polarToCartesian()
         {
             float x, y, z, k;
-            float ele2 = elevation * Const.PI / 180;
-            float azi2 = (azimuth - 90) * Const.PI / 180;
+            float ele2 = elevation * MathHelper.Pi / 180;
+            float azi2 = (azimuth - 90) * MathHelper.Pi / 180;
 
             k = (float)Math.Cos( ele2 );
             z = distance * (float)Math.Sin( ele2 );
@@ -276,7 +168,7 @@ namespace AnimatingHair
             if ( major < '2' )
             {
                 MessageBox.Show( "You need at least OpenGL 2.0 to run this application. Aborting.", "GLSL not supported",
-                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
+                                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation );
                 Close();
             }
         }
@@ -380,6 +272,7 @@ namespace AnimatingHair
 
         void glControl_Paint( object sender, PaintEventArgs e )
         {
+            if ( !loaded ) return;
             polarToCartesian();
             render();
         }
@@ -397,7 +290,7 @@ namespace AnimatingHair
             if ( !paused )
             {
                 scene.Step();
-                Const.Time++;
+                Const.Instance.CurrentTimeStep++;
             }
 
             fpsHistory.AddFirst( 1000.0f / stopwatch.ElapsedMilliseconds );
@@ -446,6 +339,7 @@ namespace AnimatingHair
 
         private void fpsDisplayTimer_Tick( object sender, EventArgs e )
         {
+            if ( !loaded ) return;
             float sum = 0;
             foreach ( float d in fpsHistory )
             {
@@ -464,48 +358,24 @@ namespace AnimatingHair
 
         private void restart()
         {
-            if ( Const.HairParticleCount > 1000 )
-            {
-                Const.TimeStep = 0.03f;
-            }
-            else
-            {
-                Const.TimeStep = 0.1f;
-            }
-
             scene = sceneInitializer.InitializeScene();
             camera = new Camera();
-            renderer = new Renderer( camera, scene )
-                       {
-                           CruisingLight = ((Renderer)propertyGridRenderer.SelectedObject).CruisingLight,
-                           DebugHair = ((Renderer)propertyGridRenderer.SelectedObject).DebugHair,
-                           RenderConnections = ((Renderer)propertyGridRenderer.SelectedObject).RenderConnections,
-                           ShowBust = ((Renderer)propertyGridRenderer.SelectedObject).ShowBust,
-                           ShowMetaBust = ((Renderer)propertyGridRenderer.SelectedObject).ShowMetaBust,
-                           ShowHair = ((Renderer)propertyGridRenderer.SelectedObject).ShowHair,
-                           WireFrame = ((Renderer)propertyGridRenderer.SelectedObject).WireFrame,
-                           ShowVoxelGrid = ((Renderer)propertyGridRenderer.SelectedObject).ShowVoxelGrid,
-                           ShowAir = ((Renderer)propertyGridRenderer.SelectedObject).ShowAir,
-                       };
-
-            trackBar_valueChanged( trackBarLightIntensity, null );
+            renderer = new Renderer( camera, scene );
 
             buttonColor.BackColor = colorDialog.Color;
             scene.Hair.Clr = new float[]
-                                 {
-                                     colorDialog.Color.R / 255.0f, 
-                                     colorDialog.Color.G / 255.0f,
-                                     colorDialog.Color.B / 255.0f
-                                 };
-
-            propertyGridRenderer.SelectedObject = renderer;
+                             {
+                                 colorDialog.Color.R / 255.0f, 
+                                 colorDialog.Color.G / 255.0f,
+                                 colorDialog.Color.B / 255.0f
+                             };
 
             polarToCartesian();
         }
 
         private void updateRestartValues()
         {
-            Const.Seed = int.Parse( numericUpDownSeed.Text );
+            Const.Instance.Seed = int.Parse( numericUpDownSeed.Text );
         }
 
         private void buttonRestartWithRandomSeed_Click( object sender, EventArgs e )
@@ -584,7 +454,6 @@ namespace AnimatingHair
                 saveFile = openFileDialog.FileName;
                 Utility.LoadConfiguration( saveFile );
 
-                initializeTrackBars();
                 restart();
             }
 
@@ -616,14 +485,37 @@ namespace AnimatingHair
             scene.Fan = !scene.Fan;
         }
 
-        private void radioButton1_CheckedChanged( object sender, EventArgs e )
+        private void checkBoxShowHair_CheckedChanged( object sender, EventArgs e )
         {
-            if ( radioButton1.Checked )
-                renderer.Mode = 0;
-            if ( radioButton2.Checked )
-                renderer.Mode = 1;
-            if ( radioButton3.Checked )
-                renderer.Mode = 2;
+            if ( checkBoxShowHair.Checked )
+                groupBoxHairRendering.Enabled = true;
+            else
+                groupBoxHairRendering.Enabled = false;
+        }
+
+        private void checkBoxDebugHair_CheckedChanged( object sender, EventArgs e )
+        {
+            if ( checkBoxDebugHair.Checked )
+                checkBoxShowConnections.Enabled = true;
+            else
+                checkBoxShowConnections.Enabled = false;
+        }
+
+        private void checkBoxShowVoxelGrid_CheckedChanged( object sender, EventArgs e )
+        {
+            if ( checkBoxShowVoxelGrid.Checked )
+                checkBoxOnlyShowOccupiedVoxels.Enabled = true;
+            else
+                checkBoxOnlyShowOccupiedVoxels.Enabled = false;
+        }
+
+        private void checkBoxCruisingLight_CheckedChanged( object sender, EventArgs e )
+        {
+            if ( checkBoxCruisingLight.Checked )
+                visualTrackBarLightCruiseSpeed.Enabled = true;
+            else
+                visualTrackBarLightCruiseSpeed.Enabled = false;
+
         }
     }
 }

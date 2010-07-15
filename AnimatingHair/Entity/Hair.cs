@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AnimatingHair.Entity.PhysicalEntity;
 using OpenTK;
@@ -34,11 +34,11 @@ namespace AnimatingHair.Entity
         {
             //Clr = new float[] { 0.55f, 0.26f, 0.13f };
             Clr = new float[] { 1f, 0.47f, 0.24f };
-            alphaT = new float[ Const.HairParticleCount ];
-            alphaR = new float[ Const.HairParticleCount ];
+            alphaT = new float[ Const.Instance.HairParticleCount ];
+            alphaR = new float[ Const.Instance.HairParticleCount ];
             ParticlePairsIteration = new List<ParticlePair>();
-            ParticlePairs = new ParticlePair[ Const.HairParticleCount, Const.HairParticleCount ];
-            Particles = new HairParticle[ Const.HairParticleCount ];
+            ParticlePairs = new ParticlePair[ Const.Instance.HairParticleCount, Const.Instance.HairParticleCount ];
+            Particles = new HairParticle[ Const.Instance.HairParticleCount ];
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace AnimatingHair.Entity
             for ( int i = 0; i < Particles.Length; i++ )
             {
                 HairParticle particle = Particles[ i ];
-                particle.Force.Y += particle.Mass * (-Const.Gravity);
+                particle.Force.Y += particle.Mass * ((float)-Const.Instance.Gravity);
             }
         }
 
@@ -178,7 +178,7 @@ namespace AnimatingHair.Entity
             {
                 HairParticle hp = Particles[ i ];
 
-                hp.Force += -hp.Mass * Const.AirFriction * hp.Velocity;
+                hp.Force += -hp.Mass * Const.Instance.AirFriction * hp.Velocity;
             }
         }
 
@@ -240,8 +240,8 @@ namespace AnimatingHair.Entity
 
 
             // ATTRACTION/REPULUSION FORCE
-            float P_i = Const.k_a * (hpI.Density - Const.rho_0);
-            float P_j = Const.k_a * (hpJ.Density - Const.rho_0);
+            float P_i = Const.Instance.HairDensityForceMagnitude * (hpI.Density - Const.Instance.AverageHairDensity);
+            float P_j = Const.Instance.HairDensityForceMagnitude * (hpJ.Density - Const.Instance.AverageHairDensity);
 
             Vector3 kernelGradientH2 = KernelEvaluator.ComputeKernelGradientH2( -xIJ, distance );
             float d1 = P_i / (hpI.Density * hpI.Density);
@@ -253,7 +253,7 @@ namespace AnimatingHair.Entity
             Vector3 fC;
             float sign = (Vector3.Dot( xIJ, dN ) * Vector3.Dot( vIJ, dN ));
             if ( sign < 0 )
-                fC = Const.d_c * kernelH2 * Vector3.Dot( vIJ, dN ) * dN;
+                fC = Const.Instance.CollisionDamp * kernelH2 * Vector3.Dot( vIJ, dN ) * dN;
             else
                 fC = Vector3.Zero;
 
@@ -264,7 +264,7 @@ namespace AnimatingHair.Entity
             if ( !(Math.Abs( dT.X ) < 0.00001 && Math.Abs( dT.Y ) < 0.00001 && Math.Abs( dT.Z ) < 0.00001) )  // NOTE: constant - almost zero
             {
                 dT.Normalize();
-                fF = Const.d_f * kernelH2 * (Vector3.Dot( vIJ, dT ) * dT);
+                fF = Const.Instance.FrictionDamp * kernelH2 * (Vector3.Dot( vIJ, dT ) * dT);
             }
 
 
@@ -303,7 +303,7 @@ namespace AnimatingHair.Entity
 
         private void calculateAlphas( HairParticle hp )
         {
-            float numerator = Const.E * hp.Area;
+            float numerator = Const.Instance.ElasticModulus * hp.Area;
             float denominator;
 
             denominator = 0;

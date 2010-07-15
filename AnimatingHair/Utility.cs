@@ -241,7 +241,7 @@ namespace AnimatingHair
         {
             StreamWriter streamWriter = new StreamWriter( path );
 
-            string s = Const.ToString();
+            string s = Const.Instance.ToString();
 
             streamWriter.Write( s );
 
@@ -255,7 +255,7 @@ namespace AnimatingHair
         {
             StreamReader streamReader = new StreamReader( path );
 
-            Const.FromString( streamReader.ReadToEnd() );
+            Const.Instance.FromString( streamReader.ReadToEnd() );
 
             streamReader.Close();
         }

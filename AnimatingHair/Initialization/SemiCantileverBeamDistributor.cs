@@ -37,7 +37,7 @@ namespace AnimatingHair.Initialization
             Sphere[] spheres = new Sphere[ 1 ];
             spheres[ 0 ] = bust.Head;
             Cylinder[] cylinders = new Cylinder[ 0 ]; // TODO: cantilever collisions
-            cbs = new CantileverBeamSimulator( spheres, cylinders, Const.E, Const.SecondMomentOfArea );
+            cbs = new CantileverBeamSimulator( spheres, cylinders, Const.Instance.ElasticModulus, Const.Instance.SecondMomentOfArea );
         }
 
         public IEnumerable<ParticleCoordinate> DistributeParticles( int particleCount )
@@ -54,7 +54,7 @@ namespace AnimatingHair.Initialization
                 SphericalCoordinate sc;
                 sc = scg.GenerateRandomSphericalCoordinate();
 
-                ParticleCoordinate newCoordinate = ct.TransformCoordinate( sc.Azimuth, sc.Elevation, (Const.HairLength / 2 + Const.s_r) * (float)r.NextDouble() - Const.s_r );
+                ParticleCoordinate newCoordinate = ct.TransformCoordinate( sc.Azimuth, sc.Elevation, (Const.Instance.HairLength / 2 + Const.Instance.MaxRootDepth) * (float)r.NextDouble() - Const.Instance.MaxRootDepth );
                 if ( newCoordinate == null )
                     continue;
 
@@ -110,10 +110,10 @@ namespace AnimatingHair.Initialization
 
                 do
                 {
-                    elevationSentinel = 0.5f * Const.PI * (float)r.NextDouble();
-                    elevation = (float)Math.Sin( elevationSentinel ) * Const.PI * (float)r.NextDouble();
-                    //elevation = Const.PI/2 * (float)r.NextDouble();
-                    azimuth = Const.PI * (float)r.NextDouble();
+                    elevationSentinel = 0.5f * MathHelper.Pi * (float)r.NextDouble();
+                    elevation = (float)Math.Sin( elevationSentinel ) * MathHelper.Pi * (float)r.NextDouble();
+                    //elevation = Const.Instance.PI/2 * (float)r.NextDouble();
+                    azimuth = MathHelper.Pi * (float)r.NextDouble();
                     result = center + polarToCartesian( azimuth, elevation, radius );
                 } while ( (result - ear1).Length < minDist || (result - ear2).Length < minDist );
 

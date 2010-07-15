@@ -33,7 +33,7 @@ namespace AnimatingHair.Rendering.Debug
                 {
                     for ( int k = 0; k < voxelGrid.VoxelCount[ 2 ]; k++ )
                     {
-                        if ( voxelGrid.Grid[ i, j, k ].Particles.Count > 0 )
+                        if ( !RenderingOptions.Instance.OnlyShowOccupiedVoxels || voxelGrid.Grid[ i, j, k ].Particles.Count > 0 )
                         {
                             GL.Color3( Color.LightBlue );
                             Vector3 newCorner = voxelGrid.CornerLocation;

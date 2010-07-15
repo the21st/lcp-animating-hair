@@ -7,7 +7,7 @@ namespace AnimatingHair.Auxiliary
     /// </summary>
     static class KernelEvaluator
     {
-        private const float piInv = 1 / Const.PI;
+        private const float piInv = 1 / MathHelper.Pi;
 
         // the inverses and powers of the two smoothing lengths precalculated for efficiency
         private static float h1Inv_1, h1Inv_3, h1Inv_4, h1Inv_5, h2Inv_1, h2Inv_3, h2Inv_4, h2Inv_5;

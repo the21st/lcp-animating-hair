@@ -22,7 +22,7 @@ namespace AnimatingHair.Rendering
 
         // component renderers:
         private readonly HairRenderer hairRenderer;
-        private readonly SimpleHairRenderer simpleHairRenderer;
+        private readonly DebugHairRenderer debugHairRenderer;
         private readonly AirRenderer airRenderer;
         private readonly BustRenderer bustRenderer;
         private readonly MetaBustRenderer metaBustRenderer;
@@ -36,70 +36,11 @@ namespace AnimatingHair.Rendering
         private readonly float[] lightSpecular;
         private float angle = 0;
         private int shadowTexture;
-        private int viewportWidth = 800, viewportHeight = 600;
-        private float aspectRatio = 800f / 600f;
-        private const float near = 1, far = 30;
-        private float lightDistance = 8;
 
         // shader objects
         private readonly int shaderProgram;
         private readonly int modeLoc;
         public int Mode = 0;
-
-        #region Rendering options
-
-        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether any hair is drawn." )]
-        public bool ShowHair { get; set; }
-        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether the hair is rendered in debug Mode." )]
-        public bool DebugHair { get; set; }
-        [CategoryAttribute( "Hair" ), DescriptionAttribute( "Indicates whether neighbor connections are shown (only applies to debug Mode)." )]
-        public bool RenderConnections
-        {
-            get { return simpleHairRenderer.RenderConnections; }
-            set { simpleHairRenderer.RenderConnections = value; }
-        }
-        [CategoryAttribute( "Bust" ), DescriptionAttribute( "Indicates whether the polygonal model of the bust is rendered." )]
-        public bool ShowBust { get; set; }
-        [CategoryAttribute( "Bust" ), DescriptionAttribute( "Indicates whether the mesh is drawn as a wireframe model." )]
-        public bool WireFrame { get; set; }
-        [CategoryAttribute( "Bust" ), DescriptionAttribute( "Indicates whether the analytical model of the bust is shown." )]
-        public bool ShowMetaBust { get; set; }
-        [CategoryAttribute( "Lights" ), DescriptionAttribute( "Indicates whether Light1 is orbiting or in place." )]
-        public bool CruisingLight { get; set; }
-        [CategoryAttribute( "Lights" ), DescriptionAttribute( "Indicates whether Light1 is turned on." )]
-        public bool ShowVoxelGrid { get; set; }
-        [CategoryAttribute( "Misc" ), DescriptionAttribute( "Indicates whether air particles are drawn (debug)." )]
-        public bool ShowAir { get; set; }
-
-        public float LightIntensity
-        {
-            set
-            {
-                //light.Intensity = value;
-                //refreshLight();
-                lightDistance = value * 5;
-            }
-        }
-
-        #endregion
-
-        public float Misc1
-        {
-            set
-            {
-                angle = value * MathHelper.TwoPi + MathHelper.Pi;
-            }
-        }
-
-        public float Misc2
-        {
-            set
-            {
-                opacityMapsRenderer.AlphaTreshold = value;
-                //opacityMapsRenderer.IntensityFactor = value;
-            }
-        }
-
 
         public Renderer( Camera camera, Scene scene )
         {
@@ -113,7 +54,7 @@ namespace AnimatingHair.Rendering
             };
 
             hairRenderer = new HairRenderer( camera, scene.Hair, light );
-            simpleHairRenderer = new SimpleHairRenderer( scene.Hair );
+            debugHairRenderer = new DebugHairRenderer( scene.Hair );
 
             airRenderer = new AirRenderer( scene.Air );
 
@@ -123,15 +64,6 @@ namespace AnimatingHair.Rendering
             voxelGridRenderer = new VoxelGridRenderer( scene.VoxelGrid );
 
             opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light, camera );
-
-            ShowBust = true;
-            WireFrame = false;
-            ShowMetaBust = false;
-            ShowHair = true;
-            DebugHair = true;
-            CruisingLight = false;
-            ShowVoxelGrid = false;
-            ShowAir = false;
 
             lightDiffuse = new float[ 3 ];
             lightAmbient = new float[ 3 ];
@@ -151,9 +83,12 @@ namespace AnimatingHair.Rendering
 
         public void Render()
         {
-            if ( CruisingLight )
-                angle += 0.002f;
-            light.Position = new Vector3( -lightDistance * (float)Math.Sin( angle ), 0.5f * lightDistance, lightDistance * (float)Math.Cos( angle ) );
+            light.Intensity = RenderingOptions.Instance.LightIntensity;
+            refreshLight();
+
+            if ( RenderingOptions.Instance.LightCruising )
+                angle += RenderingOptions.Instance.LightCruiseSpeed;
+            light.Position = new Vector3( -RenderingOptions.Instance.LightDistance * (float)Math.Sin( angle ), 0.5f * RenderingOptions.Instance.LightDistance, RenderingOptions.Instance.LightDistance * (float)Math.Cos( angle ) );
             GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
 
             GL.PushAttrib( AttribMask.AllAttribBits );
@@ -195,9 +130,8 @@ namespace AnimatingHair.Rendering
 
             GL.Enable( EnableCap.Lighting );
 
-            if ( ShowBust )
+            if ( RenderingOptions.Instance.ShowBust )
             {
-                bustRenderer.Wireframe = WireFrame;
                 //GL.ActiveTexture( TextureUnit.Texture0 ); // NOTE: co s tym?
                 bustRenderer.Render();
             }
@@ -205,24 +139,24 @@ namespace AnimatingHair.Rendering
             GL.PushMatrix();
             {
                 GL.Translate( scene.Bust.Position );
-                GL.Rotate( (scene.Bust.Angle * 180 / Const.PI), Vector3.UnitY );
+                GL.Rotate( (scene.Bust.Angle * 180 / MathHelper.Pi), Vector3.UnitY );
 
-                if ( ShowMetaBust )
+                if ( RenderingOptions.Instance.ShowMetaBust )
                     metaBustRenderer.Render();
 
-                if ( ShowVoxelGrid )
+                if ( RenderingOptions.Instance.ShowVoxelGrid )
                     voxelGridRenderer.Render();
 
-                if ( ShowAir )
+                if ( RenderingOptions.Instance.ShowDebugAir )
                 {
                     airRenderer.Render();
                 }
 
-                if ( ShowHair )
+                if ( RenderingOptions.Instance.ShowHair )
                 {
-                    if ( DebugHair )
+                    if ( RenderingOptions.Instance.DebugHair )
                     {
-                        simpleHairRenderer.Render();
+                        debugHairRenderer.Render();
                     }
                     else
                     {
@@ -242,7 +176,7 @@ namespace AnimatingHair.Rendering
             GL.MatrixMode( MatrixMode.Projection );
             GL.PushMatrix();
             GL.LoadIdentity();
-            GL.Ortho( 0, viewportWidth, viewportHeight, 0, -1, 1 );
+            GL.Ortho( 0, RenderingOptions.Instance.RenderWidth, RenderingOptions.Instance.RenderHeight, 0, -1, 1 );
             GL.MatrixMode( MatrixMode.Modelview );
             GL.PushMatrix();
             GL.LoadIdentity();
@@ -290,16 +224,16 @@ namespace AnimatingHair.Rendering
             GL.Begin( BeginMode.Quads );
             {
                 GL.TexCoord2( 0, 1 );
-                GL.Vertex2( viewportWidth - size, 0 );
+                GL.Vertex2( RenderingOptions.Instance.RenderWidth - size, 0 );
 
                 GL.TexCoord2( 0, 0 );
-                GL.Vertex2( viewportWidth - size, size );
+                GL.Vertex2( RenderingOptions.Instance.RenderWidth - size, size );
 
                 GL.TexCoord2( 1, 0 );
-                GL.Vertex2( viewportWidth, size );
+                GL.Vertex2( RenderingOptions.Instance.RenderWidth, size );
 
                 GL.TexCoord2( 1, 1 );
-                GL.Vertex2( viewportWidth, 0 );
+                GL.Vertex2( RenderingOptions.Instance.RenderWidth, 0 );
             }
             GL.End();
         }
@@ -319,17 +253,17 @@ namespace AnimatingHair.Rendering
 
         public void Resize( int width, int height, float ratio )
         {
-            viewportWidth = width;
-            viewportHeight = height;
-            aspectRatio = ratio;
+            RenderingOptions.Instance.RenderWidth = width;
+            RenderingOptions.Instance.RenderHeight = height;
+            RenderingOptions.Instance.AspectRatio = ratio;
 
             refreshViewport();
         }
 
         private void refreshViewport()
         {
-            GL.Viewport( 0, 0, viewportWidth, viewportHeight );
-            Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, aspectRatio, near, far );
+            GL.Viewport( 0, 0, RenderingOptions.Instance.RenderWidth, RenderingOptions.Instance.RenderHeight );
+            Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, RenderingOptions.Instance.AspectRatio, RenderingOptions.Instance.Near, RenderingOptions.Instance.Far );
             GL.MatrixMode( MatrixMode.Projection );
             GL.LoadMatrix( ref perpective );
         }

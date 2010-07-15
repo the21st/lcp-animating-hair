@@ -25,8 +25,8 @@ namespace AnimatingHair.Initialization
         public Hair InitializeHair( Bust bust )
         {
             // TODO: which distributor?
-            distributor = new SemiCantileverBeamDistributor( Const.Seed, bust );
-            //IParticleDistributor distributor = new CantileverBeamDistributor( Const.Seed, scene.Bust );
+            distributor = new SemiCantileverBeamDistributor( Const.Instance.Seed, bust );
+            //IParticleDistributor distributor = new CantileverBeamDistributor( Const.Instance.Seed, scene.Bust );
 
             hair = new Hair();
 
@@ -39,8 +39,8 @@ namespace AnimatingHair.Initialization
 
             // set the smoothing lengths used throughout the whole simulation, so that 
             // the evaluator can precalculate values for efficiency
-            KernelEvaluator.SetH1( Const.H1 );
-            KernelEvaluator.SetH2( Const.H2 );
+            KernelEvaluator.SetH1( Const.Instance.H1 );
+            KernelEvaluator.SetH2( Const.Instance.H2 );
 
             // establish lengthwise neighbor connections that stay the same throughout the simulation
             establishConnections();
@@ -54,9 +54,9 @@ namespace AnimatingHair.Initialization
 
         private void makePairsSymmetrical()
         {
-            for ( int i = 0; i < Const.HairParticleCount; i++ )
+            for ( int i = 0; i < Const.Instance.HairParticleCount; i++ )
             {
-                for ( int j = 0; j < Const.HairParticleCount; j++ )
+                for ( int j = 0; j < Const.Instance.HairParticleCount; j++ )
                 {
                     if ( hair.ParticlePairs[ i, j ] == null && hair.ParticlePairs[ j, i ] != null )
                     {
@@ -76,12 +76,12 @@ namespace AnimatingHair.Initialization
 
         private void distributeParticles()
         {
-            IEnumerable<ParticleCoordinate> coordinates = distributor.DistributeParticles( Const.HairParticleCount );
+            IEnumerable<ParticleCoordinate> coordinates = distributor.DistributeParticles( Const.Instance.HairParticleCount );
 
             int i = 0;
             foreach ( ParticleCoordinate coordinate in coordinates )
             {
-                HairParticle hp = new HairParticle( i, Const.HairParticleMass() )
+                HairParticle hp = new HairParticle( i, Const.Instance.HairParticleMass() )
                                   {
                                       Position = coordinate.Position,
                                       Direction = coordinate.Direction,
@@ -102,7 +102,7 @@ namespace AnimatingHair.Initialization
         {
             foreach ( HairParticle hp in hair.Particles )
             {
-                hp.Area = (float)Math.Pow( hp.Mass * Const.DensityOfHairMaterialInverse, 2.0 / 3.0 );
+                hp.Area = (float)Math.Pow( hp.Mass / Const.Instance.DensityOfHairMaterial, 2.0 / 3.0 ); // TODO: precalculate inverse
             }
         }
 
@@ -128,8 +128,8 @@ namespace AnimatingHair.Initialization
 
             float avgMinDist = sum / hair.Particles.Length;
 
-            Const.H1 = 1.1f * avgMinDist; // NOTE: constant, "little larger"
-            Const.H2 = avgMinDist / 1.1f; // NOTE: constant, "little smaller"
+            Const.Instance.H1 = 1.1f * avgMinDist; // NOTE: constant, "little larger"
+            Const.Instance.H2 = avgMinDist / 1.1f; // NOTE: constant, "little smaller"
         }
 
         private void establishConnections()
@@ -140,7 +140,7 @@ namespace AnimatingHair.Initialization
                     Vector3 xIJ = hair.Particles[ j ].Position - hair.Particles[ i ].Position;
                     float l = xIJ.Length;
 
-                    if ( (l < 2 * Const.H1) && !(hair.Particles[ i ].IsRoot && hair.Particles[ j ].IsRoot) )
+                    if ( (l < 2 * Const.Instance.H1) && !(hair.Particles[ i ].IsRoot && hair.Particles[ j ].IsRoot) )
                     {
                         ParticlePair pairIJ = new ParticlePair
                                               {
@@ -173,7 +173,7 @@ namespace AnimatingHair.Initialization
 
                         pairIJ.C = pairJI.C = pairIJ.A * l;
 
-                        if ( pairIJ.A < Const.a_0 )
+                        if ( pairIJ.A < Const.Instance.NeighborAlignmentTreshold )
                             continue;
 
                         pairIJ.K = pairJI.K = pairIJ.C * KernelEvaluator.ComputeKernelH1( l );
@@ -231,7 +231,7 @@ namespace AnimatingHair.Initialization
                 int countRoot = hp.NeighborsRoot.Count;
                 int countTip = hp.NeighborsTip.Count;
 
-                while ( countRoot + countTip > Const.N_n )
+                while ( countRoot + countTip > Const.Instance.MaxNeighbors )
                 {
                     if ( countTip == 0 && countRoot == 0 )
                         break;

@@ -1,4 +1,4 @@
-﻿namespace AnimatingHair.Entity.PhysicalEntity
+namespace AnimatingHair.Entity.PhysicalEntity
 {
     /// <summary>
     /// A rigid body rotated only along the (vertical) Y-axis.
@@ -62,8 +62,8 @@
 
         private void rkStep1()
         {
-            kAngularVelocity[ 1 ] = AngularAcceleration * Const.TimeStep;
-            kAngle[ 1 ] = startAngularVelocity * Const.TimeStep;
+            kAngularVelocity[ 1 ] = AngularAcceleration * Const.Instance.TimeStep;
+            kAngle[ 1 ] = startAngularVelocity * Const.Instance.TimeStep;
 
             // priprava na k2:
             Angle = startAngle + kAngle[ 1 ] / 2;
@@ -72,8 +72,8 @@
 
         private void rkStep2()
         {
-            kAngularVelocity[ 2 ] = AngularAcceleration * Const.TimeStep;
-            kAngle[ 2 ] = (startAngularVelocity + kAngularVelocity[ 1 ] / 2) * Const.TimeStep;
+            kAngularVelocity[ 2 ] = AngularAcceleration * Const.Instance.TimeStep;
+            kAngle[ 2 ] = (startAngularVelocity + kAngularVelocity[ 1 ] / 2) * Const.Instance.TimeStep;
 
             // priprava na k3:
             Angle = startAngle + kAngle[ 2 ] / 2;
@@ -82,8 +82,8 @@
 
         private void rkStep3()
         {
-            kAngularVelocity[ 3 ] = AngularAcceleration * Const.TimeStep;
-            kAngle[ 3 ] = (startAngularVelocity + kAngularVelocity[ 2 ] / 2) * Const.TimeStep;
+            kAngularVelocity[ 3 ] = AngularAcceleration * Const.Instance.TimeStep;
+            kAngle[ 3 ] = (startAngularVelocity + kAngularVelocity[ 2 ] / 2) * Const.Instance.TimeStep;
 
             // priprava na k3:
             Angle = startAngle + kAngle[ 3 ];
@@ -92,8 +92,8 @@
 
         private void rkStep4()
         {
-            kAngularVelocity[ 4 ] = AngularAcceleration * Const.TimeStep;
-            kAngle[ 4 ] = (startAngularVelocity + kAngularVelocity[ 3 ]) * Const.TimeStep;
+            kAngularVelocity[ 4 ] = AngularAcceleration * Const.Instance.TimeStep;
+            kAngle[ 4 ] = (startAngularVelocity + kAngularVelocity[ 3 ]) * Const.Instance.TimeStep;
         }
 
         private void rkFinalize()

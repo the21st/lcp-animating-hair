@@ -30,8 +30,6 @@ namespace AnimatingHair.Rendering
         private int lightLoc;
         private int deepOpacityMapLoc;
 
-        public bool Wireframe { get; set; }
-
         public BustRenderer( Bust bust, Camera camera, Light light )
         {
             this.camera = camera;
@@ -40,8 +38,8 @@ namespace AnimatingHair.Rendering
 
             // shader loading
             using ( StreamReader vs = new StreamReader( FilePaths.BustVSLocation ) )
-                using ( StreamReader fs = new StreamReader( FilePaths.BustFSLocation ) )
-                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
+            using ( StreamReader fs = new StreamReader( FilePaths.BustFSLocation ) )
+                Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
 
             getShaderVariableLocations();
 
@@ -52,8 +50,6 @@ namespace AnimatingHair.Rendering
         {
             // link the shader program
             GL.UseProgram( shaderProgram );
-
-            femaleHead.Wireframe = Wireframe;
 
             GL.PushAttrib( AttribMask.AllAttribBits );
             GL.Material( MaterialFace.Front, MaterialParameter.Specular, SpecularColor );

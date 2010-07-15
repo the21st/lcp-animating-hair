@@ -51,7 +51,6 @@ namespace AnimatingHair.Rendering
 
         public Matrix4 LightProjectionMatrix, LightModelViewMatrix;
         public float Dist = 0.1f;
-        public float AlphaTreshold = 0.15f;
         public float IntensityFactor = 1f;
         private float near = 1, far = 30;
 
@@ -68,12 +67,12 @@ namespace AnimatingHair.Rendering
 
             // shader loading
             using ( StreamReader vs = new StreamReader( FilePaths.DepthVSLocation ) )
-                using ( StreamReader fs = new StreamReader( FilePaths.DepthFSLocation ) )
-                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out depthShaderProgram );
+            using ( StreamReader fs = new StreamReader( FilePaths.DepthFSLocation ) )
+                Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out depthShaderProgram );
 
             using ( StreamReader vs = new StreamReader( FilePaths.OpacityVSLocation ) )
-                using ( StreamReader fs = new StreamReader( FilePaths.OpacityFSLocation ) )
-                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out opacityShaderProgram );
+            using ( StreamReader fs = new StreamReader( FilePaths.OpacityFSLocation ) )
+                Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out opacityShaderProgram );
 
             getShaderVariableLocations();
 
@@ -204,7 +203,7 @@ namespace AnimatingHair.Rendering
             GL.Uniform3( eyeLoc, light.Position );
             //GL.Uniform3( eyeLoc, camera.Eye );
 
-            GL.Uniform1( alphaTresholdLoc, AlphaTreshold );
+            GL.Uniform1( alphaTresholdLoc, RenderingOptions.Instance.AlphaTreshold );
 
             for ( int i = 0; i < hair.Particles.Length; i++ )
             {
@@ -240,7 +239,7 @@ namespace AnimatingHair.Rendering
 
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "dist" );
             GL.Uniform1( distLoc2, Dist );
-            GL.Uniform1( alphaTresholdLoc2, AlphaTreshold );
+            GL.Uniform1( alphaTresholdLoc2, RenderingOptions.Instance.AlphaTreshold );
             GL.Uniform1( intensityFactorLoc2, IntensityFactor );
 
             GL.Uniform3( eyeLoc2, light.Position );
