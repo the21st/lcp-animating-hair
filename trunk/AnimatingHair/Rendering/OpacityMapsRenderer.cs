@@ -26,6 +26,8 @@ namespace AnimatingHair.Rendering
         private int sign1Loc;
         private int sign2Loc;
         private int alphaTresholdLoc;
+        private int billboardWidthLoc;
+        private int billboardLengthLoc;
 
         // the opacity shader uniform locations
         private int axisLoc2;
@@ -37,6 +39,9 @@ namespace AnimatingHair.Rendering
         private int distLoc2;
         private int alphaTresholdLoc2;
         private int intensityFactorLoc2;
+        private int billboardWidthLoc2;
+        private int billboardLengthLoc2;
+        private int deepOpacityMapDistanceLoc2;
 
         // shader objects
         private readonly int depthShaderProgram;
@@ -203,6 +208,9 @@ namespace AnimatingHair.Rendering
             GL.Uniform3( eyeLoc, light.Position );
             //GL.Uniform3( eyeLoc, camera.Eye );
 
+            GL.Uniform1( billboardWidthLoc, RenderingOptions.Instance.BillboardWidth );
+            GL.Uniform1( billboardLengthLoc, RenderingOptions.Instance.BillboardLength );
+
             GL.Uniform1( alphaTresholdLoc, RenderingOptions.Instance.AlphaTreshold );
 
             for ( int i = 0; i < hair.Particles.Length; i++ )
@@ -236,6 +244,10 @@ namespace AnimatingHair.Rendering
             GL.ActiveTexture( TextureUnit.Texture1 );
             GL.BindTexture( TextureTarget.Texture2D, DepthTexture );
             GL.Uniform1( depthMapLoc2, 1 );
+
+            GL.Uniform1( billboardWidthLoc2, RenderingOptions.Instance.BillboardWidth );
+            GL.Uniform1( billboardLengthLoc2, RenderingOptions.Instance.BillboardLength );
+            GL.Uniform1( deepOpacityMapDistanceLoc2, RenderingOptions.Instance.DeepOpacityMapDistance );
 
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "dist" );
             GL.Uniform1( distLoc2, Dist );
@@ -330,6 +342,8 @@ namespace AnimatingHair.Rendering
             sign2Loc = GL.GetAttribLocation( depthShaderProgram, "sign2" );
             eyeLoc = GL.GetUniformLocation( depthShaderProgram, "eye" );
             alphaTresholdLoc = GL.GetUniformLocation( depthShaderProgram, "alphaTreshold" );
+            billboardLengthLoc = GL.GetUniformLocation( depthShaderProgram, "renderSizeVertical" );
+            billboardWidthLoc = GL.GetUniformLocation( depthShaderProgram, "renderSizeHorizontal" );
 
             axisLoc2 = GL.GetUniformLocation( opacityShaderProgram, "axis" );
             sign1Loc2 = GL.GetAttribLocation( opacityShaderProgram, "sign1" );
@@ -340,6 +354,9 @@ namespace AnimatingHair.Rendering
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "distt" );
             alphaTresholdLoc2 = GL.GetUniformLocation( opacityShaderProgram, "alphaTreshold" );
             intensityFactorLoc2 = GL.GetUniformLocation( opacityShaderProgram, "intensityFactor" );
+            billboardLengthLoc2 = GL.GetUniformLocation( opacityShaderProgram, "renderSizeVertical" );
+            billboardWidthLoc2 = GL.GetUniformLocation( opacityShaderProgram, "renderSizeHorizontal" );
+            deepOpacityMapDistanceLoc2 = GL.GetUniformLocation( opacityShaderProgram, "deepOpacityMapDistance" );
         }
     }
 }

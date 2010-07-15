@@ -24,10 +24,14 @@ namespace AnimatingHair.Rendering
         private int axisLoc;
         private int eyeLoc;
         private int lightLoc;
-        private int sign1Loc;
-        private int sign2Loc;
         private int hairTextureLoc;
         private int deepOpacityMapLoc;
+        private int billboardWidthLoc;
+        private int billboardLengthLoc;
+        private int deepOpacityMapDistanceLoc;
+        // the shader attribute locations
+        private int sign1Loc;
+        private int sign2Loc;
 
         // shader objects
         private readonly int shaderProgram;
@@ -101,6 +105,10 @@ namespace AnimatingHair.Rendering
             GL.BindTexture( TextureTarget.Texture2D, DeepOpacityMap );
             GL.Uniform1( deepOpacityMapLoc, 2 );
 
+            GL.Uniform1( billboardWidthLoc, RenderingOptions.Instance.BillboardWidth );
+            GL.Uniform1( billboardLengthLoc, RenderingOptions.Instance.BillboardLength );
+            GL.Uniform1( deepOpacityMapDistanceLoc, RenderingOptions.Instance.DeepOpacityMapDistance );
+
             GL.Uniform3( eyeLoc, camera.Eye );
             GL.Uniform3( lightLoc, light.Position );
 
@@ -161,6 +169,10 @@ namespace AnimatingHair.Rendering
             lightLoc = GL.GetUniformLocation( shaderProgram, "light" );
             hairTextureLoc = GL.GetUniformLocation( shaderProgram, "hairTexture" );
             deepOpacityMapLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMap" );
+            billboardLengthLoc = GL.GetUniformLocation( shaderProgram, "renderSizeVertical" );
+            billboardWidthLoc = GL.GetUniformLocation( shaderProgram, "renderSizeHorizontal" );
+            deepOpacityMapDistanceLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMapDistance" );
+
             sign1Loc = GL.GetAttribLocation( shaderProgram, "sign1" );
             sign2Loc = GL.GetAttribLocation( shaderProgram, "sign2" );
         }

@@ -2,8 +2,8 @@
 uniform vec3 eye;
 attribute float sign1, sign2;
 
-const float renderSizeHorizontal = 0.2;
-const float renderSizeVertical = 0.5;
+uniform float renderSizeHorizontal;
+uniform float renderSizeVertical;
 
 varying float opacityFactor;
 

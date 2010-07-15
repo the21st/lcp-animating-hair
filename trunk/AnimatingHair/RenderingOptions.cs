@@ -15,7 +15,10 @@ namespace AnimatingHair
             DebugHair = false;
             ShowConnections = false;
 
+            BillboardLength = 0.5f;
+            BillboardWidth = 0.2f;
             AlphaTreshold = 0.15f;
+            DeepOpacityMapDistance = 0.02f;
 
             ShowBust = true;
             ShowMetaBust = false;
