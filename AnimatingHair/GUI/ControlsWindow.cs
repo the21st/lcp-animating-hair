@@ -93,10 +93,10 @@ namespace AnimatingHair.GUI
             checkBoxShowVoxelGrid.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowVoxelGrid", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxOnlyShowOccupiedVoxels.DataBindings.Add( "Checked", RenderingOptions.Instance, "OnlyShowOccupiedVoxels", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxShowDebugAir.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowDebugAir", true, DataSourceUpdateMode.OnPropertyChanged );
-            //visualTrackBarBillboardLength.BindFloatData( RenderingOptions.Instance, "BillboardLength", 0, 1 );
-            //visualTrackBarBillboardWidth.BindFloatData( RenderingOptions.Instance, "BillboardWidth", 0, 1 );
+            visualTrackBarBillboardLength.BindFloatData( RenderingOptions.Instance, "BillboardLength", 0, 1 );
+            visualTrackBarBillboardWidth.BindFloatData( RenderingOptions.Instance, "BillboardWidth", 0, 1 );
             visualTrackBarAlphaTreshold.BindFloatData( RenderingOptions.Instance, "AlphaTreshold", 0, 1 );
-            //visualTrackBarDeepOpacityMapDistance.BindFloatData( RenderingOptions.Instance, "DeepOpacityMapDistance", 0.001f, 0.1f );
+            visualTrackBarDeepOpacityMapDistance.BindFloatData( RenderingOptions.Instance, "DeepOpacityMapDistance", 0.001f, 0.1f );
             visualTrackBarLightCruiseSpeed.BindFloatData( RenderingOptions.Instance, "LightCruiseSpeed", 0.0005f, 0.01f );
             visualTrackBarLightDistance.BindFloatData( RenderingOptions.Instance, "LightDistance", 1, 20 );
             visualTrackBarLightIntensity.BindFloatData( RenderingOptions.Instance, "LightIntensity", 0, 3 );

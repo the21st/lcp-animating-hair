@@ -1,6 +1,7 @@
 ﻿varying vec4 diffuse, ambientGlobal, ambient;
 varying vec3 normal, lightDir, halfVector;
 varying float dist;
+uniform float deepOpacityMapDistance;
 
 varying vec4 shadowCoord;
 uniform sampler2D deepOpacityMap;
@@ -33,13 +34,17 @@ void main()
 	color += att * gl_FrontMaterial.specular * gl_LightSource[0].specular * 
 				pow( NdotHV, gl_FrontMaterial.shininess );
 	
-	
+	/*
 	float shadow = 1.0;
 	float tmp;
 	vec3 delta; // TODO: prisposob okolnostiam
-	delta[0] = 0.02;
-	delta[1] = 0.04;
-	delta[2] = 0.06;
+	//delta[0] = 0.02;
+	//delta[1] = 0.04;
+	//delta[2] = 0.06;
+	delta[0] = deepOpacityMapDistance;
+	delta[1] = 2 * deepOpacityMapDistance;
+	delta[2] = 3 * deepOpacityMapDistance;
+	
 	vec3 lightCoord = shadowCoord.xyz / shadowCoord.w;
 	lightCoord = vec3(0.5) * ( lightCoord + vec3(1.0) );
 	float depth = lightCoord.z;
@@ -83,7 +88,8 @@ void main()
 	if ( depthStart > 0.999 ) // na fragmenty ktorym prislucha prave 'diera' v depth mape neaplikujem tien
 		shadow = 0;
 	
-	//color.rgb *= ( 1.0 - shadow );
+	color.rgb *= ( 1.0 - shadow );
+	*/
 	
 	
 	gl_FragColor = color;
