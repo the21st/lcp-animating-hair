@@ -109,10 +109,10 @@
     <Compile Include="Auxiliary\KernelEvaluator.cs" />
     <Compile Include="Auxiliary\Parallel.cs" />
     <Compile Include="Auxiliary\Sphere.cs" />
-    <Compile Include="ControlsWindow.cs">
+    <Compile Include="GUI\ControlsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ControlsWindow.Designer.cs">
+    <Compile Include="GUI\ControlsWindow.Designer.cs">
       <DependentUpon>ControlsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Entity\Air.cs" />
@@ -147,6 +147,7 @@
     <Compile Include="Initialization\SceneInitializer.cs" />
     <Compile Include="Initialization\SphericalCoordinate.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="RenderingOptions.cs" />
     <Compile Include="Rendering\Debug\AirRenderer.cs" />
     <Compile Include="Rendering\Debug\MetaBustRenderer.cs" />
     <Compile Include="Rendering\OpacityMapsRenderer.cs" />
@@ -156,7 +157,7 @@
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Entity\Scene.cs" />
     <Compile Include="Auxiliary\ParticlePair.cs" />
-    <Compile Include="Rendering\Debug\SimpleHairRenderer.cs" />
+    <Compile Include="Rendering\Debug\DebugHairRenderer.cs" />
     <Compile Include="Rendering\Debug\VoxelGridRenderer.cs" />
     <Compile Include="Utility.cs" />
   </ItemGroup>
@@ -180,7 +181,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="ControlsWindow.resx">
+    <EmbeddedResource Include="GUI\ControlsWindow.resx">
       <DependentUpon>ControlsWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

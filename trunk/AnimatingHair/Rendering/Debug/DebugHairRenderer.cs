@@ -10,12 +10,11 @@ namespace AnimatingHair.Rendering.Debug
     /// <summary>
     /// Provides debug rendering for hair.
     /// </summary>
-    class SimpleHairRenderer
+    class DebugHairRenderer
     {
         private readonly Hair hair;
-        public bool RenderConnections = false;
 
-        public SimpleHairRenderer( Hair hair )
+        public DebugHairRenderer( Hair hair )
         {
             this.hair = hair;
         }
@@ -34,7 +33,7 @@ namespace AnimatingHair.Rendering.Debug
                 renderParticle( hp );
             }
 
-            if ( !RenderConnections )
+            if ( !RenderingOptions.Instance.ShowConnections )
                 return;
 
             for ( int i = 0; i < hair.ParticlePairsIteration.Count; i++ )

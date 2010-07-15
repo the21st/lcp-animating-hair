@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AnimatingHair.Auxiliary;
 using OpenTK;
@@ -34,7 +34,7 @@ namespace AnimatingHair.Initialization
             Sphere[] spheres = new Sphere[ 1 ];
             spheres[ 0 ] = bust.Head;
             Cylinder[] cylinders = new Cylinder[ 0 ]; // TODO: cantilever collisions
-            cbs = new CantileverBeamSimulator( spheres, cylinders, Const.E, Const.SecondMomentOfArea );
+            cbs = new CantileverBeamSimulator( spheres, cylinders, Const.Instance.ElasticModulus, Const.Instance.SecondMomentOfArea );
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace AnimatingHair.Initialization
                 sc = scg.GenerateRandomSphericalCoordinate();
 
                 // then, generate the distance of the particle from the root of the hair (can be negative for root particles)
-                float length = (Const.HairLength + Const.s_r) * (float)r.NextDouble() - Const.s_r;
+                float length = (Const.Instance.HairLength + Const.Instance.MaxRootDepth) * (float)r.NextDouble() - Const.Instance.MaxRootDepth;
 
                 // transform the spherical coordinate into euclidean coordinate
                 ParticleCoordinate newCoordinate = ct.TransformCoordinate( sc.Azimuth, sc.Elevation, length );
@@ -124,10 +124,10 @@ namespace AnimatingHair.Initialization
 
                 do
                 {
-                    elevationSentinel = 0.5f * Const.PI * (float)r.NextDouble();
-                    elevation = (float)Math.Sin( elevationSentinel ) * Const.PI * (float)r.NextDouble();
-                    //elevation = Const.PI/2 * (float)r.NextDouble();
-                    azimuth = Const.PI * (float)r.NextDouble();
+                    elevationSentinel = 0.5f * MathHelper.Pi * (float)r.NextDouble();
+                    elevation = (float)Math.Sin( elevationSentinel ) * MathHelper.Pi * (float)r.NextDouble();
+                    //elevation = Const.Instance.PI/2 * (float)r.NextDouble();
+                    azimuth = MathHelper.Pi * (float)r.NextDouble();
                     result = sphere.Center + polarToCartesian( azimuth, elevation, sphere.Radius );
                 } while ( (result - ear1).Length < minDist || (result - ear2).Length < minDist );
 

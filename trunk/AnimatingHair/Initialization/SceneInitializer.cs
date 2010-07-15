@@ -28,7 +28,7 @@ namespace AnimatingHair.Initialization
             Air air = airInitializer.InitializeAir();
 
             // NOTE: constant
-            VoxelGrid voxelGrid = new VoxelGrid( new Vector3( -3, -5, -3 ), new float[] { 7, 8, 10 }, 2 * Const.H2 );
+            VoxelGrid voxelGrid = new VoxelGrid( new Vector3( -3, -5, -3 ), new float[] { 7, 8, 10 }, 2 * Const.Instance.H2 );
 
             scene = new Scene
                     {
@@ -36,7 +36,7 @@ namespace AnimatingHair.Initialization
                         Bust = bust,
                         Hair = hair,
                         VoxelGrid = voxelGrid,
-                        Particles = new SPHParticle[ Const.HairParticleCount + Const.AirParticleCount ]
+                        Particles = new SPHParticle[ Const.Instance.HairParticleCount + Const.Instance.AirParticleCount ]
                     };
 
 

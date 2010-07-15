@@ -36,13 +36,15 @@
             // 
             // trackBar
             // 
+            this.trackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBar.AutoSize = false;
-            this.trackBar.LargeChange = 25;
-            this.trackBar.Location = new System.Drawing.Point( 3, 3 );
+            this.trackBar.LargeChange = 15;
+            this.trackBar.Location = new System.Drawing.Point( 0, 16 );
             this.trackBar.Maximum = 149;
             this.trackBar.Name = "trackBar";
             this.trackBar.Size = new System.Drawing.Size( 151, 20 );
-            this.trackBar.SmallChange = 5;
+            this.trackBar.SmallChange = 4;
             this.trackBar.TabIndex = 0;
             this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar.ValueChanged += new System.EventHandler( this.trackBar_ValueChanged );
@@ -50,7 +52,7 @@
             // label
             // 
             this.label.AutoSize = true;
-            this.label.Location = new System.Drawing.Point( 216, 6 );
+            this.label.Location = new System.Drawing.Point( 3, 0 );
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size( 35, 13 );
             this.label.TabIndex = 1;
@@ -58,7 +60,8 @@
             // 
             // textBox
             // 
-            this.textBox.Location = new System.Drawing.Point( 160, 3 );
+            this.textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox.Location = new System.Drawing.Point( 157, 16 );
             this.textBox.Name = "textBox";
             this.textBox.Size = new System.Drawing.Size( 50, 20 );
             this.textBox.TabIndex = 2;
@@ -72,7 +75,7 @@
             this.Controls.Add( this.label );
             this.Controls.Add( this.trackBar );
             this.Name = "VisualTrackBar";
-            this.Size = new System.Drawing.Size( 297, 26 );
+            this.Size = new System.Drawing.Size( 207, 36 );
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using AnimatingHair.Entity;
 using AnimatingHair.Auxiliary;
 using AnimatingHair.Entity.PhysicalEntity;
@@ -24,14 +24,14 @@ namespace AnimatingHair.Initialization
 
         private void distributeParticles()
         {
-            IParticleDistributor distributor = new CylinderDistributor( Const.Seed, new Cylinder( new Vector3( 0, -1, 4 ), new Vector3( 0, -1, 7 ), 2 ) );
+            IParticleDistributor distributor = new CylinderDistributor( Const.Instance.Seed, new Cylinder( new Vector3( 0, -1, 4 ), new Vector3( 0, -1, 7 ), 2 ) );
 
-            IEnumerable<ParticleCoordinate> coordinates = distributor.DistributeParticles( Const.AirParticleCount );
+            IEnumerable<ParticleCoordinate> coordinates = distributor.DistributeParticles( Const.Instance.AirParticleCount );
 
             int i = 0;
             foreach ( ParticleCoordinate coordinate in coordinates )
             {
-                AirParticle airParticle = new AirParticle( i, Const.AirParticleMass() )
+                AirParticle airParticle = new AirParticle( i, Const.Instance.AirParticleMass() )
                                           {
                                               Position = coordinate.Position
                                           };

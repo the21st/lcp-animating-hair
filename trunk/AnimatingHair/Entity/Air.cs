@@ -37,8 +37,8 @@ namespace AnimatingHair.Entity
         public Air()
         {
             boundarySphere = new Sphere( Vector3.UnitZ * 3, 6 );
-            Particles = new AirParticle[ Const.AirParticleCount ];
-            cylinderCoordinateGenerator = new CylinderDistributor.CylinderCoordinateGenerator( Const.Seed, new Cylinder( new Vector3( 0, -1, 4 ), new Vector3( 0, -1, 7 ), 2 ) );
+            Particles = new AirParticle[ Const.Instance.AirParticleCount ];
+            cylinderCoordinateGenerator = new CylinderDistributor.CylinderCoordinateGenerator( Const.Instance.Seed, new Cylinder( new Vector3( 0, -1, 4 ), new Vector3( 0, -1, 7 ), 2 ) );
         }
 
         /// <summary>
@@ -117,8 +117,8 @@ namespace AnimatingHair.Entity
         {
             // apply equation of motion from SPH:
 
-            float P_i = Const.k_a_air * (particle1.Density - Const.rho_0_air);
-            float P_j = Const.k_a_air * (particle2.Density - Const.rho_0_air);
+            float P_i = Const.Instance.AirDensityForceMagnitude * (particle1.Density - Const.Instance.AverageAirDensity);
+            float P_j = Const.Instance.AirDensityForceMagnitude * (particle2.Density - Const.Instance.AverageAirDensity);
 
             Vector3 wgrad = KernelEvaluator.ComputeKernelGradientH2( particle1.Position - particle2.Position, distance );
             float d1 = P_i / (particle1.Density * particle1.Density);

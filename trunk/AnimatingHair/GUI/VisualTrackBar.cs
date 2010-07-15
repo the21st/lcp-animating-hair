@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace AnimatingHair.GUI
@@ -14,10 +8,14 @@ namespace AnimatingHair.GUI
         private float minValue;
         private float maxValue;
         private float range;
+        private bool intData = false;
+        private bool loaded = false;
 
         public VisualTrackBar()
         {
             InitializeComponent();
+
+            trackBar.Maximum = trackBar.Width - 20;
         }
 
         public string Label
@@ -26,27 +24,58 @@ namespace AnimatingHair.GUI
             set { label.Text = value; }
         }
 
-        public void BindFloatData(object dataSource, string dataMember, float min, float max)
+        public void BindFloatData( object dataSource, string dataMember, float min, float max )
         {
-            textBox.DataBindings.Add( new Binding( "Text", dataSource, dataMember ) );
+            intData = false;
+            bindData( dataSource, dataMember, min, max );
+        }
+
+        public void BindIntData( object dataSource, string dataMember, int min, int max )
+        {
+            intData = true;
+            bindData( dataSource, dataMember, min, max );
+        }
+
+        private void bindData( object dataSource, string dataMember, float min, float max )
+        {
+            Binding binding = new Binding( "Text", dataSource, dataMember, false, DataSourceUpdateMode.OnPropertyChanged );
+            textBox.DataBindings.Add( binding );
             minValue = min;
             maxValue = max;
             range = max - min;
+
+            // manual refresh of the binding by reflection, binding.ReadValue() does not work
+            float value;
+            if (intData)
+                value = (int)dataSource.GetType().GetProperty( dataMember ).GetValue( dataSource, null );
+            else
+                value = (float)dataSource.GetType().GetProperty( dataMember ).GetValue( dataSource, null );
+
+            value -= min;
+            value /= range;
+            value *= trackBar.Maximum;
+            trackBar.Value = (int)Math.Round( value );
+
+            loaded = true;
         }
 
         private void trackBar_ValueChanged( object sender, EventArgs e )
         {
-            // asd
+            if ( !loaded ) return;
+
             float value = (float)trackBar.Value / trackBar.Maximum;
             value *= range;
             value += minValue;
-            textBox.Text = value.ToString();
+            if ( intData )
+                textBox.Text = Convert.ToInt32( value ).ToString();
+            else
+                textBox.Text = value.ToString();
         }
 
         private void textBox_KeyPress( object sender, KeyPressEventArgs e )
         {
-            //if (e.KeyChar == '\r')
-            //    Console.WriteLine(  );
+            if ( e.KeyChar == '\r' )
+                MessageBox.Show( "ENTER" );
         }
     }
 }

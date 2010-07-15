@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using OpenTK;
 
 namespace AnimatingHair.Entity.PhysicalEntity
@@ -95,8 +95,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         private void rkStep1()
         {
-            kVelocity[ 1 ] = Acceleration * Const.TimeStep;
-            kPosition[ 1 ] = startVelocity * Const.TimeStep;
+            kVelocity[ 1 ] = Acceleration * Const.Instance.TimeStep;
+            kPosition[ 1 ] = startVelocity * Const.Instance.TimeStep;
 
             // priprava na k2:
             Position = startPosition + kPosition[ 1 ] / 2;
@@ -105,8 +105,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         private void rkStep2()
         {
-            kVelocity[ 2 ] = Acceleration * Const.TimeStep;
-            kPosition[ 2 ] = (startVelocity + kVelocity[ 1 ] / 2) * Const.TimeStep;
+            kVelocity[ 2 ] = Acceleration * Const.Instance.TimeStep;
+            kPosition[ 2 ] = (startVelocity + kVelocity[ 1 ] / 2) * Const.Instance.TimeStep;
 
             // priprava na k3:
             Position = startPosition + kPosition[ 2 ] / 2;
@@ -115,8 +115,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         private void rkStep3()
         {
-            kVelocity[ 3 ] = Acceleration * Const.TimeStep;
-            kPosition[ 3 ] = (startVelocity + kVelocity[ 2 ] / 2) * Const.TimeStep;
+            kVelocity[ 3 ] = Acceleration * Const.Instance.TimeStep;
+            kPosition[ 3 ] = (startVelocity + kVelocity[ 2 ] / 2) * Const.Instance.TimeStep;
 
             // priprava na k4:
             Position = startPosition + kPosition[ 3 ];
@@ -125,8 +125,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         private void rkStep4()
         {
-            kVelocity[ 4 ] = Acceleration * Const.TimeStep;
-            kPosition[ 4 ] = (startVelocity + kVelocity[ 3 ]) * Const.TimeStep;
+            kVelocity[ 4 ] = Acceleration * Const.Instance.TimeStep;
+            kPosition[ 4 ] = (startVelocity + kVelocity[ 3 ]) * Const.Instance.TimeStep;
         }
 
         private void rkFinalize()
