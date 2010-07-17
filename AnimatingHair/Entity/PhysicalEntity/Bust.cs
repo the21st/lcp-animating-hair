@@ -20,7 +20,7 @@ namespace AnimatingHair.Entity.PhysicalEntity
         public Sphere ShoulderTipLeft { get; set; }
         public Sphere ShoulderTipRight { get; set; }
 
-        public void CalculateForcesOnParticles( SPHParticle[] particles )
+        public void ApplyForcesOnParticles( SPHParticle[] particles )
         {
             Parallel.For( 0, particles.Length, i =>
             //for ( int i = 0; i < particles.Length; i++ )
@@ -57,7 +57,7 @@ namespace AnimatingHair.Entity.PhysicalEntity
             }
             else if ( distance < sphere.Radius )
             {
-                particle.Force += particle.Mass * normal;
+                particle.Force += 4 * particle.Mass * normal;
             }
         }
 
@@ -72,7 +72,7 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
             if ( distance < cylinder.Radius )
             {
-                particle.Force += particle.Mass * normal;
+                particle.Force += 4 * particle.Mass * normal;
                 return true;
             }
             else if ( (distance < cylinder.Radius + interactionDistance) && (distance > cylinder.Radius) )

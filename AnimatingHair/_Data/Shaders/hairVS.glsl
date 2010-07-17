@@ -6,70 +6,42 @@ attribute float sign1, sign2;
 uniform float renderSizeHorizontal;
 uniform float renderSizeVertical;
 
+uniform mat4 cameraModelViewMatrix;
+uniform mat4 lightModelViewMatrix;
+uniform mat4 lightProjectionMatrix;
+
 varying vec3 vertexPos;
 varying vec3 lightPos;
 varying vec3 eyePos;
 varying vec3 hairTangent;
+
 varying float opacityFactor;
 varying vec4 shadowCoord;
 
 void main()
 {
 	gl_TexCoord[0] = gl_MultiTexCoord0;
-	//shadowCoord = gl_TextureMatrix[7] * gl_Vertex;
-
-	vertexPos = vec3( gl_Vertex );
-	hairTangent = normalize( axis );
-	lightPos = light;
-	eyePos = eye;
 	
-	vec3 look = eye - vertexPos;
+	vertexPos = vec3( gl_ModelViewMatrix * gl_Vertex );
+	hairTangent = gl_NormalMatrix * axis;
+	hairTangent = normalize( hairTangent );
+	lightPos = vec3( cameraModelViewMatrix * vec4( light, 1 ) );
+	eyePos = vec3( cameraModelViewMatrix * vec4( eye, 1 ) );
+	
+	vec3 look = eyePos - vertexPos;
 	look = normalize( look );
 	vec3 up = hairTangent;
 	vec3 right = cross( up, look );
-	
 	right = normalize( right );
-	//up = normalize( up ); // nemalo by byt potrebne
-	look = cross( right, up );
-	
 	right = -right;
 		
 	vertexPos += sign1 * renderSizeHorizontal * right + sign2 * renderSizeVertical * up;
 	
-	shadowCoord = gl_TextureMatrix[7] * vec4( vertexPos, 1 );
-	
-	gl_Position = gl_ModelViewProjectionMatrix * vec4(vertexPos, 1);
-	
+	shadowCoord = lightProjectionMatrix * lightModelViewMatrix * gl_ModelViewMatrixInverse * vec4( vertexPos, 1 );
+	gl_Position = gl_ProjectionMatrix * vec4( vertexPos, 1 );
 	
 	
-	//vec4 v = gl_ModelViewMatrix * gl_Vertex;
-	//
-	//lightPos = light;
-	//eyePos = eye;
-	//vertexPos = vec3( gl_Vertex );
-	//
-	//hairTangent = normalize( axis );
-	//vec2 aProj2 = hairTangent.xy;
-	//aProj2 = normalize(aProj2);
-	//
-	//vertexPos.x += sign1 * renderSizeHorizontal * (-aProj2.y) + sign2 * renderSizeVertical * aProj2.x;
-	//vertexPos.y += sign1 * renderSizeHorizontal * aProj2.x + sign2 * renderSizeVertical * aProj2.y;
-	//shadowCoord = gl_TextureMatrix[7] * vec4( vertexPos, 1 );
-	//
-	//vec3 a = normalize( vec3( gl_ModelViewMatrix * vec4( axis, 1 ) ) );
-	//vec2 aProj = a.xy;
-	//aProj = normalize(aProj);
-	//
-	//v.x += sign1 * renderSizeHorizontal * (-aProj.y) + sign2 * renderSizeVertical * aProj.x;
-	//v.y += sign1 * renderSizeHorizontal * aProj.x + sign2 * renderSizeVertical * aProj.y;
-	//
-	//v = gl_ProjectionMatrix * v;
-	//gl_Position = v;
-	
-	
-	
-	vec3 d_p = eye - vertexPos;
-	float cosTheta = dot( normalize( d_p ), hairTangent );
+	float cosTheta = dot( look, hairTangent );
 	float sinTheta = sqrt( 1 - (cosTheta * cosTheta) );
 	opacityFactor = sinTheta;
 }

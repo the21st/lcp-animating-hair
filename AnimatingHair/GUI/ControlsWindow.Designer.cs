@@ -38,6 +38,10 @@ namespace AnimatingHair.GUI
             this.FPSLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarAverageHairDensity = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarHairDensityForceMagnitude = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarFrictionDamp = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarCollisionDamp = new AnimatingHair.GUI.VisualTrackBar();
             this.buttonColor = new System.Windows.Forms.Button();
             this.buttonPause = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -52,14 +56,24 @@ namespace AnimatingHair.GUI
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarAirParticleCount = new AnimatingHair.GUI.VisualTrackBar();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarMaxRootDepth = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarHairLength = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarHairParticleCount = new AnimatingHair.GUI.VisualTrackBar();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarTimeStep = new AnimatingHair.GUI.VisualTrackBar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarAirFriction = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarGravity = new AnimatingHair.GUI.VisualTrackBar();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarAirDensityForceMagnitude = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarAverageAirDensity = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarDragCoefficient = new AnimatingHair.GUI.VisualTrackBar();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.groupBox12 = new System.Windows.Forms.GroupBox();
             this.checkBoxShowDebugAir = new System.Windows.Forms.CheckBox();
@@ -71,48 +85,38 @@ namespace AnimatingHair.GUI
             this.checkBoxShowBust = new System.Windows.Forms.CheckBox();
             this.checkBoxShowHair = new System.Windows.Forms.CheckBox();
             this.groupBoxHairRendering = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarBillboardWidth = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarBillboardLength = new AnimatingHair.GUI.VisualTrackBar();
             this.checkBoxDirectionalOpacity = new System.Windows.Forms.CheckBox();
             this.checkBoxShowConnections = new System.Windows.Forms.CheckBox();
             this.checkBoxDebugHair = new System.Windows.Forms.CheckBox();
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
-            this.groupBox13 = new System.Windows.Forms.GroupBox();
-            this.checkBoxCruisingLight = new System.Windows.Forms.CheckBox();
-            this.tabPage7 = new System.Windows.Forms.TabPage();
-            this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.colorDialog = new System.Windows.Forms.ColorDialog();
-            this.diffuseDialog = new System.Windows.Forms.ColorDialog();
-            this.ambientDialog = new System.Windows.Forms.ColorDialog();
-            this.specularDialog = new System.Windows.Forms.ColorDialog();
-            this.visualTrackBarAirParticleCount = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarMaxRootDepth = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarHairLength = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarHairParticleCount = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarTimeStep = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarAirFriction = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarGravity = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarAverageHairDensity = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarHairDensityForceMagnitude = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarFrictionDamp = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarCollisionDamp = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarAirDensityForceMagnitude = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarAverageAirDensity = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarDragCoefficient = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarBillboardWidth = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarBillboardLength = new AnimatingHair.GUI.VisualTrackBar();
+            this.label2 = new System.Windows.Forms.Label();
+            this.comboBoxDeepOpacityMapResolution = new System.Windows.Forms.ComboBox();
             this.visualTrackBarDeepOpacityMapDistance = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarAlphaTreshold = new AnimatingHair.GUI.VisualTrackBar();
+            this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.visualTrackBarLightIntensity = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarLightDistance = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarLightCruiseSpeed = new AnimatingHair.GUI.VisualTrackBar();
+            this.checkBoxCruisingLight = new System.Windows.Forms.CheckBox();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
             this.visualTrackBarAirMassFactor = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarDensityOfHairMaterial = new AnimatingHair.GUI.VisualTrackBar();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.visualTrackBarElasticModulus = new AnimatingHair.GUI.VisualTrackBar();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarDensityOfHairMaterial = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarMaxNeighbors = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarHairMassFactor = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarNeighborAlignmentTreshold = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarSecondMomentOfArea = new AnimatingHair.GUI.VisualTrackBar();
+            this.colorDialog = new System.Windows.Forms.ColorDialog();
+            this.diffuseDialog = new System.Windows.Forms.ColorDialog();
+            this.ambientDialog = new System.Windows.Forms.ColorDialog();
+            this.specularDialog = new System.Windows.Forms.ColorDialog();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.buttonCutting = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSeed)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -138,6 +142,7 @@ namespace AnimatingHair.GUI
             this.tabPage7.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // glControl
@@ -152,11 +157,11 @@ namespace AnimatingHair.GUI
             // 
             // buttonRestartWithRandomSeed
             // 
-            this.buttonRestartWithRandomSeed.Location = new System.Drawing.Point( 148, 452 );
+            this.buttonRestartWithRandomSeed.Location = new System.Drawing.Point( 1018, 578 );
             this.buttonRestartWithRandomSeed.Name = "buttonRestartWithRandomSeed";
-            this.buttonRestartWithRandomSeed.Size = new System.Drawing.Size( 149, 30 );
+            this.buttonRestartWithRandomSeed.Size = new System.Drawing.Size( 107, 32 );
             this.buttonRestartWithRandomSeed.TabIndex = 21;
-            this.buttonRestartWithRandomSeed.Text = "Restart with random seed";
+            this.buttonRestartWithRandomSeed.Text = "with random seed";
             this.buttonRestartWithRandomSeed.UseVisualStyleBackColor = true;
             this.buttonRestartWithRandomSeed.Click += new System.EventHandler( this.buttonRestartWithRandomSeed_Click );
             // 
@@ -174,9 +179,9 @@ namespace AnimatingHair.GUI
             // 
             // buttonRestart
             // 
-            this.buttonRestart.Location = new System.Drawing.Point( 6, 452 );
+            this.buttonRestart.Location = new System.Drawing.Point( 971, 578 );
             this.buttonRestart.Name = "buttonRestart";
-            this.buttonRestart.Size = new System.Drawing.Size( 125, 30 );
+            this.buttonRestart.Size = new System.Drawing.Size( 50, 32 );
             this.buttonRestart.TabIndex = 18;
             this.buttonRestart.Text = "Restart";
             this.buttonRestart.UseVisualStyleBackColor = true;
@@ -228,6 +233,38 @@ namespace AnimatingHair.GUI
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Hair properties";
             // 
+            // visualTrackBarAverageHairDensity
+            // 
+            this.visualTrackBarAverageHairDensity.Label = "Average Hair Density";
+            this.visualTrackBarAverageHairDensity.Location = new System.Drawing.Point( 6, 103 );
+            this.visualTrackBarAverageHairDensity.Name = "visualTrackBarAverageHairDensity";
+            this.visualTrackBarAverageHairDensity.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarAverageHairDensity.TabIndex = 5;
+            // 
+            // visualTrackBarHairDensityForceMagnitude
+            // 
+            this.visualTrackBarHairDensityForceMagnitude.Label = "Hair Density Force Magnitude";
+            this.visualTrackBarHairDensityForceMagnitude.Location = new System.Drawing.Point( 6, 145 );
+            this.visualTrackBarHairDensityForceMagnitude.Name = "visualTrackBarHairDensityForceMagnitude";
+            this.visualTrackBarHairDensityForceMagnitude.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarHairDensityForceMagnitude.TabIndex = 4;
+            // 
+            // visualTrackBarFrictionDamp
+            // 
+            this.visualTrackBarFrictionDamp.Label = "Friction Damp";
+            this.visualTrackBarFrictionDamp.Location = new System.Drawing.Point( 6, 61 );
+            this.visualTrackBarFrictionDamp.Name = "visualTrackBarFrictionDamp";
+            this.visualTrackBarFrictionDamp.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarFrictionDamp.TabIndex = 3;
+            // 
+            // visualTrackBarCollisionDamp
+            // 
+            this.visualTrackBarCollisionDamp.Label = "Collision Damp";
+            this.visualTrackBarCollisionDamp.Location = new System.Drawing.Point( 6, 19 );
+            this.visualTrackBarCollisionDamp.Name = "visualTrackBarCollisionDamp";
+            this.visualTrackBarCollisionDamp.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarCollisionDamp.TabIndex = 2;
+            // 
             // buttonColor
             // 
             this.buttonColor.Location = new System.Drawing.Point( 76, 200 );
@@ -240,9 +277,9 @@ namespace AnimatingHair.GUI
             // 
             // buttonPause
             // 
-            this.buttonPause.Location = new System.Drawing.Point( 822, 579 );
+            this.buttonPause.Location = new System.Drawing.Point( 822, 578 );
             this.buttonPause.Name = "buttonPause";
-            this.buttonPause.Size = new System.Drawing.Size( 91, 57 );
+            this.buttonPause.Size = new System.Drawing.Size( 91, 58 );
             this.buttonPause.TabIndex = 31;
             this.buttonPause.Text = "PAUSE SIMULATION";
             this.buttonPause.UseVisualStyleBackColor = true;
@@ -329,7 +366,7 @@ namespace AnimatingHair.GUI
             this.tabControl1.Multiline = true;
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size( 311, 541 );
+            this.tabControl1.Size = new System.Drawing.Size( 311, 540 );
             this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.FillToRight;
             this.tabControl1.TabIndex = 33;
             // 
@@ -338,13 +375,11 @@ namespace AnimatingHair.GUI
             this.tabPage2.Controls.Add( this.groupBox6 );
             this.tabPage2.Controls.Add( this.groupBox3 );
             this.tabPage2.Controls.Add( this.numericUpDownSeed );
-            this.tabPage2.Controls.Add( this.buttonRestartWithRandomSeed );
-            this.tabPage2.Controls.Add( this.buttonRestart );
             this.tabPage2.Controls.Add( this.label1 );
             this.tabPage2.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPage2.Size = new System.Drawing.Size( 303, 488 );
+            this.tabPage2.Size = new System.Drawing.Size( 303, 487 );
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Initialization";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -359,6 +394,14 @@ namespace AnimatingHair.GUI
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Air";
             // 
+            // visualTrackBarAirParticleCount
+            // 
+            this.visualTrackBarAirParticleCount.Label = "Number of Particles";
+            this.visualTrackBarAirParticleCount.Location = new System.Drawing.Point( 6, 19 );
+            this.visualTrackBarAirParticleCount.Name = "visualTrackBarAirParticleCount";
+            this.visualTrackBarAirParticleCount.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarAirParticleCount.TabIndex = 3;
+            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add( this.visualTrackBarMaxRootDepth );
@@ -371,13 +414,37 @@ namespace AnimatingHair.GUI
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Hair";
             // 
+            // visualTrackBarMaxRootDepth
+            // 
+            this.visualTrackBarMaxRootDepth.Label = "Max Root Depth";
+            this.visualTrackBarMaxRootDepth.Location = new System.Drawing.Point( 6, 103 );
+            this.visualTrackBarMaxRootDepth.Name = "visualTrackBarMaxRootDepth";
+            this.visualTrackBarMaxRootDepth.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarMaxRootDepth.TabIndex = 2;
+            // 
+            // visualTrackBarHairLength
+            // 
+            this.visualTrackBarHairLength.Label = "Hair Length";
+            this.visualTrackBarHairLength.Location = new System.Drawing.Point( 6, 61 );
+            this.visualTrackBarHairLength.Name = "visualTrackBarHairLength";
+            this.visualTrackBarHairLength.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarHairLength.TabIndex = 1;
+            // 
+            // visualTrackBarHairParticleCount
+            // 
+            this.visualTrackBarHairParticleCount.Label = "Number of Particles";
+            this.visualTrackBarHairParticleCount.Location = new System.Drawing.Point( 6, 19 );
+            this.visualTrackBarHairParticleCount.Name = "visualTrackBarHairParticleCount";
+            this.visualTrackBarHairParticleCount.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarHairParticleCount.TabIndex = 0;
+            // 
             // tabPage5
             // 
             this.tabPage5.Controls.Add( this.groupBox5 );
             this.tabPage5.Controls.Add( this.groupBox1 );
             this.tabPage5.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size( 303, 488 );
+            this.tabPage5.Size = new System.Drawing.Size( 303, 487 );
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Global";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -392,6 +459,14 @@ namespace AnimatingHair.GUI
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Simulation";
             // 
+            // visualTrackBarTimeStep
+            // 
+            this.visualTrackBarTimeStep.Label = "Time Step";
+            this.visualTrackBarTimeStep.Location = new System.Drawing.Point( 6, 19 );
+            this.visualTrackBarTimeStep.Name = "visualTrackBarTimeStep";
+            this.visualTrackBarTimeStep.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarTimeStep.TabIndex = 1;
+            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add( this.visualTrackBarAirFriction );
@@ -403,14 +478,31 @@ namespace AnimatingHair.GUI
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Environment";
             // 
+            // visualTrackBarAirFriction
+            // 
+            this.visualTrackBarAirFriction.Label = "Air Friction";
+            this.visualTrackBarAirFriction.Location = new System.Drawing.Point( 6, 61 );
+            this.visualTrackBarAirFriction.Name = "visualTrackBarAirFriction";
+            this.visualTrackBarAirFriction.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarAirFriction.TabIndex = 2;
+            // 
+            // visualTrackBarGravity
+            // 
+            this.visualTrackBarGravity.Label = "Gravity";
+            this.visualTrackBarGravity.Location = new System.Drawing.Point( 6, 19 );
+            this.visualTrackBarGravity.Name = "visualTrackBarGravity";
+            this.visualTrackBarGravity.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarGravity.TabIndex = 1;
+            // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add( this.buttonCutting );
             this.tabPage1.Controls.Add( this.buttonColor );
             this.tabPage1.Controls.Add( this.groupBox2 );
             this.tabPage1.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPage1.Size = new System.Drawing.Size( 303, 488 );
+            this.tabPage1.Size = new System.Drawing.Size( 303, 487 );
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Hair";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -422,7 +514,7 @@ namespace AnimatingHair.GUI
             this.tabPage4.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPage4.Size = new System.Drawing.Size( 303, 488 );
+            this.tabPage4.Size = new System.Drawing.Size( 303, 487 );
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Air";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -449,6 +541,30 @@ namespace AnimatingHair.GUI
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Air properties";
             // 
+            // visualTrackBarAirDensityForceMagnitude
+            // 
+            this.visualTrackBarAirDensityForceMagnitude.Label = "Air Density Force Magnitude";
+            this.visualTrackBarAirDensityForceMagnitude.Location = new System.Drawing.Point( 6, 103 );
+            this.visualTrackBarAirDensityForceMagnitude.Name = "visualTrackBarAirDensityForceMagnitude";
+            this.visualTrackBarAirDensityForceMagnitude.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarAirDensityForceMagnitude.TabIndex = 5;
+            // 
+            // visualTrackBarAverageAirDensity
+            // 
+            this.visualTrackBarAverageAirDensity.Label = "Average Air Density";
+            this.visualTrackBarAverageAirDensity.Location = new System.Drawing.Point( 6, 61 );
+            this.visualTrackBarAverageAirDensity.Name = "visualTrackBarAverageAirDensity";
+            this.visualTrackBarAverageAirDensity.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarAverageAirDensity.TabIndex = 4;
+            // 
+            // visualTrackBarDragCoefficient
+            // 
+            this.visualTrackBarDragCoefficient.Label = "Drag Coefficient";
+            this.visualTrackBarDragCoefficient.Location = new System.Drawing.Point( 6, 19 );
+            this.visualTrackBarDragCoefficient.Name = "visualTrackBarDragCoefficient";
+            this.visualTrackBarDragCoefficient.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarDragCoefficient.TabIndex = 3;
+            // 
             // tabPage3
             // 
             this.tabPage3.Controls.Add( this.groupBox12 );
@@ -459,7 +575,7 @@ namespace AnimatingHair.GUI
             this.tabPage3.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPage3.Size = new System.Drawing.Size( 303, 488 );
+            this.tabPage3.Size = new System.Drawing.Size( 303, 487 );
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Rendering";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -572,6 +688,22 @@ namespace AnimatingHair.GUI
             this.groupBoxHairRendering.TabStop = false;
             this.groupBoxHairRendering.Text = "Hair";
             // 
+            // visualTrackBarBillboardWidth
+            // 
+            this.visualTrackBarBillboardWidth.Label = "Billboard Width";
+            this.visualTrackBarBillboardWidth.Location = new System.Drawing.Point( 6, 107 );
+            this.visualTrackBarBillboardWidth.Name = "visualTrackBarBillboardWidth";
+            this.visualTrackBarBillboardWidth.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarBillboardWidth.TabIndex = 5;
+            // 
+            // visualTrackBarBillboardLength
+            // 
+            this.visualTrackBarBillboardLength.Label = "Billboard Length";
+            this.visualTrackBarBillboardLength.Location = new System.Drawing.Point( 6, 65 );
+            this.visualTrackBarBillboardLength.Name = "visualTrackBarBillboardLength";
+            this.visualTrackBarBillboardLength.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarBillboardLength.TabIndex = 4;
+            // 
             // checkBoxDirectionalOpacity
             // 
             this.checkBoxDirectionalOpacity.AutoSize = true;
@@ -609,225 +741,47 @@ namespace AnimatingHair.GUI
             this.tabPage6.Controls.Add( this.groupBox13 );
             this.tabPage6.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage6.Name = "tabPage6";
-            this.tabPage6.Size = new System.Drawing.Size( 303, 488 );
+            this.tabPage6.Size = new System.Drawing.Size( 303, 487 );
             this.tabPage6.TabIndex = 5;
             this.tabPage6.Text = "Light and Shadows";
             this.tabPage6.UseVisualStyleBackColor = true;
             // 
             // groupBox14
             // 
+            this.groupBox14.Controls.Add( this.label2 );
+            this.groupBox14.Controls.Add( this.comboBoxDeepOpacityMapResolution );
             this.groupBox14.Controls.Add( this.visualTrackBarDeepOpacityMapDistance );
             this.groupBox14.Controls.Add( this.visualTrackBarAlphaTreshold );
             this.groupBox14.Location = new System.Drawing.Point( 6, 182 );
             this.groupBox14.Name = "groupBox14";
-            this.groupBox14.Size = new System.Drawing.Size( 291, 217 );
+            this.groupBox14.Size = new System.Drawing.Size( 291, 131 );
             this.groupBox14.TabIndex = 4;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Shadows";
             // 
-            // groupBox13
+            // label2
             // 
-            this.groupBox13.Controls.Add( this.visualTrackBarLightIntensity );
-            this.groupBox13.Controls.Add( this.visualTrackBarLightDistance );
-            this.groupBox13.Controls.Add( this.visualTrackBarLightCruiseSpeed );
-            this.groupBox13.Controls.Add( this.checkBoxCruisingLight );
-            this.groupBox13.Location = new System.Drawing.Point( 6, 6 );
-            this.groupBox13.Name = "groupBox13";
-            this.groupBox13.Size = new System.Drawing.Size( 291, 170 );
-            this.groupBox13.TabIndex = 0;
-            this.groupBox13.TabStop = false;
-            this.groupBox13.Text = "Light";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point( 9, 106 );
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size( 198, 13 );
+            this.label2.TabIndex = 11;
+            this.label2.Text = "Opacity Map Resolution (requires restart)";
             // 
-            // checkBoxCruisingLight
+            // comboBoxDeepOpacityMapResolution
             // 
-            this.checkBoxCruisingLight.AutoSize = true;
-            this.checkBoxCruisingLight.Location = new System.Drawing.Point( 6, 19 );
-            this.checkBoxCruisingLight.Name = "checkBoxCruisingLight";
-            this.checkBoxCruisingLight.Size = new System.Drawing.Size( 86, 17 );
-            this.checkBoxCruisingLight.TabIndex = 0;
-            this.checkBoxCruisingLight.Text = "LightCruising";
-            this.checkBoxCruisingLight.UseVisualStyleBackColor = true;
-            this.checkBoxCruisingLight.CheckedChanged += new System.EventHandler( this.checkBoxCruisingLight_CheckedChanged );
-            // 
-            // tabPage7
-            // 
-            this.tabPage7.Controls.Add( this.visualTrackBarAirMassFactor );
-            this.tabPage7.Controls.Add( this.groupBox8 );
-            this.tabPage7.Controls.Add( this.groupBox7 );
-            this.tabPage7.Location = new System.Drawing.Point( 4, 49 );
-            this.tabPage7.Name = "tabPage7";
-            this.tabPage7.Size = new System.Drawing.Size( 303, 488 );
-            this.tabPage7.TabIndex = 6;
-            this.tabPage7.Text = "Advanced";
-            this.tabPage7.UseVisualStyleBackColor = true;
-            // 
-            // groupBox8
-            // 
-            this.groupBox8.Controls.Add( this.visualTrackBarDensityOfHairMaterial );
-            this.groupBox8.Controls.Add( this.visualTrackBarElasticModulus );
-            this.groupBox8.Location = new System.Drawing.Point( 3, 198 );
-            this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size( 297, 104 );
-            this.groupBox8.TabIndex = 12;
-            this.groupBox8.TabStop = false;
-            this.groupBox8.Text = "Hair Physical Properties";
-            // 
-            // groupBox7
-            // 
-            this.groupBox7.Controls.Add( this.visualTrackBarMaxNeighbors );
-            this.groupBox7.Controls.Add( this.visualTrackBarHairMassFactor );
-            this.groupBox7.Controls.Add( this.visualTrackBarNeighborAlignmentTreshold );
-            this.groupBox7.Controls.Add( this.visualTrackBarSecondMomentOfArea );
-            this.groupBox7.Location = new System.Drawing.Point( 3, 3 );
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size( 297, 189 );
-            this.groupBox7.TabIndex = 11;
-            this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "Hair Initialization Properties";
-            // 
-            // colorDialog
-            // 
-            this.colorDialog.Color = System.Drawing.Color.White;
-            // 
-            // diffuseDialog
-            // 
-            this.diffuseDialog.Color = System.Drawing.Color.White;
-            // 
-            // ambientDialog
-            // 
-            this.ambientDialog.Color = System.Drawing.Color.White;
-            // 
-            // specularDialog
-            // 
-            this.specularDialog.Color = System.Drawing.Color.White;
-            // 
-            // visualTrackBarAirParticleCount
-            // 
-            this.visualTrackBarAirParticleCount.Label = "Number of Particles";
-            this.visualTrackBarAirParticleCount.Location = new System.Drawing.Point( 6, 19 );
-            this.visualTrackBarAirParticleCount.Name = "visualTrackBarAirParticleCount";
-            this.visualTrackBarAirParticleCount.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarAirParticleCount.TabIndex = 3;
-            // 
-            // visualTrackBarMaxRootDepth
-            // 
-            this.visualTrackBarMaxRootDepth.Label = "Max Root Depth";
-            this.visualTrackBarMaxRootDepth.Location = new System.Drawing.Point( 6, 103 );
-            this.visualTrackBarMaxRootDepth.Name = "visualTrackBarMaxRootDepth";
-            this.visualTrackBarMaxRootDepth.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarMaxRootDepth.TabIndex = 2;
-            // 
-            // visualTrackBarHairLength
-            // 
-            this.visualTrackBarHairLength.Label = "Hair Length";
-            this.visualTrackBarHairLength.Location = new System.Drawing.Point( 6, 61 );
-            this.visualTrackBarHairLength.Name = "visualTrackBarHairLength";
-            this.visualTrackBarHairLength.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarHairLength.TabIndex = 1;
-            // 
-            // visualTrackBarHairParticleCount
-            // 
-            this.visualTrackBarHairParticleCount.Label = "Number of Particles";
-            this.visualTrackBarHairParticleCount.Location = new System.Drawing.Point( 6, 19 );
-            this.visualTrackBarHairParticleCount.Name = "visualTrackBarHairParticleCount";
-            this.visualTrackBarHairParticleCount.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarHairParticleCount.TabIndex = 0;
-            // 
-            // visualTrackBarTimeStep
-            // 
-            this.visualTrackBarTimeStep.Label = "Time Step";
-            this.visualTrackBarTimeStep.Location = new System.Drawing.Point( 6, 19 );
-            this.visualTrackBarTimeStep.Name = "visualTrackBarTimeStep";
-            this.visualTrackBarTimeStep.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarTimeStep.TabIndex = 1;
-            // 
-            // visualTrackBarAirFriction
-            // 
-            this.visualTrackBarAirFriction.Label = "Air Friction";
-            this.visualTrackBarAirFriction.Location = new System.Drawing.Point( 6, 61 );
-            this.visualTrackBarAirFriction.Name = "visualTrackBarAirFriction";
-            this.visualTrackBarAirFriction.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarAirFriction.TabIndex = 2;
-            // 
-            // visualTrackBarGravity
-            // 
-            this.visualTrackBarGravity.Label = "Gravity";
-            this.visualTrackBarGravity.Location = new System.Drawing.Point( 6, 19 );
-            this.visualTrackBarGravity.Name = "visualTrackBarGravity";
-            this.visualTrackBarGravity.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarGravity.TabIndex = 1;
-            // 
-            // visualTrackBarAverageHairDensity
-            // 
-            this.visualTrackBarAverageHairDensity.Label = "Average Hair Density";
-            this.visualTrackBarAverageHairDensity.Location = new System.Drawing.Point( 6, 103 );
-            this.visualTrackBarAverageHairDensity.Name = "visualTrackBarAverageHairDensity";
-            this.visualTrackBarAverageHairDensity.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarAverageHairDensity.TabIndex = 5;
-            // 
-            // visualTrackBarHairDensityForceMagnitude
-            // 
-            this.visualTrackBarHairDensityForceMagnitude.Label = "Hair Density Force Magnitude";
-            this.visualTrackBarHairDensityForceMagnitude.Location = new System.Drawing.Point( 6, 145 );
-            this.visualTrackBarHairDensityForceMagnitude.Name = "visualTrackBarHairDensityForceMagnitude";
-            this.visualTrackBarHairDensityForceMagnitude.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarHairDensityForceMagnitude.TabIndex = 4;
-            // 
-            // visualTrackBarFrictionDamp
-            // 
-            this.visualTrackBarFrictionDamp.Label = "Friction Damp";
-            this.visualTrackBarFrictionDamp.Location = new System.Drawing.Point( 6, 61 );
-            this.visualTrackBarFrictionDamp.Name = "visualTrackBarFrictionDamp";
-            this.visualTrackBarFrictionDamp.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarFrictionDamp.TabIndex = 3;
-            // 
-            // visualTrackBarCollisionDamp
-            // 
-            this.visualTrackBarCollisionDamp.Label = "Collision Damp";
-            this.visualTrackBarCollisionDamp.Location = new System.Drawing.Point( 6, 19 );
-            this.visualTrackBarCollisionDamp.Name = "visualTrackBarCollisionDamp";
-            this.visualTrackBarCollisionDamp.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarCollisionDamp.TabIndex = 2;
-            // 
-            // visualTrackBarAirDensityForceMagnitude
-            // 
-            this.visualTrackBarAirDensityForceMagnitude.Label = "Air Density Force Magnitude";
-            this.visualTrackBarAirDensityForceMagnitude.Location = new System.Drawing.Point( 6, 103 );
-            this.visualTrackBarAirDensityForceMagnitude.Name = "visualTrackBarAirDensityForceMagnitude";
-            this.visualTrackBarAirDensityForceMagnitude.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarAirDensityForceMagnitude.TabIndex = 5;
-            // 
-            // visualTrackBarAverageAirDensity
-            // 
-            this.visualTrackBarAverageAirDensity.Label = "Average Air Density";
-            this.visualTrackBarAverageAirDensity.Location = new System.Drawing.Point( 6, 61 );
-            this.visualTrackBarAverageAirDensity.Name = "visualTrackBarAverageAirDensity";
-            this.visualTrackBarAverageAirDensity.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarAverageAirDensity.TabIndex = 4;
-            // 
-            // visualTrackBarDragCoefficient
-            // 
-            this.visualTrackBarDragCoefficient.Label = "Drag Coefficient";
-            this.visualTrackBarDragCoefficient.Location = new System.Drawing.Point( 6, 19 );
-            this.visualTrackBarDragCoefficient.Name = "visualTrackBarDragCoefficient";
-            this.visualTrackBarDragCoefficient.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarDragCoefficient.TabIndex = 3;
-            // 
-            // visualTrackBarBillboardWidth
-            // 
-            this.visualTrackBarBillboardWidth.Label = "Billboard Width";
-            this.visualTrackBarBillboardWidth.Location = new System.Drawing.Point( 6, 107 );
-            this.visualTrackBarBillboardWidth.Name = "visualTrackBarBillboardWidth";
-            this.visualTrackBarBillboardWidth.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarBillboardWidth.TabIndex = 5;
-            // 
-            // visualTrackBarBillboardLength
-            // 
-            this.visualTrackBarBillboardLength.Label = "Billboard Length";
-            this.visualTrackBarBillboardLength.Location = new System.Drawing.Point( 6, 65 );
-            this.visualTrackBarBillboardLength.Name = "visualTrackBarBillboardLength";
-            this.visualTrackBarBillboardLength.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarBillboardLength.TabIndex = 4;
+            this.comboBoxDeepOpacityMapResolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxDeepOpacityMapResolution.FormattingEnabled = true;
+            this.comboBoxDeepOpacityMapResolution.Items.AddRange( new object[] {
+            "2048",
+            "1024",
+            "512",
+            "256",
+            "128"} );
+            this.comboBoxDeepOpacityMapResolution.Location = new System.Drawing.Point( 225, 103 );
+            this.comboBoxDeepOpacityMapResolution.Name = "comboBoxDeepOpacityMapResolution";
+            this.comboBoxDeepOpacityMapResolution.Size = new System.Drawing.Size( 60, 21 );
+            this.comboBoxDeepOpacityMapResolution.TabIndex = 10;
             // 
             // visualTrackBarDeepOpacityMapDistance
             // 
@@ -844,6 +798,19 @@ namespace AnimatingHair.GUI
             this.visualTrackBarAlphaTreshold.Name = "visualTrackBarAlphaTreshold";
             this.visualTrackBarAlphaTreshold.Size = new System.Drawing.Size( 279, 36 );
             this.visualTrackBarAlphaTreshold.TabIndex = 8;
+            // 
+            // groupBox13
+            // 
+            this.groupBox13.Controls.Add( this.visualTrackBarLightIntensity );
+            this.groupBox13.Controls.Add( this.visualTrackBarLightDistance );
+            this.groupBox13.Controls.Add( this.visualTrackBarLightCruiseSpeed );
+            this.groupBox13.Controls.Add( this.checkBoxCruisingLight );
+            this.groupBox13.Location = new System.Drawing.Point( 6, 6 );
+            this.groupBox13.Name = "groupBox13";
+            this.groupBox13.Size = new System.Drawing.Size( 291, 170 );
+            this.groupBox13.TabIndex = 0;
+            this.groupBox13.TabStop = false;
+            this.groupBox13.Text = "Light";
             // 
             // visualTrackBarLightIntensity
             // 
@@ -869,29 +836,76 @@ namespace AnimatingHair.GUI
             this.visualTrackBarLightCruiseSpeed.Size = new System.Drawing.Size( 279, 36 );
             this.visualTrackBarLightCruiseSpeed.TabIndex = 1;
             // 
+            // checkBoxCruisingLight
+            // 
+            this.checkBoxCruisingLight.AutoSize = true;
+            this.checkBoxCruisingLight.Location = new System.Drawing.Point( 6, 19 );
+            this.checkBoxCruisingLight.Name = "checkBoxCruisingLight";
+            this.checkBoxCruisingLight.Size = new System.Drawing.Size( 86, 17 );
+            this.checkBoxCruisingLight.TabIndex = 0;
+            this.checkBoxCruisingLight.Text = "LightCruising";
+            this.checkBoxCruisingLight.UseVisualStyleBackColor = true;
+            this.checkBoxCruisingLight.CheckedChanged += new System.EventHandler( this.checkBoxCruisingLight_CheckedChanged );
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Controls.Add( this.groupBox9 );
+            this.tabPage7.Controls.Add( this.groupBox8 );
+            this.tabPage7.Controls.Add( this.groupBox7 );
+            this.tabPage7.Location = new System.Drawing.Point( 4, 49 );
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Size = new System.Drawing.Size( 303, 487 );
+            this.tabPage7.TabIndex = 6;
+            this.tabPage7.Text = "Advanced";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
             // visualTrackBarAirMassFactor
             // 
             this.visualTrackBarAirMassFactor.Label = "Air Mass Factor";
-            this.visualTrackBarAirMassFactor.Location = new System.Drawing.Point( 9, 308 );
+            this.visualTrackBarAirMassFactor.Location = new System.Drawing.Point( 6, 19 );
             this.visualTrackBarAirMassFactor.Name = "visualTrackBarAirMassFactor";
             this.visualTrackBarAirMassFactor.Size = new System.Drawing.Size( 279, 36 );
             this.visualTrackBarAirMassFactor.TabIndex = 13;
             // 
-            // visualTrackBarDensityOfHairMaterial
+            // groupBox8
             // 
-            this.visualTrackBarDensityOfHairMaterial.Label = "Density of Hair Material";
-            this.visualTrackBarDensityOfHairMaterial.Location = new System.Drawing.Point( 6, 19 );
-            this.visualTrackBarDensityOfHairMaterial.Name = "visualTrackBarDensityOfHairMaterial";
-            this.visualTrackBarDensityOfHairMaterial.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarDensityOfHairMaterial.TabIndex = 7;
+            this.groupBox8.Controls.Add( this.visualTrackBarElasticModulus );
+            this.groupBox8.Location = new System.Drawing.Point( 3, 240 );
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size( 297, 64 );
+            this.groupBox8.TabIndex = 12;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "Hair Physical Properties";
             // 
             // visualTrackBarElasticModulus
             // 
             this.visualTrackBarElasticModulus.Label = "Elastic Modulus";
-            this.visualTrackBarElasticModulus.Location = new System.Drawing.Point( 6, 61 );
+            this.visualTrackBarElasticModulus.Location = new System.Drawing.Point( 6, 19 );
             this.visualTrackBarElasticModulus.Name = "visualTrackBarElasticModulus";
             this.visualTrackBarElasticModulus.Size = new System.Drawing.Size( 279, 36 );
             this.visualTrackBarElasticModulus.TabIndex = 8;
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add( this.visualTrackBarDensityOfHairMaterial );
+            this.groupBox7.Controls.Add( this.visualTrackBarMaxNeighbors );
+            this.groupBox7.Controls.Add( this.visualTrackBarHairMassFactor );
+            this.groupBox7.Controls.Add( this.visualTrackBarNeighborAlignmentTreshold );
+            this.groupBox7.Controls.Add( this.visualTrackBarSecondMomentOfArea );
+            this.groupBox7.Location = new System.Drawing.Point( 3, 3 );
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size( 297, 231 );
+            this.groupBox7.TabIndex = 11;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "Hair Initialization Properties";
+            // 
+            // visualTrackBarDensityOfHairMaterial
+            // 
+            this.visualTrackBarDensityOfHairMaterial.Label = "Density of Hair Material";
+            this.visualTrackBarDensityOfHairMaterial.Location = new System.Drawing.Point( 6, 187 );
+            this.visualTrackBarDensityOfHairMaterial.Name = "visualTrackBarDensityOfHairMaterial";
+            this.visualTrackBarDensityOfHairMaterial.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarDensityOfHairMaterial.TabIndex = 7;
             // 
             // visualTrackBarMaxNeighbors
             // 
@@ -925,14 +939,52 @@ namespace AnimatingHair.GUI
             this.visualTrackBarSecondMomentOfArea.Size = new System.Drawing.Size( 279, 36 );
             this.visualTrackBarSecondMomentOfArea.TabIndex = 9;
             // 
+            // colorDialog
+            // 
+            this.colorDialog.Color = System.Drawing.Color.White;
+            // 
+            // diffuseDialog
+            // 
+            this.diffuseDialog.Color = System.Drawing.Color.White;
+            // 
+            // ambientDialog
+            // 
+            this.ambientDialog.Color = System.Drawing.Color.White;
+            // 
+            // specularDialog
+            // 
+            this.specularDialog.Color = System.Drawing.Color.White;
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add( this.visualTrackBarAirMassFactor );
+            this.groupBox9.Location = new System.Drawing.Point( 3, 310 );
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size( 297, 64 );
+            this.groupBox9.TabIndex = 13;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Air Initialization Properties";
+            // 
+            // buttonCutting
+            // 
+            this.buttonCutting.Location = new System.Drawing.Point( 76, 329 );
+            this.buttonCutting.Name = "buttonCutting";
+            this.buttonCutting.Size = new System.Drawing.Size( 151, 44 );
+            this.buttonCutting.TabIndex = 29;
+            this.buttonCutting.Text = "Cutting";
+            this.buttonCutting.UseVisualStyleBackColor = true;
+            this.buttonCutting.Click += new System.EventHandler( this.buttonCutting_Click );
+            // 
             // ControlsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size( 1141, 661 );
+            this.Controls.Add( this.buttonRestart );
             this.Controls.Add( this.tabControl1 );
             this.Controls.Add( this.buttonPause );
             this.Controls.Add( this.statusStrip1 );
+            this.Controls.Add( this.buttonRestartWithRandomSeed );
             this.Controls.Add( this.menuStrip1 );
             this.Controls.Add( this.glControl );
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -970,11 +1022,13 @@ namespace AnimatingHair.GUI
             this.groupBoxHairRendering.PerformLayout();
             this.tabPage6.ResumeLayout( false );
             this.groupBox14.ResumeLayout( false );
+            this.groupBox14.PerformLayout();
             this.groupBox13.ResumeLayout( false );
             this.groupBox13.PerformLayout();
             this.tabPage7.ResumeLayout( false );
             this.groupBox8.ResumeLayout( false );
             this.groupBox7.ResumeLayout( false );
+            this.groupBox9.ResumeLayout( false );
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -1066,5 +1120,9 @@ namespace AnimatingHair.GUI
         private System.Windows.Forms.GroupBox groupBox14;
         private VisualTrackBar visualTrackBarDeepOpacityMapDistance;
         private VisualTrackBar visualTrackBarAlphaTreshold;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox comboBoxDeepOpacityMapResolution;
+        private System.Windows.Forms.Button buttonCutting;
+        private System.Windows.Forms.GroupBox groupBox9;
     }
 }

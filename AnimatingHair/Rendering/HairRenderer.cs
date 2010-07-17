@@ -1,6 +1,7 @@
 using System;
 using AnimatingHair.Entity;
 using AnimatingHair.Entity.PhysicalEntity;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.IO;
 
@@ -29,6 +30,11 @@ namespace AnimatingHair.Rendering
         private int billboardWidthLoc;
         private int billboardLengthLoc;
         private int deepOpacityMapDistanceLoc;
+        private int nearLoc;
+        private int farLoc;
+        private int cameraModelViewMatrixLoc;
+        private int lightModelViewMatrixLoc;
+        private int lightProjectionMatrixLoc;
         // the shader attribute locations
         private int sign1Loc;
         private int sign2Loc;
@@ -53,8 +59,8 @@ namespace AnimatingHair.Rendering
 
             // shader loading
             using ( StreamReader vs = new StreamReader( FilePaths.BillboardShaderLocation ) )
-                using ( StreamReader fs = new StreamReader( FilePaths.HairShaderLocation ) )
-                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
+            using ( StreamReader fs = new StreamReader( FilePaths.HairShaderLocation ) )
+                Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
 
             getShaderVariableLocations();
 
@@ -88,7 +94,8 @@ namespace AnimatingHair.Rendering
             for ( int i = 0; i < hair.Particles.Length; i++ )
             {
                 HairParticle hp = hair.Particles[ i ];
-                hp.DistanceFromCamera = (hp.Position - camera.Eye).Length;
+                Vector3 pos = Vector3.Transform( hp.Position, RenderingResources.Instance.BustModelTransformationMatrix );
+                hp.DistanceFromCamera = (pos - camera.Eye).Length;
             }
 
             Array.Sort( sorted, particleCompare );
@@ -108,6 +115,12 @@ namespace AnimatingHair.Rendering
             GL.Uniform1( billboardWidthLoc, RenderingOptions.Instance.BillboardWidth );
             GL.Uniform1( billboardLengthLoc, RenderingOptions.Instance.BillboardLength );
             GL.Uniform1( deepOpacityMapDistanceLoc, RenderingOptions.Instance.DeepOpacityMapDistance );
+            GL.Uniform1( nearLoc, RenderingOptions.Instance.Near );
+            GL.Uniform1( farLoc, RenderingOptions.Instance.Far );
+            GL.UniformMatrix4( cameraModelViewMatrixLoc, false, ref RenderingResources.Instance.CameraModelViewMatrix );
+            RenderingResources.Instance.LightModelViewMatrix = RenderingResources.Instance.BustModelTransformationMatrix * RenderingResources.Instance.LightModelViewMatrix;
+            GL.UniformMatrix4( lightModelViewMatrixLoc, false, ref RenderingResources.Instance.LightModelViewMatrix );
+            GL.UniformMatrix4( lightProjectionMatrixLoc, false, ref RenderingResources.Instance.LightProjectionMatrix );
 
             GL.Uniform3( eyeLoc, camera.Eye );
             GL.Uniform3( lightLoc, light.Position );
@@ -172,6 +185,11 @@ namespace AnimatingHair.Rendering
             billboardLengthLoc = GL.GetUniformLocation( shaderProgram, "renderSizeVertical" );
             billboardWidthLoc = GL.GetUniformLocation( shaderProgram, "renderSizeHorizontal" );
             deepOpacityMapDistanceLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMapDistance" );
+            nearLoc = GL.GetUniformLocation( shaderProgram, "near" );
+            farLoc = GL.GetUniformLocation( shaderProgram, "far" );
+            cameraModelViewMatrixLoc = GL.GetUniformLocation( shaderProgram, "cameraModelViewMatrix" );
+            lightModelViewMatrixLoc = GL.GetUniformLocation( shaderProgram, "lightModelViewMatrix" );
+            lightProjectionMatrixLoc = GL.GetUniformLocation( shaderProgram, "lightProjectionMatrix" );
 
             sign1Loc = GL.GetAttribLocation( shaderProgram, "sign1" );
             sign2Loc = GL.GetAttribLocation( shaderProgram, "sign2" );

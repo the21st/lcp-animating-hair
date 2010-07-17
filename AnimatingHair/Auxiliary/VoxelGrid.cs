@@ -52,7 +52,7 @@ namespace AnimatingHair.Auxiliary
 
             outside = new Voxel( -1, -1, -1 );
 
-            Grid = new Voxel[ VoxelCount[ 0 ], VoxelCount[ 1 ], VoxelCount[ 2 ] ];
+            Grid = new Voxel[ VoxelCount[ 0 ], VoxelCount[ 1 ], VoxelCount[ 2 ] ]; // TODO: tuto to pada pri particlecount = 1
 
             for ( int i = 0; i < VoxelCount[ 0 ]; i++ )
             {
