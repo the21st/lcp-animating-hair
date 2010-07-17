@@ -14,14 +14,12 @@ varying vec3 vertexPos;
 varying vec3 lightPos;
 varying vec3 eyePos;
 varying vec3 hairTangent;
+
 varying float opacityFactor;
 varying vec4 shadowCoord;
 
-// TODO: change to uniforms
-const float n = 1.0;
-const float f = 30.0;
-const float width = 800.0;
-const float height = 600.0;
+uniform float near;
+uniform float far;
 
 float vecSin(vec3 a, vec3 b) // a and b are normalized
 {
@@ -65,8 +63,8 @@ void main()
 	
 	float f_dir = rho_reflect * (1 + K_goldman) / 2 + rho_transmit * (1 - K_goldman) / 2;
 	
-	color.xyz = f_dir * (K_d * diffuse * color.xyz + K_s * specular * lightSpec.xyz);
-	//color.xyz = K_d * diffuse * color.xyz + K_s * max(specular, 0.0) * lightSpec.xyz;
+	//color.xyz = f_dir * (K_d * diffuse * color.xyz + K_s * specular * lightSpec.xyz);
+	color.xyz = f_dir * (K_d * diffuse * color.xyz + K_s * max(specular, 0.0) * lightSpec.xyz);
 	
 	
 	float shadow = 1.0;
@@ -82,7 +80,7 @@ void main()
 	vec3 lightCoord = shadowCoord.xyz / shadowCoord.w;
 	lightCoord = vec3(0.5) * ( lightCoord + vec3(1.0) );
 	float depth = lightCoord.z;
-	depth = (2.0 * n) / (f + n - depth * (f - n)); // linearny depth medzi 0 a 1
+	depth = (2.0 * near) / (far + near - depth * (far - near)); // linearny depth medzi 0 a 1
 	float depthStart = texture2D( deepOpacityMap, lightCoord.xy ).a;
 	
 	depthStart += delta[0];
@@ -90,7 +88,7 @@ void main()
 	{
 		tmp = (depthStart - depth) / delta[0];
 		shadow = (1.0 - tmp) * texture2D( deepOpacityMap, lightCoord.xy ).r;
-		//shadow = tmp*0.25 + 0.5;
+		//shadow = 0;
 	}
 	else
 	{
@@ -100,7 +98,7 @@ void main()
 			tmp = (depthStart - depth) / delta[1];
 			shadow = tmp * texture2D( deepOpacityMap, lightCoord.xy ).r;
 			shadow += (1 - tmp) * texture2D( deepOpacityMap, lightCoord.xy ).g;
-			//shadow = tmp*0.25+0.25;
+			//shadow = 0.333;
 		}
 		else
 		{
@@ -110,12 +108,12 @@ void main()
 				tmp = (depthStart - depth) / delta[2];
 				shadow = tmp * texture2D( deepOpacityMap, lightCoord.xy ).g;
 				shadow += (1 - tmp) * texture2D( deepOpacityMap, lightCoord.xy ).b;
-				//shadow = tmp*0.25;
+				//shadow = 0.666;
 			}
 			else
 			{
 				shadow = texture2D( deepOpacityMap, lightCoord.xy ).b;
-				//shadow = 0.0;
+				//shadow = 1;
 			}
 		}
 	}
@@ -130,7 +128,9 @@ void main()
 	
 	color.rgb *= ( 1.0 - shadow );
 	
-	color.xyz += K_a * gl_FrontMaterial.ambient.xyz;
+	color.rgb += K_a * gl_FrontMaterial.ambient.xyz;
+	
+	//color.rgb = vec3( 1 - shadow );
 	
 	gl_FragColor = color;
 }

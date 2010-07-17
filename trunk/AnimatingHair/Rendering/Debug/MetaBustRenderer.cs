@@ -9,7 +9,8 @@ namespace AnimatingHair.Rendering.Debug
     /// </summary>
     class MetaBustRenderer
     {
-        private static readonly float[] SkinColor = { 0.93f, 0.76f, 0.66f, 1 };
+        private static readonly float[] SkinColor = { 0.47f, 0.38f, 0.33f, 1 };
+        private static readonly float[] SpecularColor = { 0.1f, 0.05f, 0.05f, 1 };
 
         private readonly Bust bust;
 
@@ -25,13 +26,16 @@ namespace AnimatingHair.Rendering.Debug
         public void Render()
         {
             GL.PushAttrib( AttribMask.AllAttribBits );
-            GL.Material( MaterialFace.Front, MaterialParameter.Specular, new[] { 0.1f, 0.05f, 0.05f } );
+
+            GL.Material( MaterialFace.Front, MaterialParameter.Specular, SpecularColor );
             GL.Material( MaterialFace.Front, MaterialParameter.Shininess, 5 );
             GL.Material( MaterialFace.Front, MaterialParameter.Diffuse, SkinColor );
             GL.Material( MaterialFace.Front, MaterialParameter.Ambient, SkinColor );
+
             renderHead();
             renderNeck();
             renderShoulders();
+
             GL.PopAttrib();
         }
 

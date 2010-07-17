@@ -72,10 +72,28 @@ namespace AnimatingHair.GUI
                 textBox.Text = value.ToString();
         }
 
-        private void textBox_KeyPress( object sender, KeyPressEventArgs e )
+        private void textBox_TextChanged( object sender, EventArgs e )
         {
-            if ( e.KeyChar == '\r' )
-                MessageBox.Show( "ENTER" );
+            if ( !loaded ) return;
+
+            loaded = false;
+
+            float value;
+            if ( float.TryParse( textBox.Text, out value ) )
+            {
+                value -= minValue;
+                value /= range;
+                if ( value > 1 )
+                    trackBar.Value = trackBar.Maximum;
+                else if ( value < 0 )
+                    trackBar.Value = trackBar.Minimum;
+                else
+                {
+                    value *= trackBar.Maximum;
+                    trackBar.Value = Convert.ToInt32( value );
+                }
+            }
+            loaded = true;
         }
     }
 }

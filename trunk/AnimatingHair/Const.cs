@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace AnimatingHair
 {
@@ -14,7 +15,7 @@ namespace AnimatingHair
             AirFriction = 0.05f;
             Gravity = 0.5f;
 
-            HairParticleCount = 1000;
+            HairParticleCount = 400;
             HairLength = 2.3f;
             MaxRootDepth = 0.5f;
 
@@ -87,6 +88,7 @@ namespace AnimatingHair
 
         public float HairParticleMass()
         {
+            // TODO: netreba sem zaratat aj density of hair material?
             return HairMassFactor * HairLength / HairParticleCount;
         }
 
@@ -128,22 +130,33 @@ namespace AnimatingHair
             StringWriter stringWriter = new StringWriter();
 
             stringWriter.WriteLine( "Seed = " + Const.Instance.Seed );
-            stringWriter.WriteLine( "HairParticleCount = " + Const.Instance.HairParticleCount );
-            stringWriter.WriteLine( "HairLength = " + Const.Instance.HairLength );
-            stringWriter.WriteLine( "s_r = " + Const.Instance.MaxRootDepth );
-            stringWriter.WriteLine( "AirParticleCount = " + Const.Instance.AirParticleCount );
+            stringWriter.WriteLine( "TimeStep = " + Const.Instance.TimeStep );
 
             stringWriter.WriteLine( "AirFriction = " + Const.Instance.AirFriction );
             stringWriter.WriteLine( "Gravity = " + Const.Instance.Gravity );
 
-            stringWriter.WriteLine( "d_c = " + Const.Instance.CollisionDamp );
-            stringWriter.WriteLine( "d_f = " + Const.Instance.FrictionDamp );
-            stringWriter.WriteLine( "k_a = " + Const.Instance.HairDensityForceMagnitude );
-            stringWriter.WriteLine( "rho_0 = " + Const.Instance.AverageHairDensity );
+            stringWriter.WriteLine( "HairParticleCount = " + Const.Instance.HairParticleCount );
+            stringWriter.WriteLine( "HairLength = " + Const.Instance.HairLength );
+            stringWriter.WriteLine( "MaxRootDepth = " + Const.Instance.MaxRootDepth );
 
+            stringWriter.WriteLine( "MaxNeighbors = " + Const.Instance.MaxNeighbors );
+            stringWriter.WriteLine( "NeighborAlignmentTreshold = " + Const.Instance.NeighborAlignmentTreshold );
+
+            stringWriter.WriteLine( "DensityOfHairMaterial = " + Const.Instance.DensityOfHairMaterial );
+            stringWriter.WriteLine( "ElasticModulus = " + Const.Instance.ElasticModulus );
+            stringWriter.WriteLine( "SecondMomentOfArea = " + Const.Instance.SecondMomentOfArea );
+            stringWriter.WriteLine( "HairMassFactor = " + Const.Instance.HairMassFactor );
+
+            stringWriter.WriteLine( "CollisionDamp = " + Const.Instance.CollisionDamp );
+            stringWriter.WriteLine( "FrictionDamp = " + Const.Instance.FrictionDamp );
+            stringWriter.WriteLine( "AverageHairDensity = " + Const.Instance.AverageHairDensity );
+            stringWriter.WriteLine( "HairDensityForceMagnitude = " + Const.Instance.HairDensityForceMagnitude );
+
+            stringWriter.WriteLine( "AirParticleCount = " + Const.Instance.AirParticleCount );
             stringWriter.WriteLine( "DragCoefficient = " + Const.Instance.DragCoefficient );
-            stringWriter.WriteLine( "k_a_air = " + Const.Instance.AirDensityForceMagnitude );
-            stringWriter.WriteLine( "rho_0_air = " + Const.Instance.AverageAirDensity );
+            stringWriter.WriteLine( "AverageAirDensity = " + Const.Instance.AverageAirDensity );
+            stringWriter.WriteLine( "AirDensityForceMagnitude = " + Const.Instance.AirDensityForceMagnitude );
+            stringWriter.WriteLine( "AirMassFactor = " + Const.Instance.AirMassFactor );
 
             stringWriter.Flush();
             return stringWriter.ToString();
@@ -178,24 +191,9 @@ namespace AnimatingHair
                             Const.Instance.Seed = int.Parse( lineParts[ 1 ] );
                             break;
                         }
-                    case "hairparticlecount":
+                    case "timestep":
                         {
-                            Const.Instance.HairParticleCount = int.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "hairlength":
-                        {
-                            Const.Instance.HairLength = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "s_r":
-                        {
-                            Const.Instance.MaxRootDepth = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "airparticlecount":
-                        {
-                            Const.Instance.AirParticleCount = int.Parse( lineParts[ 1 ] );
+                            Const.Instance.TimeStep = float.Parse( lineParts[ 1 ] );
                             break;
                         }
                     case "airfriction":
@@ -208,24 +206,74 @@ namespace AnimatingHair
                             Const.Instance.Gravity = float.Parse( lineParts[ 1 ] );
                             break;
                         }
-                    case "d_c":
+                    case "hairparticlecount":
+                        {
+                            Const.Instance.HairParticleCount = int.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "hairlength":
+                        {
+                            Const.Instance.HairLength = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "maxrootdepth":
+                        {
+                            Const.Instance.MaxRootDepth = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "maxneighbors":
+                        {
+                            Const.Instance.MaxNeighbors = int.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "densityofhairmaterial":
+                        {
+                            Const.Instance.DensityOfHairMaterial = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "elasticmodulus":
+                        {
+                            Const.Instance.ElasticModulus = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "secondmomentofarea":
+                        {
+                            Const.Instance.SecondMomentOfArea = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "hairmassfactor":
+                        {
+                            Const.Instance.HairMassFactor = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "neighboralignmenttreshold":
+                        {
+                            Const.Instance.NeighborAlignmentTreshold = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "collisiondamp":
                         {
                             Const.Instance.CollisionDamp = float.Parse( lineParts[ 1 ] );
                             break;
                         }
-                    case "d_f":
+                    case "frictiondamp":
                         {
                             Const.Instance.FrictionDamp = float.Parse( lineParts[ 1 ] );
                             break;
                         }
-                    case "k_a":
+                    case "averagehairdensity":
+                        {
+                            Const.Instance.AverageHairDensity = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "hairdensityforcemagnitude":
                         {
                             Const.Instance.HairDensityForceMagnitude = float.Parse( lineParts[ 1 ] );
                             break;
                         }
-                    case "rho_0":
+                    case "airparticlecount":
                         {
-                            Const.Instance.AverageHairDensity = float.Parse( lineParts[ 1 ] );
+                            Const.Instance.AirParticleCount = int.Parse( lineParts[ 1 ] );
                             break;
                         }
                     case "dragcoefficient":
@@ -233,16 +281,25 @@ namespace AnimatingHair
                             Const.Instance.DragCoefficient = float.Parse( lineParts[ 1 ] );
                             break;
                         }
-                    case "k_a_air":
-                        {
-                            Const.Instance.AirDensityForceMagnitude = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "rho_0_air":
+                    case "averageairdensity":
                         {
                             Const.Instance.AverageAirDensity = float.Parse( lineParts[ 1 ] );
                             break;
                         }
+                    case "airdensityforcemagnitude":
+                        {
+                            Const.Instance.AirDensityForceMagnitude = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "airmassfactor":
+                        {
+                            Const.Instance.AirMassFactor = float.Parse( lineParts[ 1 ] );
+                            break;
+                        }
+                    case "":
+                        break;
+                    default:
+                        throw new Exception( "Wrong file format." );
                 }
             }
         }

@@ -104,6 +104,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Auxiliary\CutterQuad.cs" />
     <Compile Include="Auxiliary\Cylinder.cs" />
     <Compile Include="Auxiliary\Geometry.cs" />
     <Compile Include="Auxiliary\KernelEvaluator.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Initialization\SphericalCoordinate.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RenderingOptions.cs" />
+    <Compile Include="RenderingResources.cs" />
     <Compile Include="Rendering\Debug\AirRenderer.cs" />
     <Compile Include="Rendering\Debug\MetaBustRenderer.cs" />
     <Compile Include="Rendering\OpacityMapsRenderer.cs" />

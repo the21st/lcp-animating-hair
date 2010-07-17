@@ -10,6 +10,7 @@ using OpenTK.Graphics.OpenGL;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using AnimatingHair.Auxiliary;
 
 namespace AnimatingHair.GUI
 {
@@ -24,7 +25,9 @@ namespace AnimatingHair.GUI
         private float distance = 10, elevation = 0, azimuth = 90, mouseX, mouseY;
         private readonly Random r = new Random();
         private bool loaded = false;
-        private bool paused = false;
+        private bool paused = true;
+        private bool cutting = false;
+        private CutterQuad cutter;
         private string saveFile = "";
         private readonly LinkedList<float> fpsHistory = new LinkedList<float>();
         readonly Stopwatch stopwatch = new Stopwatch();
@@ -50,9 +53,11 @@ namespace AnimatingHair.GUI
             scene = sceneInitializer.InitializeScene();
             camera = new Camera();
 
+            cutter = new CutterQuad();
+
             try
             {
-                renderer = new Renderer( camera, scene );
+                renderer = new Renderer( camera, scene, cutter );
             }
             catch ( IOException exception )
             {
@@ -60,10 +65,14 @@ namespace AnimatingHair.GUI
                 Close();
             }
 
+            comboBoxDeepOpacityMapResolution.SelectedIndex = 1;
+
             numericUpDownSeed.DataBindings.Add( "Text", Const.Instance, "Seed", true, DataSourceUpdateMode.OnPropertyChanged );
-            visualTrackBarHairParticleCount.BindIntData( Const.Instance, "HairParticleCount", 1, 2000 );
+
+            visualTrackBarHairParticleCount.BindIntData( Const.Instance, "HairParticleCount", 2, 2000 );
             visualTrackBarMaxNeighbors.BindIntData( Const.Instance, "MaxNeighbors", 0, 25 );
             visualTrackBarAirParticleCount.BindIntData( Const.Instance, "AirParticleCount", 1, 1000 );
+
             visualTrackBarTimeStep.BindFloatData( Const.Instance, "TimeStep", 0.001f, 0.1f );
             visualTrackBarGravity.BindFloatData( Const.Instance, "Gravity", -2, 2 );
             visualTrackBarAirFriction.BindFloatData( Const.Instance, "AirFriction", 0.01f, 0.3f );
@@ -93,6 +102,7 @@ namespace AnimatingHair.GUI
             checkBoxShowVoxelGrid.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowVoxelGrid", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxOnlyShowOccupiedVoxels.DataBindings.Add( "Checked", RenderingOptions.Instance, "OnlyShowOccupiedVoxels", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxShowDebugAir.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowDebugAir", true, DataSourceUpdateMode.OnPropertyChanged );
+
             visualTrackBarBillboardLength.BindFloatData( RenderingOptions.Instance, "BillboardLength", 0, 1 );
             visualTrackBarBillboardWidth.BindFloatData( RenderingOptions.Instance, "BillboardWidth", 0, 1 );
             visualTrackBarAlphaTreshold.BindFloatData( RenderingOptions.Instance, "AlphaTreshold", 0, 1 );
@@ -157,7 +167,7 @@ namespace AnimatingHair.GUI
             x = distance * (float)Math.Cos( azi2 ) * k;
 
             camera.Eye = new Vector3( x, z, y );
-            camera.Target = new Vector3( 0, 0, 0 );
+            camera.Target = new Vector3( 0.000429759f, -0.5017318f, -0.5830618f ); // TODO
             camera.Up = Vector3.UnitY;
         }
 
@@ -203,10 +213,13 @@ namespace AnimatingHair.GUI
         {
             GLControl c = sender as GLControl;
 
-            if ( c.ClientSize.Height == 0 )
-                c.ClientSize = new Size( c.ClientSize.Width, 1 );
+            if ( c != null )
+            {
+                if ( c.ClientSize.Height == 0 )
+                    c.ClientSize = new Size( c.ClientSize.Width, 1 );
 
-            renderer.Resize( c.ClientSize.Width, c.ClientSize.Height, c.AspectRatio );
+                renderer.Resize( c.ClientSize.Width, c.ClientSize.Height, c.AspectRatio );
+            }
         }
 
         #endregion
@@ -352,15 +365,16 @@ namespace AnimatingHair.GUI
 
         private void button1_Click( object sender, EventArgs e )
         {
-            updateRestartValues();
             restart();
         }
 
         private void restart()
         {
+            RenderingOptions.Instance.DeepOpacityMapResolution = int.Parse( comboBoxDeepOpacityMapResolution.Text );
+
             scene = sceneInitializer.InitializeScene();
             camera = new Camera();
-            renderer = new Renderer( camera, scene );
+            renderer = new Renderer( camera, scene, cutter );
 
             buttonColor.BackColor = colorDialog.Color;
             scene.Hair.Clr = new float[]
@@ -373,15 +387,9 @@ namespace AnimatingHair.GUI
             polarToCartesian();
         }
 
-        private void updateRestartValues()
-        {
-            Const.Instance.Seed = int.Parse( numericUpDownSeed.Text );
-        }
-
         private void buttonRestartWithRandomSeed_Click( object sender, EventArgs e )
         {
             numericUpDownSeed.Text = r.Next( 1000 ).ToString();
-            updateRestartValues();
             restart();
         }
 
@@ -453,12 +461,23 @@ namespace AnimatingHair.GUI
             {
                 saveFile = openFileDialog.FileName;
                 Utility.LoadConfiguration( saveFile );
+                refresh();
 
                 restart();
             }
 
             paused = wasPaused;
             loaded = true;
+        }
+
+        private void refresh()
+        {
+            // NOTE: I have noticed that when I change the value of some control (e.g. the following control),
+            // it refreshes the data bindings of the visual trackbar.
+            // This IS a nasty workaround, but so far I have not found a reliably working way to refresh the databindings explicitly.
+            string oldText = numericUpDownSeed.Text;
+            numericUpDownSeed.Text = "-1";
+            numericUpDownSeed.Text = oldText;
         }
 
         private void exitToolStripMenuItem_Click( object sender, EventArgs e )
@@ -516,6 +535,18 @@ namespace AnimatingHair.GUI
             else
                 visualTrackBarLightCruiseSpeed.Enabled = false;
 
+        }
+
+        private void buttonCutting_Click( object sender, EventArgs e )
+        {
+            // zacina strihanie
+            beginCutting();
+        }
+
+        private void beginCutting()
+        {
+            RenderingOptions.Instance.Cutting = true;
+            cutting = true;
         }
     }
 }

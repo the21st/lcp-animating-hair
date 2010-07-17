@@ -65,7 +65,7 @@
             this.textBox.Name = "textBox";
             this.textBox.Size = new System.Drawing.Size( 50, 20 );
             this.textBox.TabIndex = 2;
-            this.textBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler( this.textBox_KeyPress );
+            this.textBox.TextChanged += new System.EventHandler( this.textBox_TextChanged );
             // 
             // VisualTrackBar
             // 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace AnimatingHair
+﻿namespace AnimatingHair
 {
     class RenderingOptions
     {
@@ -18,9 +13,10 @@ namespace AnimatingHair
             BillboardLength = 0.5f;
             BillboardWidth = 0.2f;
             AlphaTreshold = 0.15f;
-            DeepOpacityMapDistance = 0.02f;
+            DeepOpacityMapDistance = 0.015f;
+            DeepOpacityMapResolution = 1024;
 
-            ShowBust = true;
+            ShowBust = false;
             ShowMetaBust = false;
 
             LightCruising = false;
@@ -35,6 +31,8 @@ namespace AnimatingHair
 
             Near = 1;
             Far = 30;
+
+            Cutting = false;
         }
 
         public bool ShowHair { get; set; }
@@ -46,9 +44,11 @@ namespace AnimatingHair
         public float BillboardWidth { get; set; }
         public float AlphaTreshold { get; set; }
         public float DeepOpacityMapDistance { get; set; }
+        public int DeepOpacityMapResolution { get; set; }
 
         public bool ShowBust { get; set; }
         public bool ShowMetaBust { get; set; }
+        public bool OnlyRotateHead { get; set; }
 
         public bool LightCruising { get; set; }
         public float LightCruiseSpeed { get; set; }
@@ -65,5 +65,7 @@ namespace AnimatingHair
         public int RenderWidth { get; set; }
         public int RenderHeight { get; set; }
         public float AspectRatio { get; set; }
+
+        public bool Cutting { get; set; }
     }
 }

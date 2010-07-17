@@ -92,7 +92,7 @@ namespace AnimatingHair.Entity
             Hair.CalculateForcesOnSelf();
             Air.CalculateForcesOnSelf();
 
-            Bust.CalculateForcesOnParticles( Particles );
+            Bust.ApplyForcesOnParticles( Particles );
 
             applyInteractionForces( Hair.Particles, Air.Particles );
 
@@ -107,12 +107,12 @@ namespace AnimatingHair.Entity
             float result = 0;
 
             if ( RotateClockwise )
-                result += 1.5f;
+                result += 0.5f;
             else
                 if ( RotateAntiClockwise )
-                    result -= 1.5f;
+                    result -= 0.5f;
                 else
-                    result -= 5 * Bust.AngularVelocity;
+                    result -= Bust.AngularVelocity;
 
             if ( Bust.AngularVelocity > 1.0 && result > 0 )
             {
@@ -131,15 +131,15 @@ namespace AnimatingHair.Entity
         {
             Vector3 result = new Vector3();
             if ( Up )
-                result.Z += 0.2f;
+                result.Z += 0.4f;
             if ( Down )
-                result.Z -= 0.2f;
+                result.Z -= 0.4f;
             if ( Left )
-                result.X += 0.2f;
+                result.X += 0.4f;
             if ( Right )
-                result.X -= 0.2f;
+                result.X -= 0.4f;
 
-            if ( (result.X == 0 && result.Z == 0) || Bust.Velocity.Length > 0.2 )
+            if ( (result.X == 0 && result.Z == 0) || Bust.Velocity.Length > 0.6 )
             {
                 result -= Bust.Velocity;
             }

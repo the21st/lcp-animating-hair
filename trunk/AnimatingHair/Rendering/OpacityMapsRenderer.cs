@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using AnimatingHair.Entity;
 using AnimatingHair.Entity.PhysicalEntity;
@@ -10,12 +9,10 @@ namespace AnimatingHair.Rendering
 {
     class OpacityMapsRenderer
     {
-        private const int opacityMapSize = 1024;
-
         // keeps references to object it needs
         private readonly Hair hair;
         private readonly Light light;
-        private readonly Camera camera;
+        private readonly Bust bust;
 
         // the openGL texture reference
         private readonly int splatTexture;
@@ -28,6 +25,7 @@ namespace AnimatingHair.Rendering
         private int alphaTresholdLoc;
         private int billboardWidthLoc;
         private int billboardLengthLoc;
+        private int lightModelViewMatrixLoc;
 
         // the opacity shader uniform locations
         private int axisLoc2;
@@ -42,6 +40,10 @@ namespace AnimatingHair.Rendering
         private int billboardWidthLoc2;
         private int billboardLengthLoc2;
         private int deepOpacityMapDistanceLoc2;
+        private int nearLoc2;
+        private int farLoc2;
+        private int deepOpacityMapResolutionLoc2;
+        private int lightModelViewMatrixLoc2;
 
         // shader objects
         private readonly int depthShaderProgram;
@@ -54,16 +56,16 @@ namespace AnimatingHair.Rendering
         private int depthFBO, shadowFBO;
         public int ShadowTexture, DepthTexture;
 
-        public Matrix4 LightProjectionMatrix, LightModelViewMatrix;
         public float Dist = 0.1f;
         public float IntensityFactor = 1f;
-        private float near = 1, far = 30;
 
-        public OpacityMapsRenderer( Hair hair, Light light, Camera camera )
+        private Matrix4 lightModelView;
+
+        public OpacityMapsRenderer( Hair hair, Light light, Bust bust )
         {
             this.hair = hair;
             this.light = light;
-            this.camera = camera;
+            this.bust = bust;
 
             // texture loading
             splatTexture = Utility.UploadTexture( FilePaths.HairTextureLocation );
@@ -88,16 +90,16 @@ namespace AnimatingHair.Rendering
         private void setupMatrices()
         {
             GL.MatrixMode( MatrixMode.Projection );
-            GL.LoadMatrix( ref LightProjectionMatrix );
+            GL.LoadMatrix( ref RenderingResources.Instance.LightProjectionMatrix );
 
             GL.MatrixMode( MatrixMode.Modelview );
-            GL.LoadMatrix( ref LightModelViewMatrix );
+            GL.LoadMatrix( ref RenderingResources.Instance.LightModelViewMatrix );
         }
 
         private void generateDepthFBO()
         {
-            const int shadowMapWidth = opacityMapSize;
-            const int shadowMapHeight = opacityMapSize;
+            int shadowMapWidth = RenderingOptions.Instance.DeepOpacityMapResolution;
+            int shadowMapHeight = RenderingOptions.Instance.DeepOpacityMapResolution;
 
             FramebufferErrorCode FBOstatus;
 
@@ -136,8 +138,8 @@ namespace AnimatingHair.Rendering
 
         private void generateShadowMapFBO()
         {
-            const int shadowMapWidth = opacityMapSize;
-            const int shadowMapHeight = opacityMapSize;
+            int shadowMapWidth = RenderingOptions.Instance.DeepOpacityMapResolution;
+            int shadowMapHeight = RenderingOptions.Instance.DeepOpacityMapResolution;
 
             FramebufferErrorCode FBOstatus;
 
@@ -160,7 +162,7 @@ namespace AnimatingHair.Rendering
             // check FBO status
             FBOstatus = GL.CheckFramebufferStatus( FramebufferTarget.Framebuffer );
             if ( FBOstatus != FramebufferErrorCode.FramebufferComplete )
-                throw new Exception( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use shadowFBO\n" );
+                throw new Exception( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO\n" );
 
             // switch back to window-system-provided framebuffer
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );
@@ -168,15 +170,16 @@ namespace AnimatingHair.Rendering
 
         public void RenderOpacityTexture()
         {
-            LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, near, far );
-            LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY );
+            RenderingResources.Instance.LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, RenderingOptions.Instance.Near, RenderingOptions.Instance.Far );
+            RenderingResources.Instance.LightModelViewMatrix = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY );
+            lightModelView = Matrix4.LookAt( light.Position, centerPosition, Vector3.UnitY );
             //LightModelViewMatrix = Matrix4.LookAt( light.Position, Vector3.Zero, Vector3.UnitY );
 
             GL.ClearColor( 0, 0, 0, 1 );
             GL.ActiveTexture( TextureUnit.Texture0 ); // NOTE: jak funguje tento prikaz ?? skus vypnut / zapnut
 
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, depthFBO );
-            GL.Viewport( 0, 0, opacityMapSize, opacityMapSize );
+            GL.Viewport( 0, 0, RenderingOptions.Instance.DeepOpacityMapResolution, RenderingOptions.Instance.DeepOpacityMapResolution );
             GL.Clear( ClearBufferMask.DepthBufferBit );
             setupMatrices();
             renderDepthMap();
@@ -210,14 +213,21 @@ namespace AnimatingHair.Rendering
 
             GL.Uniform1( billboardWidthLoc, RenderingOptions.Instance.BillboardWidth );
             GL.Uniform1( billboardLengthLoc, RenderingOptions.Instance.BillboardLength );
+            GL.UniformMatrix4( lightModelViewMatrixLoc, false, ref lightModelView );
 
             GL.Uniform1( alphaTresholdLoc, RenderingOptions.Instance.AlphaTreshold );
 
-            for ( int i = 0; i < hair.Particles.Length; i++ )
+            GL.PushMatrix();
             {
-                if ( !hair.Particles[ i ].IsRoot )
-                    renderParticle( hair.Particles[ i ] );
+                GL.MultMatrix( ref RenderingResources.Instance.BustModelTransformationMatrix );
+
+                for ( int i = 0; i < hair.Particles.Length; i++ )
+                {
+                    if ( !hair.Particles[ i ].IsRoot )
+                        renderParticle( hair.Particles[ i ] );
+                }
             }
+            GL.PopMatrix();
 
             // unlink the shader program
             GL.UseProgram( 0 );
@@ -248,20 +258,31 @@ namespace AnimatingHair.Rendering
             GL.Uniform1( billboardWidthLoc2, RenderingOptions.Instance.BillboardWidth );
             GL.Uniform1( billboardLengthLoc2, RenderingOptions.Instance.BillboardLength );
             GL.Uniform1( deepOpacityMapDistanceLoc2, RenderingOptions.Instance.DeepOpacityMapDistance );
+            GL.Uniform1( nearLoc2, RenderingOptions.Instance.Near );
+            GL.Uniform1( farLoc2, RenderingOptions.Instance.Far );
+            GL.Uniform1( deepOpacityMapResolutionLoc2, (float)RenderingOptions.Instance.DeepOpacityMapResolution );
+            GL.UniformMatrix4( lightModelViewMatrixLoc2, false, ref lightModelView );
 
             distLoc2 = GL.GetUniformLocation( opacityShaderProgram, "dist" );
             GL.Uniform1( distLoc2, Dist );
             GL.Uniform1( alphaTresholdLoc2, RenderingOptions.Instance.AlphaTreshold );
             GL.Uniform1( intensityFactorLoc2, IntensityFactor );
+            GL.UniformMatrix4( lightModelViewMatrixLoc2, false, ref lightModelView );
 
             GL.Uniform3( eyeLoc2, light.Position );
             //GL.Uniform3( eyeLoc2, camera.Eye );
 
-            for ( int i = 0; i < hair.Particles.Length; i++ )
+            GL.PushMatrix();
             {
-                if ( !hair.Particles[ i ].IsRoot )
-                    renderParticle2( hair.Particles[ i ] );
+                GL.MultMatrix( ref RenderingResources.Instance.BustModelTransformationMatrix );
+
+                for ( int i = 0; i < hair.Particles.Length; i++ )
+                {
+                    if ( !hair.Particles[ i ].IsRoot )
+                        renderParticle2( hair.Particles[ i ] );
+                }
             }
+            GL.PopMatrix();
 
             // unlink the shader program
             GL.UseProgram( 0 );
@@ -344,6 +365,7 @@ namespace AnimatingHair.Rendering
             alphaTresholdLoc = GL.GetUniformLocation( depthShaderProgram, "alphaTreshold" );
             billboardLengthLoc = GL.GetUniformLocation( depthShaderProgram, "renderSizeVertical" );
             billboardWidthLoc = GL.GetUniformLocation( depthShaderProgram, "renderSizeHorizontal" );
+            lightModelViewMatrixLoc = GL.GetUniformLocation( depthShaderProgram, "lightModelViewMatrix" );
 
             axisLoc2 = GL.GetUniformLocation( opacityShaderProgram, "axis" );
             sign1Loc2 = GL.GetAttribLocation( opacityShaderProgram, "sign1" );
@@ -357,6 +379,10 @@ namespace AnimatingHair.Rendering
             billboardLengthLoc2 = GL.GetUniformLocation( opacityShaderProgram, "renderSizeVertical" );
             billboardWidthLoc2 = GL.GetUniformLocation( opacityShaderProgram, "renderSizeHorizontal" );
             deepOpacityMapDistanceLoc2 = GL.GetUniformLocation( opacityShaderProgram, "deepOpacityMapDistance" );
+            nearLoc2 = GL.GetUniformLocation( opacityShaderProgram, "near" );
+            farLoc2 = GL.GetUniformLocation( opacityShaderProgram, "far" );
+            deepOpacityMapResolutionLoc2 = GL.GetUniformLocation( opacityShaderProgram, "resolution" );
+            lightModelViewMatrixLoc2 = GL.GetUniformLocation( opacityShaderProgram, "lightModelViewMatrix" );
         }
     }
 }

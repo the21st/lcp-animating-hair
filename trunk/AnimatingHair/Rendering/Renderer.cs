@@ -6,6 +6,7 @@ using AnimatingHair.Rendering.Debug;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using AnimatingHair.Entity;
+using AnimatingHair.Auxiliary;
 
 namespace AnimatingHair.Rendering
 {
@@ -19,6 +20,7 @@ namespace AnimatingHair.Rendering
         private readonly Scene scene;
         private readonly Camera camera;
         private readonly Light light;
+        private readonly CutterQuad cutter;
 
         // component renderers:
         private readonly HairRenderer hairRenderer;
@@ -36,16 +38,18 @@ namespace AnimatingHair.Rendering
         private readonly float[] lightSpecular;
         private float angle = 0;
         private int shadowTexture;
+        public Matrix4 ModelViewMatrix;
 
         // shader objects
         private readonly int shaderProgram;
         private readonly int modeLoc;
         public int Mode = 0;
 
-        public Renderer( Camera camera, Scene scene )
+        public Renderer( Camera camera, Scene scene, CutterQuad cutter )
         {
             this.camera = camera;
             this.scene = scene;
+            this.cutter = cutter;
 
             light = new Light
             {
@@ -63,7 +67,7 @@ namespace AnimatingHair.Rendering
 
             voxelGridRenderer = new VoxelGridRenderer( scene.VoxelGrid );
 
-            opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light, camera );
+            opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light, scene.Bust );
 
             lightDiffuse = new float[ 3 ];
             lightAmbient = new float[ 3 ];
@@ -83,6 +87,10 @@ namespace AnimatingHair.Rendering
 
         public void Render()
         {
+            Matrix4 translate = Matrix4.CreateTranslation( scene.Bust.Position );
+            Matrix4 rotate = Matrix4.CreateRotationY( scene.Bust.Angle );
+            RenderingResources.Instance.BustModelTransformationMatrix = translate * rotate;
+
             light.Intensity = RenderingOptions.Instance.LightIntensity;
             refreshLight();
 
@@ -100,9 +108,9 @@ namespace AnimatingHair.Rendering
 
             GL.PopAttrib();
 
-            setTextureMatrix();
-
             initializeOpenGL();
+
+            GL.ActiveTexture( TextureUnit.Texture7 ); // NOTE: bez tohto je vsetko vo fixed-pipeline cierne. PRECO?
 
             renderScene();
         }
@@ -112,34 +120,38 @@ namespace AnimatingHair.Rendering
             // clears buffer, sets modelview matrix to LookAt from camera
             GL.Clear( ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit );
 
-            Matrix4 modelview = Matrix4.LookAt( camera.Eye, camera.Target, camera.Up );
+            Matrix4 modelViewMatrix = Matrix4.LookAt( camera.Eye, camera.Target, camera.Up );
             GL.MatrixMode( MatrixMode.Modelview );
-            GL.LoadMatrix( ref modelview );
+            GL.LoadMatrix( ref modelViewMatrix );
 
-            GL.Disable( EnableCap.Blend );
+            RenderingResources.Instance.CameraModelViewMatrix = modelViewMatrix;
+
             GL.Enable( EnableCap.DepthTest );
+            GL.Disable( EnableCap.Blend );
             GL.Disable( EnableCap.Texture2D );
             GL.Disable( EnableCap.Lighting );
+
+            if (RenderingOptions.Instance.Cutting)
+                cutter.Render();
+
             drawAxes();
-            GL.PointSize( 10 );
+
             GL.Color3( Color.White );
-            GL.Begin( BeginMode.Points );
-            GL.Vertex3( light.Position );
-            GL.End();
-            GL.PointSize( 1 );
+            GL.PushMatrix();
+            GL.Translate( light.Position );
+            Utility.DrawSphere( 0.1f, 20, 20 );
+            GL.PopMatrix();
 
             GL.Enable( EnableCap.Lighting );
 
-            if ( RenderingOptions.Instance.ShowBust )
-            {
-                //GL.ActiveTexture( TextureUnit.Texture0 ); // NOTE: co s tym?
-                bustRenderer.Render();
-            }
-
             GL.PushMatrix();
             {
-                GL.Translate( scene.Bust.Position );
-                GL.Rotate( (scene.Bust.Angle * 180 / MathHelper.Pi), Vector3.UnitY );
+                GL.MultMatrix( ref RenderingResources.Instance.BustModelTransformationMatrix );
+
+                if ( RenderingOptions.Instance.ShowBust )
+                {
+                    bustRenderer.Render();
+                }
 
                 if ( RenderingOptions.Instance.ShowMetaBust )
                     metaBustRenderer.Render();
@@ -201,7 +213,7 @@ namespace AnimatingHair.Rendering
             GL.Disable( EnableCap.Lighting );
             GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
 
-            int size = 260;
+            const int size = 250;
 
             GL.Uniform1( modeLoc, 3 );
             GL.Begin( BeginMode.Quads );
@@ -238,19 +250,6 @@ namespace AnimatingHair.Rendering
             GL.End();
         }
 
-        private void setTextureMatrix()
-        {
-            GL.MatrixMode( MatrixMode.Texture );
-            GL.ActiveTexture( TextureUnit.Texture7 );
-
-            GL.LoadIdentity();
-            GL.MultMatrix( ref opacityMapsRenderer.LightProjectionMatrix );
-            GL.MultMatrix( ref opacityMapsRenderer.LightModelViewMatrix );
-
-            // Go back to normal matrix Mode
-            GL.MatrixMode( MatrixMode.Modelview );
-        }
-
         public void Resize( int width, int height, float ratio )
         {
             RenderingOptions.Instance.RenderWidth = width;
@@ -263,9 +262,9 @@ namespace AnimatingHair.Rendering
         private void refreshViewport()
         {
             GL.Viewport( 0, 0, RenderingOptions.Instance.RenderWidth, RenderingOptions.Instance.RenderHeight );
-            Matrix4 perpective = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, RenderingOptions.Instance.AspectRatio, RenderingOptions.Instance.Near, RenderingOptions.Instance.Far );
+            Matrix4 perspective = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, RenderingOptions.Instance.AspectRatio, RenderingOptions.Instance.Near, RenderingOptions.Instance.Far );
             GL.MatrixMode( MatrixMode.Projection );
-            GL.LoadMatrix( ref perpective );
+            GL.LoadMatrix( ref perspective );
         }
 
         private void initializeOpenGL()

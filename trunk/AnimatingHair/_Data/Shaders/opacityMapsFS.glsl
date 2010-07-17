@@ -8,10 +8,9 @@ uniform float deepOpacityMapDistance;
 
 varying float opacityFactor;
 
-// TODO: change to uniforms
-const float n = 1.0;
-const float f = 30.0;
-const float size = 1024.0;
+uniform float near;
+uniform float far;
+uniform float resolution;
 
 void main()
 {
@@ -34,11 +33,11 @@ void main()
 		discard;
 	}
 	
-	float depth = (2.0 * n) / (f + n - gl_FragCoord.z * (f - n)); // linearny depth medzi 0 a 1
+	float depth = (2.0 * near) / (far + near - gl_FragCoord.z * (far - near)); // linearny depth medzi 0 a 1
 	
-	vec2 scrCoord = vec2 (1.0 / size, 1.0 / size) * gl_FragCoord.xy;
+	vec2 scrCoord = vec2 (1.0 / resolution, 1.0 / resolution) * gl_FragCoord.xy;
 	float depthStart = texture2D( depthMap, scrCoord ).x;
-	depthStart = (2.0 * n) / (f + n - depthStart * (f - n)); // linearny depth medzi 0 a 1
+	depthStart = (2.0 * near) / (far + near - depthStart * (far - near)); // linearny depth medzi 0 a 1
 	
 	//if ( depthStart > 0.98 )
 	//{

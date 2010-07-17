@@ -57,8 +57,6 @@ namespace AnimatingHair.Rendering
             GL.Material( MaterialFace.Front, MaterialParameter.Diffuse, SkinColor );
             GL.Material( MaterialFace.Front, MaterialParameter.Ambient, SkinColor );
             GL.PushMatrix();
-            GL.Translate( bust.Position );
-            GL.Rotate( MathHelper.RadiansToDegrees( bust.Angle ), Vector3.UnitY );
             // scale and translate the model so that it fits on the physical interaction model of the bust
             GL.Translate( 0, -0.62, -0.28 );
             const float scale = 0.88f;
