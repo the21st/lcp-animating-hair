@@ -27,6 +27,8 @@ namespace AnimatingHair.GUI
         private bool loaded = false;
         private bool paused = true;
         private bool cutting = false;
+        private Vector3 cutMove;
+        private Vector3 cutMove2;
         private CutterQuad cutter;
         private string saveFile = "";
         private readonly LinkedList<float> fpsHistory = new LinkedList<float>();
@@ -128,7 +130,8 @@ namespace AnimatingHair.GUI
 
             glControl.MouseWheel += glControl_MouseWheel;
 
-            glControl.KeyPress += glControl_KeyPress;
+            //glControl.MouseDown += glControl_MouseDown;
+            //glControl.MouseUp += glControl_MouseUp;
 
             colorDialog.Color = Color.FromArgb( (int)(scene.Hair.Clr[ 0 ] * 255), (int)(scene.Hair.Clr[ 1 ] * 255), (int)(scene.Hair.Clr[ 2 ] * 255) );
             buttonColor.BackColor = colorDialog.Color;
@@ -147,12 +150,6 @@ namespace AnimatingHair.GUI
             checkBoxCruisingLight_CheckedChanged( null, null );
 
             fpsDisplayTimer.Enabled = true;
-        }
-
-        void glControl_KeyPress( object sender, System.Windows.Forms.KeyPressEventArgs e )
-        {
-            if ( e.KeyChar == ' ' )
-                scene.Step();
         }
 
         private void polarToCartesian()
@@ -230,6 +227,9 @@ namespace AnimatingHair.GUI
         {
             switch ( e.KeyData )
             {
+                case Keys.Space:
+                    scene.Step();
+                    break;
                 case Keys.NumPad8:
                     scene.Up = false;
                     break;
@@ -316,34 +316,60 @@ namespace AnimatingHair.GUI
 
         private void glControl_MouseWheel( object sender, MouseEventArgs e )
         {
-            float ratio = 1 + (e.Delta / 1000.0f);
+            if ( cutting )
+            {
+                cutter.Position.Y += 0.0005f * e.Delta;
+            }
+            else
+            {
+                float ratio = 1 + (e.Delta / 1000.0f);
 
-            distance /= ratio;
+                distance /= ratio;
 
-            if ( distance < 2 )
-                distance = 2;
+                if ( distance < 2 )
+                    distance = 2;
+            }
         }
 
         private void glControl_MouseMove( object sender, MouseEventArgs e )
         {
-            if ( e.Button == MouseButtons.Left )
+            if ( cutting )
             {
-                azimuth += 0.1f * (e.X - mouseX);
-                if ( azimuth > 360 )
-                    azimuth -= 360;
-
-                elevation += 0.1f * (e.Y - mouseY);
-                if ( elevation > 89.99999 )
-                    elevation = 89.99999f;
-                if ( elevation < -89.99999 )
-                    elevation = -89.99999f;
+                if ( e.Button == MouseButtons.Left )
+                {
+                    cutter.Position += 0.01f * (e.X - mouseX) * cutMove2 - 0.01f * (e.Y - mouseY) * cutMove;
+                }
+                if ( e.Button == MouseButtons.Right )
+                {
+                    cutter.Size += 0.01f * (e.Y - mouseY);
+                }
+                if ( e.Button == MouseButtons.Middle )
+                {
+                    cutter.RotateX += 0.001f * (e.X - mouseX);
+                    cutter.RotateZ += 0.001f * (e.Y - mouseY);
+                }
             }
-
-            if ( e.Button == MouseButtons.Right )
+            else
             {
-                distance += 0.03f * (e.Y - mouseY);
-                if ( distance < 2 )
-                    distance = 2;
+                if ( e.Button == MouseButtons.Left )
+                {
+                    azimuth += 0.1f * (e.X - mouseX);
+                    if ( azimuth > 360 )
+                        azimuth -= 360;
+
+                    elevation += 0.1f * (e.Y - mouseY);
+                    if ( elevation > 89.99999 )
+                        elevation = 89.99999f;
+                    if ( elevation < -89.99999 )
+                        elevation = -89.99999f;
+                }
+
+                if ( e.Button == MouseButtons.Right )
+                {
+                    distance += 0.03f * (e.Y - mouseY);
+                    if ( distance < 2 )
+                        distance = 2;
+                }
             }
 
             mouseX = e.X;
@@ -540,13 +566,56 @@ namespace AnimatingHair.GUI
         private void buttonCutting_Click( object sender, EventArgs e )
         {
             // zacina strihanie
-            beginCutting();
+            if ( cutting )
+                finishCutting();
+            else
+                beginCutting();
+        }
+
+        private void buttonCancelCut_Click( object sender, EventArgs e )
+        {
+            if ( cutting )
+                cancelCutting();
         }
 
         private void beginCutting()
         {
+            cutMove = camera.Target - camera.Eye;
+            cutMove.Y = 0;
+            cutMove.Normalize();
+            cutMove2 = Vector3.Cross( cutMove, Vector3.UnitY );
+
+            buttonCutting.Text = "CUT!";
+            buttonCancelCut.Visible = true;
+
             RenderingOptions.Instance.Cutting = true;
             cutting = true;
+        }
+
+        private void finishCutting()
+        {
+            exitCuttingMode();
+
+            Vector3[] vertices = cutter.GetVertices();
+            scene.Hair.Cut( vertices[ 0 ], vertices[ 1 ], vertices[ 2 ] );
+            scene.Hair.Cut( vertices[ 0 ], vertices[ 1 ], vertices[ 0 ] - 5 * Vector3.UnitY );
+            scene.Hair.Cut( vertices[ 0 ], vertices[ 2 ], vertices[ 0 ] - 5 * Vector3.UnitY );
+            scene.Hair.Cut( vertices[ 3 ], vertices[ 1 ], vertices[ 3 ] - 5 * Vector3.UnitY );
+            scene.Hair.Cut( vertices[ 3 ], vertices[ 2 ], vertices[ 3 ] - 5 * Vector3.UnitY );
+        }
+
+        private void cancelCutting()
+        {
+            exitCuttingMode();
+        }
+
+        private void exitCuttingMode()
+        {
+            buttonCutting.Text = "Start Cutting";
+            buttonCancelCut.Visible = false;
+
+            RenderingOptions.Instance.Cutting = false;
+            cutting = false;
         }
     }
 }

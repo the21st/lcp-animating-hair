@@ -46,7 +46,7 @@ namespace AnimatingHair.GUI
 
             // manual refresh of the binding by reflection, binding.ReadValue() does not work
             float value;
-            if (intData)
+            if ( intData )
                 value = (int)dataSource.GetType().GetProperty( dataMember ).GetValue( dataSource, null );
             else
                 value = (float)dataSource.GetType().GetProperty( dataMember ).GetValue( dataSource, null );
@@ -54,7 +54,14 @@ namespace AnimatingHair.GUI
             value -= min;
             value /= range;
             value *= trackBar.Maximum;
-            trackBar.Value = (int)Math.Round( value );
+            int v = (int)Math.Round( value );
+            if ( v < trackBar.Minimum )
+                trackBar.Value = trackBar.Minimum;
+            else
+                if ( v > trackBar.Maximum )
+                    trackBar.Value = trackBar.Maximum;
+                else
+                    trackBar.Value = v;
 
             loaded = true;
         }

@@ -33,7 +33,7 @@ namespace AnimatingHair
             CollisionDamp = 0.9f;
             FrictionDamp = 0.9f;
             AverageHairDensity = 30f;
-            HairDensityForceMagnitude = 0.1f;
+            HairDensityForceMagnitude = 1f;
 
             AirParticleCount = 1;
             DragCoefficient = 0.1f;

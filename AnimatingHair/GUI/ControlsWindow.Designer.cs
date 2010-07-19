@@ -68,6 +68,7 @@ namespace AnimatingHair.GUI
             this.visualTrackBarAirFriction = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarGravity = new AnimatingHair.GUI.VisualTrackBar();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.buttonCutting = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -102,6 +103,7 @@ namespace AnimatingHair.GUI
             this.visualTrackBarLightCruiseSpeed = new AnimatingHair.GUI.VisualTrackBar();
             this.checkBoxCruisingLight = new System.Windows.Forms.CheckBox();
             this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
             this.visualTrackBarAirMassFactor = new AnimatingHair.GUI.VisualTrackBar();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
             this.visualTrackBarElasticModulus = new AnimatingHair.GUI.VisualTrackBar();
@@ -115,8 +117,7 @@ namespace AnimatingHair.GUI
             this.diffuseDialog = new System.Windows.Forms.ColorDialog();
             this.ambientDialog = new System.Windows.Forms.ColorDialog();
             this.specularDialog = new System.Windows.Forms.ColorDialog();
-            this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.buttonCutting = new System.Windows.Forms.Button();
+            this.buttonCancelCut = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSeed)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -140,9 +141,9 @@ namespace AnimatingHair.GUI
             this.groupBox14.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.tabPage7.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.groupBox8.SuspendLayout();
             this.groupBox7.SuspendLayout();
-            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // glControl
@@ -496,6 +497,7 @@ namespace AnimatingHair.GUI
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add( this.buttonCancelCut );
             this.tabPage1.Controls.Add( this.buttonCutting );
             this.tabPage1.Controls.Add( this.buttonColor );
             this.tabPage1.Controls.Add( this.groupBox2 );
@@ -506,6 +508,16 @@ namespace AnimatingHair.GUI
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Hair";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // buttonCutting
+            // 
+            this.buttonCutting.Location = new System.Drawing.Point( 76, 285 );
+            this.buttonCutting.Name = "buttonCutting";
+            this.buttonCutting.Size = new System.Drawing.Size( 151, 62 );
+            this.buttonCutting.TabIndex = 29;
+            this.buttonCutting.Text = "Start Cutting";
+            this.buttonCutting.UseVisualStyleBackColor = true;
+            this.buttonCutting.Click += new System.EventHandler( this.buttonCutting_Click );
             // 
             // tabPage4
             // 
@@ -859,6 +871,16 @@ namespace AnimatingHair.GUI
             this.tabPage7.Text = "Advanced";
             this.tabPage7.UseVisualStyleBackColor = true;
             // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add( this.visualTrackBarAirMassFactor );
+            this.groupBox9.Location = new System.Drawing.Point( 3, 310 );
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size( 297, 64 );
+            this.groupBox9.TabIndex = 13;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "Air Initialization Properties";
+            // 
             // visualTrackBarAirMassFactor
             // 
             this.visualTrackBarAirMassFactor.Label = "Air Mass Factor";
@@ -955,25 +977,16 @@ namespace AnimatingHair.GUI
             // 
             this.specularDialog.Color = System.Drawing.Color.White;
             // 
-            // groupBox9
+            // buttonCancelCut
             // 
-            this.groupBox9.Controls.Add( this.visualTrackBarAirMassFactor );
-            this.groupBox9.Location = new System.Drawing.Point( 3, 310 );
-            this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size( 297, 64 );
-            this.groupBox9.TabIndex = 13;
-            this.groupBox9.TabStop = false;
-            this.groupBox9.Text = "Air Initialization Properties";
-            // 
-            // buttonCutting
-            // 
-            this.buttonCutting.Location = new System.Drawing.Point( 76, 329 );
-            this.buttonCutting.Name = "buttonCutting";
-            this.buttonCutting.Size = new System.Drawing.Size( 151, 44 );
-            this.buttonCutting.TabIndex = 29;
-            this.buttonCutting.Text = "Cutting";
-            this.buttonCutting.UseVisualStyleBackColor = true;
-            this.buttonCutting.Click += new System.EventHandler( this.buttonCutting_Click );
+            this.buttonCancelCut.Location = new System.Drawing.Point( 76, 353 );
+            this.buttonCancelCut.Name = "buttonCancelCut";
+            this.buttonCancelCut.Size = new System.Drawing.Size( 151, 38 );
+            this.buttonCancelCut.TabIndex = 30;
+            this.buttonCancelCut.Text = "Cancel Cut";
+            this.buttonCancelCut.UseVisualStyleBackColor = true;
+            this.buttonCancelCut.Visible = false;
+            this.buttonCancelCut.Click += new System.EventHandler( this.buttonCancelCut_Click );
             // 
             // ControlsWindow
             // 
@@ -1026,9 +1039,9 @@ namespace AnimatingHair.GUI
             this.groupBox13.ResumeLayout( false );
             this.groupBox13.PerformLayout();
             this.tabPage7.ResumeLayout( false );
+            this.groupBox9.ResumeLayout( false );
             this.groupBox8.ResumeLayout( false );
             this.groupBox7.ResumeLayout( false );
-            this.groupBox9.ResumeLayout( false );
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -1124,5 +1137,6 @@ namespace AnimatingHair.GUI
         private System.Windows.Forms.ComboBox comboBoxDeepOpacityMapResolution;
         private System.Windows.Forms.Button buttonCutting;
         private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.Button buttonCancelCut;
     }
 }

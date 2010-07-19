@@ -162,5 +162,54 @@ namespace AnimatingHair.Auxiliary
 
             return result;
         }
+
+        public static bool LineSquareIntersection( Vector3 planeNormal, float planeD, Vector3 planeV0, Vector3 planeU, Vector3 planeV, Vector3 lineStart, Vector3 lineDirection )
+        {
+            float tt;
+
+            if ( !linePlaneIntersection( planeNormal, planeD, lineStart, lineDirection, out tt ) )
+                return false;
+
+            if ( tt < 0 || tt > 1 )
+                return false;
+
+            Vector3 intersectionPoint = lineStart + tt * lineDirection;
+
+            // is the intersectionPoint inside the square?
+            float uu, uv, vv, wu, wv, d;
+            Vector3 w;
+            uu = Vector3.Dot( planeU, planeU );
+            uv = Vector3.Dot( planeU, planeV );
+            vv = Vector3.Dot( planeV, planeV );
+            w = intersectionPoint - planeV0;
+            wu = Vector3.Dot( w, planeU );
+            wv = Vector3.Dot( w, planeV );
+            d = uv * uv - uu * vv;
+
+            // get and test parametric coords
+            float s, t;
+            s = (uv * wv - vv * wu) / d;
+            if ( s < 0.0f || s > 1.0f ) // I is outside T
+                return false;
+            t = (uv * wu - uu * wv) / d;
+            if ( t < 0.0f || t > 1.0f ) // I is outside T
+                return false;
+
+            // I is in T
+            return true;
+        }
+
+        private static bool linePlaneIntersection( Vector3 planeNormal, float planeD, Vector3 lineStart, Vector3 lineDirection, out float t )
+        {
+            float denominator = Vector3.Dot( planeNormal, lineDirection );
+            if ( Math.Abs( denominator ) < float.Epsilon )
+            {
+                t = 0;
+                return false;
+            }
+
+            t = -(Vector3.Dot( planeNormal, lineStart ) + planeD) / denominator;
+            return true;
+        }
     }
 }

@@ -111,6 +111,47 @@ namespace AnimatingHair.Entity
             }
         }
 
+        public void Cut( Vector3 planePoint1, Vector3 planePoint2, Vector3 planePoint3 )
+        {
+            Vector3 planeU = planePoint2 - planePoint1;
+            Vector3 planeV = planePoint3 - planePoint1;
+            Vector3 planeNormal = Vector3.Cross( planeU, planeV );
+            planeNormal.Normalize();
+            float planeD = -Vector3.Dot( planePoint1, planeNormal );
+
+            List<ParticlePair> toRemove = new List<ParticlePair>();
+
+            for ( int i = 0; i < ParticlePairsIteration.Count; i++ )
+            {
+                ParticlePair pp = ParticlePairsIteration[ i ];
+
+                Vector3 lineDirection = pp.ParticleJ.Position - pp.ParticleI.Position;
+                lineDirection.Normalize();
+
+                if ( Geometry.LineSquareIntersection( planeNormal, planeD, planePoint1, planeU, planeV, pp.ParticleI.Position, lineDirection ) )
+                {
+                    toRemove.Add( pp );
+                }
+            }
+
+            foreach ( ParticlePair pair in toRemove )
+            {
+                if ( pair.IsRootI )
+                {
+                    pair.ParticleI.NeighborsTip.Remove( pair.ParticleJ );
+                    pair.ParticleJ.NeighborsRoot.Remove( pair.ParticleI );
+                }
+                else
+                {
+                    pair.ParticleI.NeighborsRoot.Remove( pair.ParticleJ );
+                    pair.ParticleJ.NeighborsTip.Remove( pair.ParticleI );
+                }
+
+                ParticlePairs[ pair.I, pair.J ] = null;
+                ParticlePairsIteration.Remove( pair );
+            }
+        }
+
         #region Private methods
 
         private void resetRootParticleForces()

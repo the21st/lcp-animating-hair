@@ -96,7 +96,7 @@ namespace AnimatingHair.Entity
 
             applyInteractionForces( Hair.Particles, Air.Particles );
 
-            Hair.ApplyInertialAcceleration( -bustMovementAcceleration );
+            Hair.ApplyInertialAcceleration( -bustMovementAcceleration ); // TODO: take into account bust rotation
             Hair.ApplyInertialAngularAcceleration( -bustAngularAcceleration, Bust.AngularVelocity );
             Bust.Acceleration = bustMovementAcceleration;
             Bust.AngularAcceleration = bustAngularAcceleration;

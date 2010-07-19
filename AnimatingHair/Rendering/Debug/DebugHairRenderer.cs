@@ -47,32 +47,27 @@ namespace AnimatingHair.Rendering.Debug
             if ( hp.IsRoot )
                 GL.Color3( 0, 0, 0 );
             else
-                GL.Color3( 1.0, 0.0, 0.0 );
+                GL.Color3( 0.9, 0.1, 0.3 );
 
             const float renderSize = 0.05f;
 
             if ( hp.NeighborsRoot.Count + hp.NeighborsTip.Count == 0 )
                 GL.Color3( Color.White );
 
-            GL.Begin( BeginMode.Triangles );
-            {
-                GL.Vertex3( hp.Position );
-                GL.Vertex3( (hp.Position + new Vector3( renderSize, renderSize, 0 )) );
-                GL.Vertex3( (hp.Position + new Vector3( -renderSize, renderSize, 0 )) );
-                GL.Vertex3( hp.Position );
-                GL.Vertex3( (hp.Position + new Vector3( 0, renderSize, renderSize )) );
-                GL.Vertex3( (hp.Position + new Vector3( 0, renderSize, -renderSize )) );
-            }
-            GL.End();
+
+            GL.PushMatrix();
+            GL.Translate( hp.Position );
+            Utility.DrawSphere( 0.03f, 5, 5 );
+            GL.PopMatrix();
 
             // -- direction --
             if ( !hp.IsRoot )
             {
-                GL.Color3( 0.0, 0.0, 0.0 );
+                GL.Color3( 0.3, 0.3, 0.3 );
                 GL.Begin( BeginMode.Lines );
                 {
                     GL.Vertex3( hp.Position );
-                    GL.Vertex3( (hp.Position + 0.5f * hp.Direction) );
+                    GL.Vertex3( (hp.Position + 0.2f * hp.Direction) );
                 }
                 GL.End();
             }
@@ -80,7 +75,7 @@ namespace AnimatingHair.Rendering.Debug
             // -- acceleration --
             if ( !hp.IsRoot )
             {
-                GL.Color3( 0.9, 0.1, 0.1 );
+                GL.Color3( 0.9, 0.35, 0.1 );
 
                 GL.Begin( BeginMode.Lines );
                 {
