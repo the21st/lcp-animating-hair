@@ -11,7 +11,7 @@
             ShowConnections = false;
 
             BillboardLength = 0.5f;
-            BillboardWidth = 0.2f;
+            BillboardWidth = 0.15f;
             AlphaTreshold = 0.15f;
             DeepOpacityMapDistance = 0.015f;
             DeepOpacityMapResolution = 1024;

@@ -38,7 +38,6 @@ namespace AnimatingHair.Rendering
         private readonly float[] lightSpecular;
         private float angle = 0;
         private int shadowTexture;
-        public Matrix4 ModelViewMatrix;
 
         // shader objects
         private readonly int shaderProgram;
@@ -89,7 +88,7 @@ namespace AnimatingHair.Rendering
         {
             Matrix4 translate = Matrix4.CreateTranslation( scene.Bust.Position );
             Matrix4 rotate = Matrix4.CreateRotationY( scene.Bust.Angle );
-            RenderingResources.Instance.BustModelTransformationMatrix = translate * rotate;
+            RenderingResources.Instance.BustModelTransformationMatrix = rotate * translate;
 
             light.Intensity = RenderingOptions.Instance.LightIntensity;
             refreshLight();
@@ -131,7 +130,7 @@ namespace AnimatingHair.Rendering
             GL.Disable( EnableCap.Texture2D );
             GL.Disable( EnableCap.Lighting );
 
-            if (RenderingOptions.Instance.Cutting)
+            if ( RenderingOptions.Instance.Cutting )
                 cutter.Render();
 
             drawAxes();
