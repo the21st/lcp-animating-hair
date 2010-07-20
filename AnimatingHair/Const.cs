@@ -15,7 +15,7 @@ namespace AnimatingHair
             AirFriction = 0.05f;
             Gravity = 0.5f;
 
-            HairParticleCount = 400;
+            HairParticleCount = 1000;
             HairLength = 2.3f;
             MaxRootDepth = 0.5f;
 

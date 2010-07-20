@@ -70,9 +70,6 @@ void main()
 	float shadow = 1.0;
 	float tmp;
 	vec3 delta; // TODO: prisposob okolnostiam
-	//delta[0] = 0.02;
-	//delta[1] = 0.04;
-	//delta[2] = 0.06;
 	delta[0] = deepOpacityMapDistance;
 	delta[1] = 2 * deepOpacityMapDistance;
 	delta[2] = 3 * deepOpacityMapDistance;
