@@ -8,8 +8,6 @@ namespace AnimatingHair.Rendering
     /// </summary>
     class TriangleMesh
     {
-        // TODO: polygon groups
-
         // vertex, normal and texCoord data
         public Vector3[] Vertices;
         public Vector3[] Normals;
@@ -17,30 +15,6 @@ namespace AnimatingHair.Rendering
 
         // the polygon (only triangles) data. Is actually an indexing of the vertex data.
         public TriangleIndex[] TriangleIndices;
-
-        private bool wireframe = false;
-        public bool Wireframe
-        {
-            get
-            {
-                return wireframe;
-            }
-            set
-            {
-                if ( wireframe != value )
-                    displayListHandle = 0;
-
-                wireframe = value;
-            }
-        }
-
-        public int TriangleCount
-        {
-            get
-            {
-                return TriangleIndices.Length / 3;
-            }
-        }
 
         #region Display List
 

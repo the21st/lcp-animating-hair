@@ -57,7 +57,10 @@ namespace AnimatingHair.Entity.PhysicalEntity
             }
             else if ( distance < sphere.Radius )
             {
-                particle.Force += 4 * particle.Mass * normal;
+                if ( particle is HairParticle )
+                    particle.Force += 10 * particle.Mass * normal;
+                else
+                    particle.Force += 2 * particle.Mass * normal;
             }
         }
 
@@ -72,7 +75,10 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
             if ( distance < cylinder.Radius )
             {
-                particle.Force += 4 * particle.Mass * normal;
+                if ( particle is HairParticle )
+                    particle.Force += 10 * particle.Mass * normal;
+                else
+                    particle.Force += 2 * particle.Mass * normal;
                 return true;
             }
             else if ( (distance < cylinder.Radius + interactionDistance) && (distance > cylinder.Radius) )
