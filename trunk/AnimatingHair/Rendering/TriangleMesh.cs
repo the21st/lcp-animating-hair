@@ -54,40 +54,20 @@ namespace AnimatingHair.Rendering
 
         private void drawImmediateMode()
         {
-            if ( wireframe )
+            GL.Begin( BeginMode.Triangles );
             {
                 for ( int i = 0; i < TriangleIndices.Length; i++ )
                 {
                     TriangleIndex triangle = TriangleIndices[ i ];
-                    GL.Begin( BeginMode.LineLoop );
+                    for ( int j = 0; j < 3; j++ )
                     {
-                        for ( int j = 0; j < 3; j++ )
-                        {
-                            GL.TexCoord2( TexCoords[ triangle[ j ].TexCoord ] );
-                            GL.Normal3( Normals[ triangle[ j ].Normal ] );
-                            GL.Vertex3( Vertices[ triangle[ j ].Vertex ] );
-                        }
-                    }
-                    GL.End();
-                }
-            }
-            else
-            {
-                GL.Begin( BeginMode.Triangles );
-                {
-                    for ( int i = 0; i < TriangleIndices.Length; i++ )
-                    {
-                        TriangleIndex triangle = TriangleIndices[ i ];
-                        for ( int j = 0; j < 3; j++ )
-                        {
-                            GL.TexCoord2( TexCoords[ triangle[ j ].TexCoord ] );
-                            GL.Normal3( Normals[ triangle[ j ].Normal ] );
-                            GL.Vertex3( Vertices[ triangle[ j ].Vertex ] );
-                        }
+                        GL.TexCoord2( TexCoords[ triangle[ j ].TexCoord ] );
+                        GL.Normal3( Normals[ triangle[ j ].Normal ] );
+                        GL.Vertex3( Vertices[ triangle[ j ].Vertex ] );
                     }
                 }
-                GL.End();
             }
+            GL.End();
         }
     }
 
