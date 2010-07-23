@@ -1,14 +1,15 @@
 ﻿uniform sampler2D hairTexture;
 uniform sampler2D deepOpacityMap;
+uniform sampler2D shadowMap;
 uniform float deepOpacityMapDistance;
 
-const float K_a = 0.05;
-const float K_d = 0.30;
-const float K_s = 0.65;
-const float shininess = 180.0;
+uniform float K_a;
+uniform float K_d;
+uniform float K_s;
+uniform float shininess;
 
-const float rho_reflect = 0.75;
-const float rho_transmit = 0.25;
+uniform float rho_reflect;
+uniform float rho_transmit;
 
 varying vec3 vertexPos;
 varying vec3 lightPos;
@@ -67,9 +68,9 @@ void main()
 	color.xyz = f_dir * (K_d * diffuse * color.xyz + K_s * max(specular, 0.0) * lightSpec.xyz);
 	
 	
-	float shadow = 1.0;
+	float shadow = 0.0;
 	float tmp;
-	vec3 delta; // TODO: prisposob okolnostiam
+	vec3 delta;
 	delta[0] = deepOpacityMapDistance;
 	delta[1] = 2 * deepOpacityMapDistance;
 	delta[2] = 3 * deepOpacityMapDistance;
@@ -122,6 +123,13 @@ void main()
 	// (diery = dosledok alpha thresholdingu)
 	if ( depthStart > 0.999 )
 		shadow = 0;
+		
+	float depth2 = lightCoord.z - 0.0005;
+	float distanceFromLight = texture2D( shadowMap, lightCoord.xy ).z;
+ 	
+	shadow += distanceFromLight < depth2 ? 1.0 : 0.0 ;
+	
+	shadow = clamp( shadow, 0.0, 0.9 );
 	
 	color.rgb *= ( 1.0 - shadow );
 	

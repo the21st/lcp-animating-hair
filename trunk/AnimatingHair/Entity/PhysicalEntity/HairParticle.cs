@@ -49,8 +49,8 @@ namespace AnimatingHair.Entity.PhysicalEntity
             Vector3 pos = Vector3.Zero;
             pos.X = Position.X;
             pos.Z = Position.Z;
-            Vector3 direction = Vector3.Cross( pos, Vector3.UnitY );
-            Force += -Mass * direction * angularAcceleration;
+            Vector3 direction = Vector3.Cross( Vector3.UnitY, pos );
+            Force += -Mass * angularAcceleration * direction;
             Force += Mass * pos * angularVelocity * angularVelocity;
         }
 

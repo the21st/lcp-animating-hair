@@ -49,15 +49,12 @@ namespace AnimatingHair.Rendering.Debug
             else
                 GL.Color3( 0.9, 0.1, 0.3 );
 
-            const float renderSize = 0.05f;
-
             if ( hp.NeighborsRoot.Count + hp.NeighborsTip.Count == 0 )
                 GL.Color3( Color.White );
 
-
             GL.PushMatrix();
             GL.Translate( hp.Position );
-            Utility.DrawSphere( 0.03f, 5, 5 );
+            Utility.DrawSphere( 0.03f, 3, 3 );
             GL.PopMatrix();
 
             // -- direction --
@@ -80,7 +77,7 @@ namespace AnimatingHair.Rendering.Debug
                 GL.Begin( BeginMode.Lines );
                 {
                     GL.Vertex3( hp.Position );
-                    GL.Vertex3( (hp.Position + 0.5f * hp.Acceleration) );
+                    GL.Vertex3( (hp.Position + 0.1f * hp.Acceleration) );
                 }
                 GL.End();
             }

@@ -8,9 +8,11 @@ namespace AnimatingHair.Auxiliary
     /// </summary>
     class Cylinder
     {
-        public Vector3 Endpoint1 { get; private set; }
-        public Vector3 Endpoint2 { get; private set; }
-        public float Radius { get; private set; }
+        public Vector3 Endpoint1 { get; set; }
+        public Vector3 Endpoint2 { get; set; }
+        public Vector3 OriginalEndpoint1 { get; set; }
+        public Vector3 OriginalEndpoint2 { get; set; }
+        public float Radius { get; set; }
 
         public readonly float Length;
         public readonly float LengthSquared;
@@ -20,6 +22,8 @@ namespace AnimatingHair.Auxiliary
         {
             Endpoint1 = endpoint1;
             Endpoint2 = endpoint2;
+            OriginalEndpoint1 = endpoint1;
+            OriginalEndpoint2 = endpoint2;
             Radius = radius;
             RadiusSquared = radius * radius;
             LengthSquared = (endpoint2 - endpoint1).LengthSquared;

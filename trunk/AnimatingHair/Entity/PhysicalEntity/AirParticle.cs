@@ -1,4 +1,5 @@
-﻿namespace AnimatingHair.Entity.PhysicalEntity
+﻿using OpenTK;
+namespace AnimatingHair.Entity.PhysicalEntity
 {
     class AirParticle : SPHParticle
     {

@@ -153,6 +153,7 @@
     <Compile Include="Rendering\Debug\AirRenderer.cs" />
     <Compile Include="Rendering\Debug\MetaBustRenderer.cs" />
     <Compile Include="Rendering\OpacityMapsRenderer.cs" />
+    <Compile Include="Rendering\ShadowMapRenderer.cs" />
     <Compile Include="Rendering\TriangleMesh.cs" />
     <Compile Include="Rendering\HairRenderer.cs" />
     <Compile Include="Rendering\BustRenderer.cs" />

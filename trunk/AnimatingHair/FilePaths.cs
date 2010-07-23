@@ -1,4 +1,4 @@
-﻿namespace AnimatingHair
+namespace AnimatingHair
 {
     static class FilePaths
     {
@@ -16,6 +16,7 @@
         public const string HairTextureLocation = @"../../_Data/Models/vlas.png";
         public const string ShadowTextureLocation = @"../../_Data/Models/shadow.png";
 
-        public const string HeadModelLocation = @"../../_Data/Models/hlava.obj";
+        public const string HeadModelLocation = @"../../_Data/Models/head.obj";
+        public const string ShouldersModelLocation = @"../../_Data/Models/shoulders.obj";
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using AnimatingHair.Rendering.Debug;
@@ -31,18 +30,17 @@ namespace AnimatingHair.Rendering
         private readonly VoxelGridRenderer voxelGridRenderer;
 
         private readonly OpacityMapsRenderer opacityMapsRenderer;
+        private readonly ShadowMapRenderer shadowMapRenderer;
 
         // auxiliary
         private readonly float[] lightDiffuse;
         private readonly float[] lightAmbient;
         private readonly float[] lightSpecular;
         private float angle = 0;
-        private int shadowTexture;
+        private readonly Vector3 centerPosition;
 
         // shader objects
         private readonly int shaderProgram;
-        private readonly int modeLoc;
-        public int Mode = 0;
 
         public Renderer( Camera camera, Scene scene, CutterQuad cutter )
         {
@@ -66,7 +64,9 @@ namespace AnimatingHair.Rendering
 
             voxelGridRenderer = new VoxelGridRenderer( scene.VoxelGrid );
 
-            opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light, scene.Bust );
+            opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light );
+
+            shadowMapRenderer = new ShadowMapRenderer( scene.Bust );
 
             lightDiffuse = new float[ 3 ];
             lightAmbient = new float[ 3 ];
@@ -79,16 +79,26 @@ namespace AnimatingHair.Rendering
                 using ( StreamReader fs = new StreamReader( FilePaths.DebugFSLocation ) )
                     Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
             }
-            modeLoc = GL.GetUniformLocation( shaderProgram, "mode" );
+
+            centerPosition = calculateCenterPosition();
 
             initializeOpenGL();
         }
 
         public void Render()
         {
+            Vector3 lookAt = centerPosition + scene.Bust.Position;
+
+            RenderingResources.Instance.LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, RenderingOptions.Instance.Near, RenderingOptions.Instance.Far );
+            RenderingResources.Instance.LightModelViewMatrix = Matrix4.LookAt( light.Position, lookAt, Vector3.UnitY );
+
+
             Matrix4 translate = Matrix4.CreateTranslation( scene.Bust.Position );
             Matrix4 rotate = Matrix4.CreateRotationY( scene.Bust.Angle );
             RenderingResources.Instance.BustModelTransformationMatrix = rotate * translate;
+            RenderingResources.Instance.HeadRotateMatrixInverse = rotate;
+            RenderingResources.Instance.HeadRotateMatrixInverse.Invert();
+
 
             light.Intensity = RenderingOptions.Instance.LightIntensity;
             refreshLight();
@@ -98,20 +108,25 @@ namespace AnimatingHair.Rendering
             light.Position = new Vector3( -RenderingOptions.Instance.LightDistance * (float)Math.Sin( angle ), 0.5f * RenderingOptions.Instance.LightDistance, RenderingOptions.Instance.LightDistance * (float)Math.Cos( angle ) );
             GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
 
+
             GL.PushAttrib( AttribMask.AllAttribBits );
-
             opacityMapsRenderer.RenderOpacityTexture();
-            shadowTexture = opacityMapsRenderer.ShadowTexture;
-            hairRenderer.DeepOpacityMap = shadowTexture;
-            bustRenderer.DeepOpacityMap = shadowTexture;
-
             GL.PopAttrib();
+
+
+            GL.PushAttrib( AttribMask.AllAttribBits );
+            shadowMapRenderer.RenderShadowTexture();
+            GL.PopAttrib();
+
 
             initializeOpenGL();
 
             GL.ActiveTexture( TextureUnit.Texture7 ); // NOTE: bez tohto je vsetko vo fixed-pipeline cierne. PRECO?
 
             renderScene();
+
+            // --- HUD ---
+            //renderHUD();
         }
 
         private void renderScene()
@@ -143,25 +158,21 @@ namespace AnimatingHair.Rendering
 
             GL.Enable( EnableCap.Lighting );
 
+            if ( RenderingOptions.Instance.ShowBust )
+                bustRenderer.Render();
+
+            if ( RenderingOptions.Instance.ShowMetaBust )
+                metaBustRenderer.Render();
+
             GL.PushMatrix();
             {
                 GL.MultMatrix( ref RenderingResources.Instance.BustModelTransformationMatrix );
-
-                if ( RenderingOptions.Instance.ShowBust )
-                {
-                    bustRenderer.Render();
-                }
-
-                if ( RenderingOptions.Instance.ShowMetaBust )
-                    metaBustRenderer.Render();
 
                 if ( RenderingOptions.Instance.ShowVoxelGrid )
                     voxelGridRenderer.Render();
 
                 if ( RenderingOptions.Instance.ShowDebugAir )
-                {
                     airRenderer.Render();
-                }
 
                 if ( RenderingOptions.Instance.ShowHair )
                 {
@@ -178,8 +189,10 @@ namespace AnimatingHair.Rendering
                 }
             }
             GL.PopMatrix();
+        }
 
-            // --- HUD ---
+        private void renderHUD()
+        {
             GL.Disable( EnableCap.DepthTest );
             GL.Disable( EnableCap.Lighting );
             GL.Disable( EnableCap.Blend );
@@ -192,9 +205,9 @@ namespace AnimatingHair.Rendering
             GL.PushMatrix();
             GL.LoadIdentity();
             { // HUD rendering here
-                GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
+                GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.ShadowMap );
                 GL.UseProgram( shaderProgram );
-                //renderDebugRectangle();
+                renderDebugRectangle();
                 GL.UseProgram( 0 );
             }
             GL.Enable( EnableCap.DepthTest );
@@ -210,11 +223,14 @@ namespace AnimatingHair.Rendering
             GL.Enable( EnableCap.Texture2D );
             GL.Disable( EnableCap.Blend );
             GL.Disable( EnableCap.Lighting );
-            GL.BindTexture( TextureTarget.Texture2D, shadowTexture );
+
+            int textureLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMap" );
+            GL.ActiveTexture( TextureUnit.Texture0 );
+            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMap );
+            GL.Uniform1( textureLoc, 0 );
 
             const int size = 250;
 
-            GL.Uniform1( modeLoc, 3 );
             GL.Begin( BeginMode.Quads );
             {
                 GL.TexCoord2( 0, 1 );
@@ -231,7 +247,8 @@ namespace AnimatingHair.Rendering
             }
             GL.End();
 
-            GL.Uniform1( modeLoc, Mode );
+            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMap );
+
             GL.Begin( BeginMode.Quads );
             {
                 GL.TexCoord2( 0, 1 );
@@ -271,7 +288,7 @@ namespace AnimatingHair.Rendering
             refreshViewport();
 
             GL.ClearColor( Color.CornflowerBlue );
-            //GL.ClearColor( Color.Black );
+            GL.ClearColor( Color.Gray );
 
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );
@@ -281,7 +298,6 @@ namespace AnimatingHair.Rendering
 
             GL.Light( LightName.Light0, LightParameter.Diffuse, lightDiffuse );
             GL.Light( LightName.Light0, LightParameter.Ambient, lightAmbient );
-            //GL.Light( LightName.Light0, LightParameter.Specular, lightSpecular );
         }
 
         private static void drawAxes()
@@ -313,6 +329,16 @@ namespace AnimatingHair.Rendering
             GL.Light( LightName.Light0, LightParameter.Diffuse, lightDiffuse );
             GL.Light( LightName.Light0, LightParameter.Ambient, lightAmbient );
             GL.Light( LightName.Light0, LightParameter.Specular, lightSpecular );
+        }
+
+        private Vector3 calculateCenterPosition()
+        {
+            Vector3 sum = Vector3.Zero;
+            for ( int i = 0; i < scene.Hair.Particles.Length; i++ )
+            {
+                sum += scene.Hair.Particles[ i ].Position;
+            }
+            return sum / scene.Hair.Particles.Length;
         }
     }
 }

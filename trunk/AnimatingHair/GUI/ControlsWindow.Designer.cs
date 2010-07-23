@@ -68,6 +68,14 @@ namespace AnimatingHair.GUI
             this.visualTrackBarAirFriction = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarGravity = new AnimatingHair.GUI.VisualTrackBar();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.visualTrackBarReflect = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarTransmit = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarShininess = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarAmbient = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarSpecular = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarDiffuse = new AnimatingHair.GUI.VisualTrackBar();
+            this.buttonCancelCut = new System.Windows.Forms.Button();
             this.buttonCutting = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.button1 = new System.Windows.Forms.Button();
@@ -117,7 +125,6 @@ namespace AnimatingHair.GUI
             this.diffuseDialog = new System.Windows.Forms.ColorDialog();
             this.ambientDialog = new System.Windows.Forms.ColorDialog();
             this.specularDialog = new System.Windows.Forms.ColorDialog();
-            this.buttonCancelCut = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSeed)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -130,6 +137,7 @@ namespace AnimatingHair.GUI
             this.groupBox5.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.groupBox15.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -232,7 +240,7 @@ namespace AnimatingHair.GUI
             this.groupBox2.Size = new System.Drawing.Size( 291, 188 );
             this.groupBox2.TabIndex = 28;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Hair properties";
+            this.groupBox2.Text = "Properties";
             // 
             // visualTrackBarAverageHairDensity
             // 
@@ -268,9 +276,9 @@ namespace AnimatingHair.GUI
             // 
             // buttonColor
             // 
-            this.buttonColor.Location = new System.Drawing.Point( 76, 200 );
+            this.buttonColor.Location = new System.Drawing.Point( 85, 145 );
             this.buttonColor.Name = "buttonColor";
-            this.buttonColor.Size = new System.Drawing.Size( 151, 39 );
+            this.buttonColor.Size = new System.Drawing.Size( 121, 37 );
             this.buttonColor.TabIndex = 27;
             this.buttonColor.Text = "Color";
             this.buttonColor.UseVisualStyleBackColor = true;
@@ -497,9 +505,9 @@ namespace AnimatingHair.GUI
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add( this.groupBox15 );
             this.tabPage1.Controls.Add( this.buttonCancelCut );
             this.tabPage1.Controls.Add( this.buttonCutting );
-            this.tabPage1.Controls.Add( this.buttonColor );
             this.tabPage1.Controls.Add( this.groupBox2 );
             this.tabPage1.Location = new System.Drawing.Point( 4, 49 );
             this.tabPage1.Name = "tabPage1";
@@ -509,11 +517,86 @@ namespace AnimatingHair.GUI
             this.tabPage1.Text = "Hair";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add( this.visualTrackBarReflect );
+            this.groupBox15.Controls.Add( this.buttonColor );
+            this.groupBox15.Controls.Add( this.visualTrackBarTransmit );
+            this.groupBox15.Controls.Add( this.visualTrackBarShininess );
+            this.groupBox15.Controls.Add( this.visualTrackBarAmbient );
+            this.groupBox15.Controls.Add( this.visualTrackBarSpecular );
+            this.groupBox15.Controls.Add( this.visualTrackBarDiffuse );
+            this.groupBox15.Location = new System.Drawing.Point( 6, 200 );
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size( 291, 225 );
+            this.groupBox15.TabIndex = 31;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = "Appearance";
+            // 
+            // visualTrackBarReflect
+            // 
+            this.visualTrackBarReflect.Label = "Reflect";
+            this.visualTrackBarReflect.Location = new System.Drawing.Point( 149, 103 );
+            this.visualTrackBarReflect.Name = "visualTrackBarReflect";
+            this.visualTrackBarReflect.Size = new System.Drawing.Size( 136, 36 );
+            this.visualTrackBarReflect.TabIndex = 11;
+            // 
+            // visualTrackBarTransmit
+            // 
+            this.visualTrackBarTransmit.Label = "Transmit";
+            this.visualTrackBarTransmit.Location = new System.Drawing.Point( 6, 103 );
+            this.visualTrackBarTransmit.Name = "visualTrackBarTransmit";
+            this.visualTrackBarTransmit.Size = new System.Drawing.Size( 136, 36 );
+            this.visualTrackBarTransmit.TabIndex = 10;
+            // 
+            // visualTrackBarShininess
+            // 
+            this.visualTrackBarShininess.Label = "Shininess";
+            this.visualTrackBarShininess.Location = new System.Drawing.Point( 149, 61 );
+            this.visualTrackBarShininess.Name = "visualTrackBarShininess";
+            this.visualTrackBarShininess.Size = new System.Drawing.Size( 136, 36 );
+            this.visualTrackBarShininess.TabIndex = 9;
+            // 
+            // visualTrackBarAmbient
+            // 
+            this.visualTrackBarAmbient.Label = "Ambient";
+            this.visualTrackBarAmbient.Location = new System.Drawing.Point( 6, 61 );
+            this.visualTrackBarAmbient.Name = "visualTrackBarAmbient";
+            this.visualTrackBarAmbient.Size = new System.Drawing.Size( 136, 36 );
+            this.visualTrackBarAmbient.TabIndex = 8;
+            // 
+            // visualTrackBarSpecular
+            // 
+            this.visualTrackBarSpecular.Label = "Specular";
+            this.visualTrackBarSpecular.Location = new System.Drawing.Point( 149, 19 );
+            this.visualTrackBarSpecular.Name = "visualTrackBarSpecular";
+            this.visualTrackBarSpecular.Size = new System.Drawing.Size( 136, 36 );
+            this.visualTrackBarSpecular.TabIndex = 7;
+            // 
+            // visualTrackBarDiffuse
+            // 
+            this.visualTrackBarDiffuse.Label = "Diffuse";
+            this.visualTrackBarDiffuse.Location = new System.Drawing.Point( 6, 19 );
+            this.visualTrackBarDiffuse.Name = "visualTrackBarDiffuse";
+            this.visualTrackBarDiffuse.Size = new System.Drawing.Size( 136, 36 );
+            this.visualTrackBarDiffuse.TabIndex = 6;
+            // 
+            // buttonCancelCut
+            // 
+            this.buttonCancelCut.Location = new System.Drawing.Point( 196, 443 );
+            this.buttonCancelCut.Name = "buttonCancelCut";
+            this.buttonCancelCut.Size = new System.Drawing.Size( 104, 38 );
+            this.buttonCancelCut.TabIndex = 30;
+            this.buttonCancelCut.Text = "Cancel Cut";
+            this.buttonCancelCut.UseVisualStyleBackColor = true;
+            this.buttonCancelCut.Visible = false;
+            this.buttonCancelCut.Click += new System.EventHandler( this.buttonCancelCut_Click );
+            // 
             // buttonCutting
             // 
-            this.buttonCutting.Location = new System.Drawing.Point( 76, 285 );
+            this.buttonCutting.Location = new System.Drawing.Point( 6, 431 );
             this.buttonCutting.Name = "buttonCutting";
-            this.buttonCutting.Size = new System.Drawing.Size( 151, 62 );
+            this.buttonCutting.Size = new System.Drawing.Size( 184, 50 );
             this.buttonCutting.TabIndex = 29;
             this.buttonCutting.Text = "Start Cutting";
             this.buttonCutting.UseVisualStyleBackColor = true;
@@ -977,17 +1060,6 @@ namespace AnimatingHair.GUI
             // 
             this.specularDialog.Color = System.Drawing.Color.White;
             // 
-            // buttonCancelCut
-            // 
-            this.buttonCancelCut.Location = new System.Drawing.Point( 76, 353 );
-            this.buttonCancelCut.Name = "buttonCancelCut";
-            this.buttonCancelCut.Size = new System.Drawing.Size( 151, 38 );
-            this.buttonCancelCut.TabIndex = 30;
-            this.buttonCancelCut.Text = "Cancel Cut";
-            this.buttonCancelCut.UseVisualStyleBackColor = true;
-            this.buttonCancelCut.Visible = false;
-            this.buttonCancelCut.Click += new System.EventHandler( this.buttonCancelCut_Click );
-            // 
             // ControlsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
@@ -1021,6 +1093,7 @@ namespace AnimatingHair.GUI
             this.groupBox5.ResumeLayout( false );
             this.groupBox1.ResumeLayout( false );
             this.tabPage1.ResumeLayout( false );
+            this.groupBox15.ResumeLayout( false );
             this.tabPage4.ResumeLayout( false );
             this.groupBox4.ResumeLayout( false );
             this.tabPage3.ResumeLayout( false );
@@ -1138,5 +1211,12 @@ namespace AnimatingHair.GUI
         private System.Windows.Forms.Button buttonCutting;
         private System.Windows.Forms.GroupBox groupBox9;
         private System.Windows.Forms.Button buttonCancelCut;
+        private System.Windows.Forms.GroupBox groupBox15;
+        private VisualTrackBar visualTrackBarDiffuse;
+        private VisualTrackBar visualTrackBarSpecular;
+        private VisualTrackBar visualTrackBarReflect;
+        private VisualTrackBar visualTrackBarTransmit;
+        private VisualTrackBar visualTrackBarShininess;
+        private VisualTrackBar visualTrackBarAmbient;
     }
 }

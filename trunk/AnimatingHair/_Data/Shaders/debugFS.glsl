@@ -1,5 +1,5 @@
 ﻿uniform sampler2D deepOpacityMap;
-uniform int mode;
+const int mode = 3;
 
 void main()
 {

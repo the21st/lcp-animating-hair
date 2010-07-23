@@ -29,22 +29,12 @@ namespace AnimatingHair.Rendering.Debug
 
         private static void renderParticle( AirParticle particle )
         {
-            GL.Color3( 0.0, 0.0, 1.0 );
+            GL.Color3( 0.0, 0.0, 0.8 );
 
-            const float renderSize = 0.05f;
-
-            GL.PointSize( 3 );
-
-            GL.Begin( BeginMode.Triangles );
-            {
-                GL.Vertex3( particle.Position );
-                GL.Vertex3( (particle.Position + new Vector3( renderSize, renderSize, 0 )) );
-                GL.Vertex3( (particle.Position + new Vector3( -renderSize, renderSize, 0 )) );
-                GL.Vertex3( particle.Position );
-                GL.Vertex3( (particle.Position + new Vector3( 0, renderSize, renderSize )) );
-                GL.Vertex3( (particle.Position + new Vector3( 0, renderSize, -renderSize )) );
-            }
-            GL.End();
+            GL.PushMatrix();
+            GL.Translate( particle.Position );
+            Utility.DrawSphere( 0.03f, 3, 3 );
+            GL.PopMatrix();
 
             // -- velocity --
             GL.Color3( 0.0, 0.0, 0.0 );

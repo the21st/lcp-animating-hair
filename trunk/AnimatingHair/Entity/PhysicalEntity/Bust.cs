@@ -1,10 +1,10 @@
-﻿using OpenTK;
+using OpenTK;
 using AnimatingHair.Auxiliary;
 
 namespace AnimatingHair.Entity.PhysicalEntity
 {
     /// <summary>
-    /// The physical-interaction Bust representation - it is simplified into a sphere (head), a cylinders (neck) and a capsule (shoulders
+    /// The physical-interaction Bust representation - it is simplified into a sphere (head), a cylinders (neck) and a capsule (ShouldersModel
     /// </summary>
     class Bust : RigidBody
     {
@@ -94,6 +94,18 @@ namespace AnimatingHair.Entity.PhysicalEntity
             }
 
             return false;
+        }
+
+        internal void ApplyRotation()
+        {
+            Neck.Endpoint1 = Vector3.Transform( Neck.OriginalEndpoint1, RenderingResources.Instance.HeadRotateMatrixInverse );
+            Neck.Endpoint2 = Vector3.Transform( Neck.OriginalEndpoint2, RenderingResources.Instance.HeadRotateMatrixInverse );
+
+            Shoulders.Endpoint1 = Vector3.Transform( Shoulders.OriginalEndpoint1, RenderingResources.Instance.HeadRotateMatrixInverse );
+            Shoulders.Endpoint2 = Vector3.Transform( Shoulders.OriginalEndpoint2, RenderingResources.Instance.HeadRotateMatrixInverse );
+
+            ShoulderTipLeft.Center = Vector3.Transform( ShoulderTipLeft.OriginalCenter, RenderingResources.Instance.HeadRotateMatrixInverse );
+            ShoulderTipRight.Center = Vector3.Transform( ShoulderTipRight.OriginalCenter, RenderingResources.Instance.HeadRotateMatrixInverse );
         }
     }
 }
