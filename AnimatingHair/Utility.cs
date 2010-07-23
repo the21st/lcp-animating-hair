@@ -67,7 +67,7 @@ namespace AnimatingHair
         /// </summary>
         public static TriangleMesh LoadOBJ( string path )
         {
-            TriangleMesh result = new TriangleMesh( true );
+            TriangleMesh result = new TriangleMesh();
 
             StreamReader objFile = new StreamReader( path );
 

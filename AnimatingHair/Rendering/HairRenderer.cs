@@ -19,7 +19,6 @@ namespace AnimatingHair.Rendering
 
         // the openGL texture reference
         public readonly int splatTexture;
-        public int DeepOpacityMap;
 
         // the shader uniform locations
         private int axisLoc;
@@ -27,6 +26,7 @@ namespace AnimatingHair.Rendering
         private int lightLoc;
         private int hairTextureLoc;
         private int deepOpacityMapLoc;
+        private int shadowMapLoc;
         private int billboardWidthLoc;
         private int billboardLengthLoc;
         private int deepOpacityMapDistanceLoc;
@@ -35,6 +35,13 @@ namespace AnimatingHair.Rendering
         private int cameraModelViewMatrixLoc;
         private int lightModelViewMatrixLoc;
         private int lightProjectionMatrixLoc;
+        private int ambientTermLoc;
+        private int diffuseTermLoc;
+        private int specularTermLoc;
+        private int shininessLoc;
+        private int rhoReflectLoc;
+        private int rhoTransmitLoc;
+
         // the shader attribute locations
         private int sign1Loc;
         private int sign2Loc;
@@ -102,15 +109,27 @@ namespace AnimatingHair.Rendering
 
             // tieto 2 riadky neviem preco tu musia byt, bez nich mi nevykresli debug obdlzniky (HUD) do bufferu
             GL.ActiveTexture( TextureUnit.Texture0 );
-            GL.BindTexture( TextureTarget.Texture2D, DeepOpacityMap );
+            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMap );
 
             GL.ActiveTexture( TextureUnit.Texture1 );
             GL.BindTexture( TextureTarget.Texture2D, splatTexture );
             GL.Uniform1( hairTextureLoc, 1 );
 
             GL.ActiveTexture( TextureUnit.Texture2 );
-            GL.BindTexture( TextureTarget.Texture2D, DeepOpacityMap );
+            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMap );
             GL.Uniform1( deepOpacityMapLoc, 2 );
+
+            GL.ActiveTexture( TextureUnit.Texture3 );
+            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.ShadowMap );
+            GL.Uniform1( shadowMapLoc, 3 );
+
+            
+            GL.Uniform1( ambientTermLoc, RenderingOptions.Instance.AmbientTerm );
+            GL.Uniform1( diffuseTermLoc, RenderingOptions.Instance.DiffuseTerm );
+            GL.Uniform1( specularTermLoc, RenderingOptions.Instance.SpecularTerm );
+            GL.Uniform1( shininessLoc, RenderingOptions.Instance.Shininess );
+            GL.Uniform1( rhoReflectLoc, RenderingOptions.Instance.Reflect );
+            GL.Uniform1( rhoTransmitLoc, RenderingOptions.Instance.Transmit );
 
             GL.Uniform1( billboardWidthLoc, RenderingOptions.Instance.BillboardWidth );
             GL.Uniform1( billboardLengthLoc, RenderingOptions.Instance.BillboardLength );
@@ -182,6 +201,7 @@ namespace AnimatingHair.Rendering
             lightLoc = GL.GetUniformLocation( shaderProgram, "light" );
             hairTextureLoc = GL.GetUniformLocation( shaderProgram, "hairTexture" );
             deepOpacityMapLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMap" );
+            shadowMapLoc = GL.GetUniformLocation( shaderProgram, "shadowMap" );
             billboardLengthLoc = GL.GetUniformLocation( shaderProgram, "renderSizeVertical" );
             billboardWidthLoc = GL.GetUniformLocation( shaderProgram, "renderSizeHorizontal" );
             deepOpacityMapDistanceLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMapDistance" );
@@ -190,6 +210,12 @@ namespace AnimatingHair.Rendering
             cameraModelViewMatrixLoc = GL.GetUniformLocation( shaderProgram, "cameraModelViewMatrix" );
             lightModelViewMatrixLoc = GL.GetUniformLocation( shaderProgram, "lightModelViewMatrix" );
             lightProjectionMatrixLoc = GL.GetUniformLocation( shaderProgram, "lightProjectionMatrix" );
+            ambientTermLoc = GL.GetUniformLocation( shaderProgram, "K_a" );
+            diffuseTermLoc = GL.GetUniformLocation( shaderProgram, "K_d" );
+            specularTermLoc = GL.GetUniformLocation( shaderProgram, "K_s" );
+            shininessLoc = GL.GetUniformLocation( shaderProgram, "shininess" );
+            rhoReflectLoc = GL.GetUniformLocation( shaderProgram, "rho_reflect" );
+            rhoTransmitLoc = GL.GetUniformLocation( shaderProgram, "rho_transmit" );
 
             sign1Loc = GL.GetAttribLocation( shaderProgram, "sign1" );
             sign2Loc = GL.GetAttribLocation( shaderProgram, "sign2" );

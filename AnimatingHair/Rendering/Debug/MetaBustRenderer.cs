@@ -1,5 +1,6 @@
-﻿using AnimatingHair.Entity.PhysicalEntity;
+using AnimatingHair.Entity.PhysicalEntity;
 using OpenTK.Graphics.OpenGL;
+using OpenTK;
 
 namespace AnimatingHair.Rendering.Debug
 {
@@ -20,7 +21,7 @@ namespace AnimatingHair.Rendering.Debug
         }
 
         /// <summary>
-        /// Draws the head (sphere) + neck (cylinder) + shoulders (capsule)
+        /// Draws the head (sphere) + neck (cylinder) + ShouldersModel (capsule)
         /// representation
         /// </summary>
         public void Render()
@@ -32,10 +33,14 @@ namespace AnimatingHair.Rendering.Debug
             GL.Material( MaterialFace.Front, MaterialParameter.Diffuse, SkinColor );
             GL.Material( MaterialFace.Front, MaterialParameter.Ambient, SkinColor );
 
+            GL.PushMatrix();
+            GL.Translate( bust.Position );
+
             renderHead();
             renderNeck();
             renderShoulders();
 
+            GL.PopMatrix();
             GL.PopAttrib();
         }
 
@@ -50,12 +55,12 @@ namespace AnimatingHair.Rendering.Debug
         private void renderNeck()
         {
             Utility.RenderCylinder(
-                bust.Neck.Endpoint1.X,
-                bust.Neck.Endpoint1.Y,
-                bust.Neck.Endpoint1.Z,
-                bust.Neck.Endpoint2.X,
-                bust.Neck.Endpoint2.Y,
-                bust.Neck.Endpoint2.Z,
+                bust.Neck.OriginalEndpoint1.X,
+                bust.Neck.OriginalEndpoint1.Y,
+                bust.Neck.OriginalEndpoint1.Z,
+                bust.Neck.OriginalEndpoint2.X,
+                bust.Neck.OriginalEndpoint2.Y,
+                bust.Neck.OriginalEndpoint2.Z,
                 bust.Neck.Radius,
                 100 );
         }
@@ -63,22 +68,22 @@ namespace AnimatingHair.Rendering.Debug
         private void renderShoulders()
         {
             GL.PushMatrix();
-            GL.Translate( bust.ShoulderTipLeft.Center );
+            GL.Translate( bust.ShoulderTipLeft.OriginalCenter );
             Utility.DrawSphere( bust.ShoulderTipLeft.Radius, 50, 50 );
             GL.PopMatrix();
 
             GL.PushMatrix();
-            GL.Translate( bust.ShoulderTipRight.Center );
+            GL.Translate( bust.ShoulderTipRight.OriginalCenter );
             Utility.DrawSphere( bust.ShoulderTipRight.Radius, 50, 50 );
             GL.PopMatrix();
 
             Utility.RenderCylinder(
-                bust.Shoulders.Endpoint1.X,
-                bust.Shoulders.Endpoint1.Y,
-                bust.Shoulders.Endpoint1.Z,
-                bust.Shoulders.Endpoint2.X,
-                bust.Shoulders.Endpoint2.Y,
-                bust.Shoulders.Endpoint2.Z,
+                bust.Shoulders.OriginalEndpoint1.X,
+                bust.Shoulders.OriginalEndpoint1.Y,
+                bust.Shoulders.OriginalEndpoint1.Z,
+                bust.Shoulders.OriginalEndpoint2.X,
+                bust.Shoulders.OriginalEndpoint2.Y,
+                bust.Shoulders.OriginalEndpoint2.Z,
                 bust.Shoulders.Radius,
                 100 );
         }

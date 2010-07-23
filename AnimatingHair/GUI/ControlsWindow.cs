@@ -22,7 +22,7 @@ namespace AnimatingHair.GUI
         private SceneInitializer sceneInitializer;
         private Renderer renderer;
         private Camera camera;
-        private float distance = 10, elevation = 0, azimuth = 90, mouseX, mouseY;
+        private float distance = 7, elevation = 0, azimuth = 180, mouseX, mouseY;
         private readonly Random r = new Random();
         private bool loaded = false;
         private bool paused = true;
@@ -93,6 +93,13 @@ namespace AnimatingHair.GUI
             visualTrackBarAverageAirDensity.BindFloatData( Const.Instance, "AverageAirDensity", 0.01f, 3 );
             visualTrackBarAirDensityForceMagnitude.BindFloatData( Const.Instance, "AirDensityForceMagnitude", 0.01f, 0.5f );
             visualTrackBarAirMassFactor.BindFloatData( Const.Instance, "AirMassFactor", 20, 500 );
+
+            visualTrackBarDiffuse.BindFloatData( RenderingOptions.Instance, "DiffuseTerm", 0, 1 );
+            visualTrackBarSpecular.BindFloatData( RenderingOptions.Instance, "SpecularTerm", 0, 1 );
+            visualTrackBarAmbient.BindFloatData( RenderingOptions.Instance, "AmbientTerm", 0, 1 );
+            visualTrackBarShininess.BindFloatData( RenderingOptions.Instance, "Shininess", 50, 300 );
+            visualTrackBarReflect.BindFloatData( RenderingOptions.Instance, "Reflect", 0, 1 );
+            visualTrackBarTransmit.BindFloatData( RenderingOptions.Instance, "Transmit", 0, 1 );
 
             checkBoxShowHair.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowHair", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxDebugHair.DataBindings.Add( "Checked", RenderingOptions.Instance, "DebugHair", true, DataSourceUpdateMode.OnPropertyChanged );
@@ -396,7 +403,7 @@ namespace AnimatingHair.GUI
 
         private void restart()
         {
-            RenderingOptions.Instance.DeepOpacityMapResolution = int.Parse( comboBoxDeepOpacityMapResolution.Text );
+            RenderingOptions.Instance.ShadowMapsResolution = int.Parse( comboBoxDeepOpacityMapResolution.Text );
 
             scene = sceneInitializer.InitializeScene();
             camera = new Camera();

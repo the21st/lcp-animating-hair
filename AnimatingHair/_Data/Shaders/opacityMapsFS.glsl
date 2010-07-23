@@ -1,7 +1,6 @@
 ﻿uniform sampler2D depthMap;
 uniform sampler2D hairTexture;
 uniform vec3 eye;
-uniform float dist; // TODO: debugging, will be removed
 uniform float alphaTreshold;
 uniform float intensityFactor;
 uniform float deepOpacityMapDistance;

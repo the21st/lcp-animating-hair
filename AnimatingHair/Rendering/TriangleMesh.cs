@@ -18,14 +18,12 @@ namespace AnimatingHair.Rendering
 
         #region Display List
 
-        private readonly bool useDisplayList;
         private int displayListHandle = 0;
 
         #endregion Display List
 
-        public TriangleMesh( bool useDisplayList )
+        public TriangleMesh()
         {
-            this.useDisplayList = useDisplayList;
             Vertices = null;
             Normals = null;
             TexCoords = null;
@@ -38,18 +36,15 @@ namespace AnimatingHair.Rendering
         /// </summary>
         public void Draw()
         {
-            if ( !useDisplayList )
+            if ( displayListHandle == 0 )
+            {
+                displayListHandle = GL.GenLists( 1 );
+                GL.NewList( displayListHandle, ListMode.CompileAndExecute );
                 drawImmediateMode();
+                GL.EndList();
+            }
             else
-                if ( displayListHandle == 0 )
-                {
-                    displayListHandle = GL.GenLists( 1 );
-                    GL.NewList( displayListHandle, ListMode.CompileAndExecute );
-                    drawImmediateMode();
-                    GL.EndList();
-                }
-                else
-                    GL.CallList( displayListHandle );
+                GL.CallList( displayListHandle );
         }
 
         private void drawImmediateMode()

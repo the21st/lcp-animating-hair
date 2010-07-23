@@ -11,24 +11,26 @@ namespace AnimatingHair.Rendering
     /// </summary>
     class BustRenderer
     {
-        private static readonly float[] SkinColor = { 0.47f, 0.38f, 0.33f, 1 };
-        private static readonly float[] SpecularColor = { 0.1f, 0.05f, 0.05f, 1 };
+        private static readonly float[] SkinDiffuseColor = { 0.47f, 0.38f, 0.33f, 1 };
+        private static readonly float[] SkinSpecularColor = { 0.1f, 0.05f, 0.05f, 1 };
 
         // keeps references to object it needs
         private readonly Camera camera;
         private readonly Light light;
 
         private readonly Bust bust;
-        private readonly TriangleMesh femaleHead;
 
         // shader objects
         private readonly int shaderProgram;
-        public int DeepOpacityMap;
 
         // the shader uniform locations
-        private int eyeLoc;
-        private int lightLoc;
         private int deepOpacityMapLoc;
+        private int shadowMapLoc;
+        private int deepOpacityMapDistanceLoc;
+        private int lightModelViewMatrixLoc;
+        private int lightProjectionMatrixLoc;
+        private int nearLoc;
+        private int farLoc;
 
         public BustRenderer( Bust bust, Camera camera, Light light )
         {
@@ -43,42 +45,84 @@ namespace AnimatingHair.Rendering
 
             getShaderVariableLocations();
 
-            femaleHead = Utility.LoadOBJ( FilePaths.HeadModelLocation );
+            RenderingResources.Instance.HeadModel = Utility.LoadOBJ( FilePaths.HeadModelLocation );
+            RenderingResources.Instance.ShouldersModel = Utility.LoadOBJ( FilePaths.ShouldersModelLocation );
         }
 
         public void Render()
         {
+            GL.PushAttrib( AttribMask.AllAttribBits );
+            GL.Material( MaterialFace.Front, MaterialParameter.Specular, SkinSpecularColor );
+            GL.Material( MaterialFace.Front, MaterialParameter.Shininess, 5 );
+            GL.Material( MaterialFace.Front, MaterialParameter.Diffuse, SkinDiffuseColor );
+            GL.Material( MaterialFace.Front, MaterialParameter.Ambient, SkinDiffuseColor );
+
             // link the shader program
             GL.UseProgram( shaderProgram );
 
-            GL.PushAttrib( AttribMask.AllAttribBits );
-            GL.Material( MaterialFace.Front, MaterialParameter.Specular, SpecularColor );
-            GL.Material( MaterialFace.Front, MaterialParameter.Shininess, 5 );
-            GL.Material( MaterialFace.Front, MaterialParameter.Diffuse, SkinColor );
-            GL.Material( MaterialFace.Front, MaterialParameter.Ambient, SkinColor );
-            GL.PushMatrix();
-            // scale and translate the model so that it fits on the physical interaction model of the bust
-            GL.Translate( 0, -0.62, -0.28 );
-            const float scale = 0.88f;
-            GL.Scale( scale, scale, scale );
-
             GL.ActiveTexture( TextureUnit.Texture1 );
-            GL.BindTexture( TextureTarget.Texture2D, DeepOpacityMap );
+            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMap );
             GL.Uniform1( deepOpacityMapLoc, 1 );
 
-            femaleHead.Draw();
+            GL.ActiveTexture( TextureUnit.Texture2 );
+            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.ShadowMap );
+            GL.Uniform1( shadowMapLoc, 2 );
+
+            GL.Uniform1( nearLoc, RenderingOptions.Instance.Near );
+            GL.Uniform1( farLoc, RenderingOptions.Instance.Far );
+            GL.Uniform1( deepOpacityMapDistanceLoc, RenderingOptions.Instance.DeepOpacityMapDistance );
+
+            Matrix4 translate = Matrix4.CreateTranslation( RenderingOptions.Instance.BustDisplacement );
+            Matrix4 scale = Matrix4.Scale( RenderingOptions.Instance.BustScaleRatio );
+            Matrix4 tmp = scale * translate * RenderingResources.Instance.BustModelTransformationMatrix *
+                          RenderingResources.Instance.LightModelViewMatrix;
+            GL.UniformMatrix4( lightModelViewMatrixLoc, false, ref tmp );
+            GL.UniformMatrix4( lightProjectionMatrixLoc, false, ref RenderingResources.Instance.LightProjectionMatrix );
+
+            GL.PushMatrix();
+            {
+                GL.Translate( bust.Position );
+
+                GL.PushMatrix();
+                {
+                    GL.Rotate( MathHelper.RadiansToDegrees( bust.Angle ), 0, 1, 0 );
+
+                    // scale and translate the model so that it fits on the physical interaction model of the bust
+                    GL.Translate( RenderingOptions.Instance.BustDisplacement );
+                    GL.Scale( RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio,
+                              RenderingOptions.Instance.BustScaleRatio );
+
+                    RenderingResources.Instance.HeadModel.Draw();
+                }
+                GL.PopMatrix();
+
+                GL.Translate( RenderingOptions.Instance.BustDisplacement );
+                GL.Scale( RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio,
+                          RenderingOptions.Instance.BustScaleRatio );
+
+                Matrix4 translate2 = Matrix4.CreateTranslation( bust.Position );
+                Matrix4 tmp2 = scale * translate * translate2 * RenderingResources.Instance.LightModelViewMatrix;
+                GL.UniformMatrix4( lightModelViewMatrixLoc, false, ref tmp2 );
+
+                RenderingResources.Instance.ShouldersModel.Draw();
+            }
             GL.PopMatrix();
-            GL.PopAttrib();
 
             // unlink the shader program
             GL.UseProgram( 0 );
+
+            GL.PopAttrib();
         }
 
         private void getShaderVariableLocations()
         {
-            eyeLoc = GL.GetUniformLocation( shaderProgram, "eye" );
-            lightLoc = GL.GetUniformLocation( shaderProgram, "light" );
             deepOpacityMapLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMap" );
+            shadowMapLoc = GL.GetUniformLocation( shaderProgram, "shadowMap" );
+            deepOpacityMapDistanceLoc = GL.GetUniformLocation( shaderProgram, "deepOpacityMapDistance" );
+            lightModelViewMatrixLoc = GL.GetUniformLocation( shaderProgram, "lightModelViewMatrix" );
+            lightProjectionMatrixLoc = GL.GetUniformLocation( shaderProgram, "lightProjectionMatrix" );
+            nearLoc = GL.GetUniformLocation( shaderProgram, "near" );
+            farLoc = GL.GetUniformLocation( shaderProgram, "far" );
         }
     }
 }

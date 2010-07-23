@@ -9,8 +9,8 @@ namespace AnimatingHair.Initialization
         private const float headSize = 1.0f;
         private const float shouldersWidth = 1.3f;
         private const float shouldersRadius = 0.66f;
-        private const float shoulderPosY = -2.46f;
-        private const float shoulderPosZ = -0.51f;
+        private const float shoulderPosY = -2.4f;
+        private const float shoulderPosZ = -0.47f;
 
         private Bust bust;
 

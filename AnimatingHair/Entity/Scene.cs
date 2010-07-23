@@ -92,12 +92,14 @@ namespace AnimatingHair.Entity
             Hair.CalculateForcesOnSelf();
             Air.CalculateForcesOnSelf();
 
+            Bust.ApplyRotation();
             Bust.ApplyForcesOnParticles( Particles );
 
             applyInteractionForces( Hair.Particles, Air.Particles );
 
-            Hair.ApplyInertialAcceleration( -bustMovementAcceleration ); // TODO: take into account bust rotation
-            Hair.ApplyInertialAngularAcceleration( -bustAngularAcceleration, Bust.AngularVelocity );
+            Hair.ApplyInertialAcceleration( -Vector3.Transform( bustMovementAcceleration,
+                RenderingResources.Instance.HeadRotateMatrixInverse ) );
+            Hair.ApplyInertialAngularAcceleration( bustAngularAcceleration, Bust.AngularVelocity );
             Bust.Acceleration = bustMovementAcceleration;
             Bust.AngularAcceleration = bustAngularAcceleration;
         }

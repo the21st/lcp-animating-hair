@@ -64,6 +64,10 @@ namespace AnimatingHair.Initialization
                     newCoordinate = cbs.SimulateCantileverBeam( newCoordinate, force );
                 }
 
+                if ( float.IsNaN( newCoordinate.Position.X ) || float.IsNaN( newCoordinate.Position.Y ) || float.IsNaN( newCoordinate.Position.Z ) ||
+                    float.IsNaN( newCoordinate.Direction.X ) || float.IsNaN( newCoordinate.Direction.Y ) || float.IsNaN( newCoordinate.Direction.Z ) )
+                    continue;
+
                 for ( int i = 0; i < k; i++ )
                 {
                     if ( (newCoordinate.Position - result[ i ].Position).Length < minDistance )

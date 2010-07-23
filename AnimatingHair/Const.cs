@@ -12,27 +12,27 @@ namespace AnimatingHair
             Seed = 0;
             TimeStep = 0.05f;
 
-            AirFriction = 0.05f;
-            Gravity = 0.5f;
+            AirFriction = 0.1f;
+            Gravity = 0.7f;
 
             HairParticleCount = 1000;
-            HairLength = 2.3f;
+            HairLength = 2.6f;
             MaxRootDepth = 0.5f;
 
             MaxNeighbors = 12;
             NeighborAlignmentTreshold = 0.5f;
 
-            DensityOfHairMaterial = 10f;
-            ElasticModulus = 1000;
+            DensityOfHairMaterial = 40f;
+            ElasticModulus = 3000;
             //ElasticModulus = 250000000f; // elastic modulus - zodpoveda materialu
-            SecondMomentOfArea = 0.002f;
+            SecondMomentOfArea = 0.0002f;
             //SecondMomentOfArea = 1.5e-10f;
             HairMassFactor = 1000;
             //HairMassFactor = 6.8e-11f;
 
             CollisionDamp = 0.9f;
             FrictionDamp = 0.9f;
-            AverageHairDensity = 30f;
+            AverageHairDensity = 140f;
             HairDensityForceMagnitude = 1f;
 
             AirParticleCount = 1;
