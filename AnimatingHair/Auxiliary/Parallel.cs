@@ -27,7 +27,6 @@ namespace AnimatingHair.Auxiliary
         /// </summary>
         public static void For( int fromInclusive, int toExclusive, ForDelegate action )
         {
-
             int cnt = fromInclusive - chunkSize;
 
             // processing function

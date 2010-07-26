@@ -67,7 +67,7 @@ namespace AnimatingHair.Rendering
             // shader loading
             using ( StreamReader vs = new StreamReader( FilePaths.BillboardShaderLocation ) )
             using ( StreamReader fs = new StreamReader( FilePaths.HairShaderLocation ) )
-                Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
+                shaderProgram = Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd() );
 
             getShaderVariableLocations();
 
@@ -123,7 +123,7 @@ namespace AnimatingHair.Rendering
             GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.ShadowMap );
             GL.Uniform1( shadowMapLoc, 3 );
 
-            
+
             GL.Uniform1( ambientTermLoc, RenderingOptions.Instance.AmbientTerm );
             GL.Uniform1( diffuseTermLoc, RenderingOptions.Instance.DiffuseTerm );
             GL.Uniform1( specularTermLoc, RenderingOptions.Instance.SpecularTerm );

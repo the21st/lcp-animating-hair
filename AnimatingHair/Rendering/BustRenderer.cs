@@ -41,7 +41,7 @@ namespace AnimatingHair.Rendering
             // shader loading
             using ( StreamReader vs = new StreamReader( FilePaths.BustVSLocation ) )
             using ( StreamReader fs = new StreamReader( FilePaths.BustFSLocation ) )
-                Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
+                shaderProgram = Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd() );
 
             getShaderVariableLocations();
 

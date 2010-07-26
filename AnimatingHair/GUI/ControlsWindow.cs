@@ -348,7 +348,7 @@ namespace AnimatingHair.GUI
                 }
                 if ( e.Button == MouseButtons.Right )
                 {
-                    cutter.Size += 0.01f * (e.Y - mouseY);
+                    cutter.Size -= 0.01f * (e.Y - mouseY);
                 }
                 if ( e.Button == MouseButtons.Middle )
                 {

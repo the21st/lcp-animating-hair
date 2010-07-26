@@ -36,7 +36,7 @@ namespace AnimatingHair.Rendering
         private readonly float[] lightDiffuse;
         private readonly float[] lightAmbient;
         private readonly float[] lightSpecular;
-        private float angle = 0;
+        private float angle = 0.5f;
         private readonly Vector3 centerPosition;
 
         // shader objects
@@ -77,7 +77,7 @@ namespace AnimatingHair.Rendering
             using ( StreamReader vs = new StreamReader( FilePaths.DebugVSLocation ) )
             {
                 using ( StreamReader fs = new StreamReader( FilePaths.DebugFSLocation ) )
-                    Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out shaderProgram );
+                    shaderProgram = Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd() );
             }
 
             centerPosition = calculateCenterPosition();
@@ -105,7 +105,7 @@ namespace AnimatingHair.Rendering
 
             if ( RenderingOptions.Instance.LightCruising )
                 angle += RenderingOptions.Instance.LightCruiseSpeed;
-            light.Position = new Vector3( -RenderingOptions.Instance.LightDistance * (float)Math.Sin( angle ), 0.5f * RenderingOptions.Instance.LightDistance, RenderingOptions.Instance.LightDistance * (float)Math.Cos( angle ) );
+            light.Position = new Vector3( -RenderingOptions.Instance.LightDistance * (float)Math.Sin( angle ), 0.3f * RenderingOptions.Instance.LightDistance, RenderingOptions.Instance.LightDistance * (float)Math.Cos( angle ) );
             GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
 
 
@@ -289,6 +289,7 @@ namespace AnimatingHair.Rendering
 
             GL.ClearColor( Color.CornflowerBlue );
             GL.ClearColor( Color.Gray );
+            GL.ClearColor( Color.White );
 
             GL.TexEnv( TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate );
             GL.BlendFunc( BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha );

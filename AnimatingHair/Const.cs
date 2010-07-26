@@ -7,15 +7,15 @@ namespace AnimatingHair
     {
         public static readonly Const Instance = new Const();
 
-        public Const()
+        private Const()
         {
             Seed = 0;
-            TimeStep = 0.05f;
+            TimeStep = 0.01f;
 
             AirFriction = 0.1f;
             Gravity = 0.7f;
 
-            HairParticleCount = 1000;
+            HairParticleCount = 2000;
             HairLength = 2.6f;
             MaxRootDepth = 0.5f;
 
@@ -25,17 +25,17 @@ namespace AnimatingHair
             DensityOfHairMaterial = 40f;
             ElasticModulus = 3000;
             //ElasticModulus = 250000000f; // elastic modulus - zodpoveda materialu
-            SecondMomentOfArea = 0.0002f;
+            SecondMomentOfArea = 0.00005f;
             //SecondMomentOfArea = 1.5e-10f;
             HairMassFactor = 1000;
             //HairMassFactor = 6.8e-11f;
 
             CollisionDamp = 0.9f;
             FrictionDamp = 0.9f;
-            AverageHairDensity = 140f;
+            AverageHairDensity = 220f;
             HairDensityForceMagnitude = 1f;
 
-            AirParticleCount = 1;
+            AirParticleCount = 0;
             DragCoefficient = 0.1f;
             AverageAirDensity = 1f;
             AirDensityForceMagnitude = 0.1f;

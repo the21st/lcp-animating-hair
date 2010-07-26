@@ -6,7 +6,7 @@ namespace AnimatingHair
     {
         public static readonly RenderingOptions Instance = new RenderingOptions();
 
-        public RenderingOptions()
+        private RenderingOptions()
         {
             ShowHair = true;
             DebugHair = false;
@@ -16,9 +16,9 @@ namespace AnimatingHair
             BillboardWidth = 0.15f;
             AlphaTreshold = 0.15f;
             DeepOpacityMapDistance = 0.015f;
-            ShadowMapsResolution = 512;
+            ShadowMapsResolution = 1024;
 
-            ShowBust = true;
+            ShowBust = false;
             ShowMetaBust = false;
 
             AmbientTerm = 0.05f;
@@ -46,7 +46,6 @@ namespace AnimatingHair
 
             Cutting = false;
         }
-
 
         public bool ShowHair { get; set; }
         public bool DebugHair { get; set; }

@@ -1,5 +1,4 @@
-﻿using System;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 using OpenTK;
 using AnimatingHair.Auxiliary;
@@ -36,7 +35,7 @@ namespace AnimatingHair.Rendering.Debug
                     {
                         if ( !RenderingOptions.Instance.OnlyShowOccupiedVoxels || voxelGrid.Grid[ i, j, k ].Particles.Count > 0 )
                         {
-                            GL.Color3( Color.LightBlue );
+                            GL.Color3( Color.DarkBlue );
                             Vector3 newCorner = voxelGrid.CornerLocation;
                             newCorner.X += i * voxelGrid.VoxelSize;
                             newCorner.Y += j * voxelGrid.VoxelSize;

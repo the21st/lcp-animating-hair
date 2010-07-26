@@ -17,37 +17,35 @@ namespace AnimatingHair.Rendering
         private readonly int splatTexture;
 
         // the depth shader uniform locations
-        private int axisLoc;
-        private int eyeLoc;
-        private int sign1Loc;
-        private int sign2Loc;
-        private int alphaTresholdLoc;
-        private int billboardWidthLoc;
-        private int billboardLengthLoc;
-        private int lightModelViewMatrixLoc;
+        private int axisLocDepth;
+        private int eyeLocDepth;
+        private int sign1LocDepth;
+        private int sign2LocDepth;
+        private int alphaTresholdLocDepth;
+        private int billboardWidthLocDepth;
+        private int billboardLengthLocDepth;
+        private int lightModelViewMatrixLocDepth;
 
         // the opacity shader uniform locations
-        private int axisLoc2;
-        private int eyeLoc2;
-        private int sign1Loc2;
-        private int sign2Loc2;
-        private int depthMapLoc2;
-        private int hairTextureLoc2;
-        private int alphaTresholdLoc2;
-        private int intensityFactorLoc2;
-        private int billboardWidthLoc2;
-        private int billboardLengthLoc2;
-        private int deepOpacityMapDistanceLoc2;
-        private int nearLoc2;
-        private int farLoc2;
-        private int deepOpacityMapResolutionLoc2;
-        private int lightModelViewMatrixLoc2;
+        private int axisLocOpacity;
+        private int eyeLocOpacity;
+        private int sign1LocOpacity;
+        private int sign2LocOpacity;
+        private int depthMapLocOpacity;
+        private int hairTextureLocOpacity;
+        private int alphaTresholdLocOpacity;
+        private int intensityFactorLocOpacity;
+        private int billboardWidthLocOpacity;
+        private int billboardLengthLocOpacity;
+        private int deepOpacityMapDistanceLocOpacity;
+        private int nearLocOpacity;
+        private int farLocOpacity;
+        private int deepOpacityMapResolutionLocOpacity;
+        private int lightModelViewMatrixLocOpacity;
 
         // shader objects
         private readonly int depthShaderProgram;
         private readonly int opacityShaderProgram;
-        private int vertexShaderObject;
-        private int fragmentShaderObject;
 
         private int depthFBO, shadowFBO;
         private int depthTexture;
@@ -65,11 +63,11 @@ namespace AnimatingHair.Rendering
             // shader loading
             using ( StreamReader vs = new StreamReader( FilePaths.DepthVSLocation ) )
             using ( StreamReader fs = new StreamReader( FilePaths.DepthFSLocation ) )
-                Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out depthShaderProgram );
+                depthShaderProgram = Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd() );
 
             using ( StreamReader vs = new StreamReader( FilePaths.OpacityVSLocation ) )
             using ( StreamReader fs = new StreamReader( FilePaths.OpacityFSLocation ) )
-                Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd(), out opacityShaderProgram );
+                opacityShaderProgram = Utility.CreateShaders( vs.ReadToEnd(), fs.ReadToEnd() );
 
             getShaderVariableLocations();
 
@@ -115,14 +113,14 @@ namespace AnimatingHair.Rendering
 
             GL.BindTexture( TextureTarget.Texture2D, splatTexture );
 
-            GL.Uniform3( eyeLoc, light.Position );
-            //GL.Uniform3( eyeLoc, camera.Eye );
+            GL.Uniform3( eyeLocDepth, light.Position );
+            //GL.Uniform3( eyeLocDepth, camera.Eye );
 
-            GL.Uniform1( billboardWidthLoc, RenderingOptions.Instance.BillboardWidth );
-            GL.Uniform1( billboardLengthLoc, RenderingOptions.Instance.BillboardLength );
-            GL.UniformMatrix4( lightModelViewMatrixLoc, false, ref RenderingResources.Instance.LightModelViewMatrix );
+            GL.Uniform1( billboardWidthLocDepth, RenderingOptions.Instance.BillboardWidth );
+            GL.Uniform1( billboardLengthLocDepth, RenderingOptions.Instance.BillboardLength );
+            GL.UniformMatrix4( lightModelViewMatrixLocDepth, false, ref RenderingResources.Instance.LightModelViewMatrix );
 
-            GL.Uniform1( alphaTresholdLoc, RenderingOptions.Instance.AlphaTreshold );
+            GL.Uniform1( alphaTresholdLocDepth, RenderingOptions.Instance.AlphaTreshold );
 
             GL.PushMatrix();
             {
@@ -159,25 +157,25 @@ namespace AnimatingHair.Rendering
 
             GL.ActiveTexture( TextureUnit.Texture0 );
             GL.BindTexture( TextureTarget.Texture2D, splatTexture );
-            GL.Uniform1( hairTextureLoc2, 0 );
+            GL.Uniform1( hairTextureLocOpacity, 0 );
 
             GL.ActiveTexture( TextureUnit.Texture1 );
             GL.BindTexture( TextureTarget.Texture2D, depthTexture );
-            GL.Uniform1( depthMapLoc2, 1 );
+            GL.Uniform1( depthMapLocOpacity, 1 );
 
-            GL.Uniform1( billboardWidthLoc2, RenderingOptions.Instance.BillboardWidth );
-            GL.Uniform1( billboardLengthLoc2, RenderingOptions.Instance.BillboardLength );
-            GL.Uniform1( deepOpacityMapDistanceLoc2, RenderingOptions.Instance.DeepOpacityMapDistance );
-            GL.Uniform1( nearLoc2, RenderingOptions.Instance.Near );
-            GL.Uniform1( farLoc2, RenderingOptions.Instance.Far );
-            GL.Uniform1( deepOpacityMapResolutionLoc2, (float)RenderingOptions.Instance.ShadowMapsResolution );
-            GL.UniformMatrix4( lightModelViewMatrixLoc2, false, ref RenderingResources.Instance.LightModelViewMatrix );
+            GL.Uniform1( billboardWidthLocOpacity, RenderingOptions.Instance.BillboardWidth );
+            GL.Uniform1( billboardLengthLocOpacity, RenderingOptions.Instance.BillboardLength );
+            GL.Uniform1( deepOpacityMapDistanceLocOpacity, RenderingOptions.Instance.DeepOpacityMapDistance );
+            GL.Uniform1( nearLocOpacity, RenderingOptions.Instance.Near );
+            GL.Uniform1( farLocOpacity, RenderingOptions.Instance.Far );
+            GL.Uniform1( deepOpacityMapResolutionLocOpacity, (float)RenderingOptions.Instance.ShadowMapsResolution );
+            GL.UniformMatrix4( lightModelViewMatrixLocOpacity, false, ref RenderingResources.Instance.LightModelViewMatrix );
 
-            GL.Uniform1( alphaTresholdLoc2, RenderingOptions.Instance.AlphaTreshold );
-            GL.Uniform1( intensityFactorLoc2, IntensityFactor );
+            GL.Uniform1( alphaTresholdLocOpacity, RenderingOptions.Instance.AlphaTreshold );
+            GL.Uniform1( intensityFactorLocOpacity, IntensityFactor );
 
-            GL.Uniform3( eyeLoc2, light.Position );
-            //GL.Uniform3( eyeLoc2, camera.Eye );
+            GL.Uniform3( eyeLocOpacity, light.Position );
+            //GL.Uniform3( eyeLocOpacity, camera.Eye );
 
             GL.PushMatrix();
             {
@@ -197,28 +195,28 @@ namespace AnimatingHair.Rendering
 
         private void renderParticle( HairParticle hp )
         {
-            GL.Uniform3( axisLoc, hp.Direction );
+            GL.Uniform3( axisLocDepth, hp.Direction );
 
             GL.Begin( BeginMode.Quads );
             {
                 GL.TexCoord2( 0, 1 );
-                GL.VertexAttrib1( sign1Loc, 1 );
-                GL.VertexAttrib1( sign2Loc, -1 );
+                GL.VertexAttrib1( sign1LocDepth, 1 );
+                GL.VertexAttrib1( sign2LocDepth, -1 );
                 GL.Vertex3( hp.Position );
 
                 GL.TexCoord2( 0, 0 );
-                GL.VertexAttrib1( sign1Loc, 1 );
-                GL.VertexAttrib1( sign2Loc, 1 );
+                GL.VertexAttrib1( sign1LocDepth, 1 );
+                GL.VertexAttrib1( sign2LocDepth, 1 );
                 GL.Vertex3( hp.Position );
 
                 GL.TexCoord2( 1, 0 );
-                GL.VertexAttrib1( sign1Loc, -1 );
-                GL.VertexAttrib1( sign2Loc, 1 );
+                GL.VertexAttrib1( sign1LocDepth, -1 );
+                GL.VertexAttrib1( sign2LocDepth, 1 );
                 GL.Vertex3( hp.Position );
 
                 GL.TexCoord2( 1, 1 );
-                GL.VertexAttrib1( sign1Loc, -1 );
-                GL.VertexAttrib1( sign2Loc, -1 );
+                GL.VertexAttrib1( sign1LocDepth, -1 );
+                GL.VertexAttrib1( sign2LocDepth, -1 );
                 GL.Vertex3( hp.Position );
             }
             GL.End();
@@ -226,28 +224,28 @@ namespace AnimatingHair.Rendering
 
         private void renderParticle2( HairParticle hp )
         {
-            GL.Uniform3( axisLoc2, hp.Direction );
+            GL.Uniform3( axisLocOpacity, hp.Direction );
 
             GL.Begin( BeginMode.Quads );
             {
                 GL.TexCoord2( 0, 1 );
-                GL.VertexAttrib1( sign1Loc2, 1 );
-                GL.VertexAttrib1( sign2Loc2, -1 );
+                GL.VertexAttrib1( sign1LocOpacity, 1 );
+                GL.VertexAttrib1( sign2LocOpacity, -1 );
                 GL.Vertex3( hp.Position );
 
                 GL.TexCoord2( 0, 0 );
-                GL.VertexAttrib1( sign1Loc2, 1 );
-                GL.VertexAttrib1( sign2Loc2, 1 );
+                GL.VertexAttrib1( sign1LocOpacity, 1 );
+                GL.VertexAttrib1( sign2LocOpacity, 1 );
                 GL.Vertex3( hp.Position );
 
                 GL.TexCoord2( 1, 0 );
-                GL.VertexAttrib1( sign1Loc2, -1 );
-                GL.VertexAttrib1( sign2Loc2, 1 );
+                GL.VertexAttrib1( sign1LocOpacity, -1 );
+                GL.VertexAttrib1( sign2LocOpacity, 1 );
                 GL.Vertex3( hp.Position );
 
                 GL.TexCoord2( 1, 1 );
-                GL.VertexAttrib1( sign1Loc2, -1 );
-                GL.VertexAttrib1( sign2Loc2, -1 );
+                GL.VertexAttrib1( sign1LocOpacity, -1 );
+                GL.VertexAttrib1( sign2LocOpacity, -1 );
                 GL.Vertex3( hp.Position );
             }
             GL.End();
@@ -335,30 +333,30 @@ namespace AnimatingHair.Rendering
 
         private void getShaderVariableLocations()
         {
-            axisLoc = GL.GetUniformLocation( depthShaderProgram, "axis" );
-            sign1Loc = GL.GetAttribLocation( depthShaderProgram, "sign1" );
-            sign2Loc = GL.GetAttribLocation( depthShaderProgram, "sign2" );
-            eyeLoc = GL.GetUniformLocation( depthShaderProgram, "eye" );
-            alphaTresholdLoc = GL.GetUniformLocation( depthShaderProgram, "alphaTreshold" );
-            billboardLengthLoc = GL.GetUniformLocation( depthShaderProgram, "renderSizeVertical" );
-            billboardWidthLoc = GL.GetUniformLocation( depthShaderProgram, "renderSizeHorizontal" );
-            lightModelViewMatrixLoc = GL.GetUniformLocation( depthShaderProgram, "lightModelViewMatrix" );
+            axisLocDepth = GL.GetUniformLocation( depthShaderProgram, "axis" );
+            sign1LocDepth = GL.GetAttribLocation( depthShaderProgram, "sign1" );
+            sign2LocDepth = GL.GetAttribLocation( depthShaderProgram, "sign2" );
+            eyeLocDepth = GL.GetUniformLocation( depthShaderProgram, "eye" );
+            alphaTresholdLocDepth = GL.GetUniformLocation( depthShaderProgram, "alphaTreshold" );
+            billboardLengthLocDepth = GL.GetUniformLocation( depthShaderProgram, "renderSizeVertical" );
+            billboardWidthLocDepth = GL.GetUniformLocation( depthShaderProgram, "renderSizeHorizontal" );
+            lightModelViewMatrixLocDepth = GL.GetUniformLocation( depthShaderProgram, "lightModelViewMatrix" );
 
-            axisLoc2 = GL.GetUniformLocation( opacityShaderProgram, "axis" );
-            sign1Loc2 = GL.GetAttribLocation( opacityShaderProgram, "sign1" );
-            sign2Loc2 = GL.GetAttribLocation( opacityShaderProgram, "sign2" );
-            eyeLoc2 = GL.GetUniformLocation( opacityShaderProgram, "eye" );
-            depthMapLoc2 = GL.GetUniformLocation( opacityShaderProgram, "depthMap" );
-            hairTextureLoc2 = GL.GetUniformLocation( opacityShaderProgram, "hairTexture" );
-            alphaTresholdLoc2 = GL.GetUniformLocation( opacityShaderProgram, "alphaTreshold" );
-            intensityFactorLoc2 = GL.GetUniformLocation( opacityShaderProgram, "intensityFactor" );
-            billboardLengthLoc2 = GL.GetUniformLocation( opacityShaderProgram, "renderSizeVertical" );
-            billboardWidthLoc2 = GL.GetUniformLocation( opacityShaderProgram, "renderSizeHorizontal" );
-            deepOpacityMapDistanceLoc2 = GL.GetUniformLocation( opacityShaderProgram, "deepOpacityMapDistance" );
-            nearLoc2 = GL.GetUniformLocation( opacityShaderProgram, "near" );
-            farLoc2 = GL.GetUniformLocation( opacityShaderProgram, "far" );
-            deepOpacityMapResolutionLoc2 = GL.GetUniformLocation( opacityShaderProgram, "resolution" );
-            lightModelViewMatrixLoc2 = GL.GetUniformLocation( opacityShaderProgram, "lightModelViewMatrix" );
+            axisLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "axis" );
+            sign1LocOpacity = GL.GetAttribLocation( opacityShaderProgram, "sign1" );
+            sign2LocOpacity = GL.GetAttribLocation( opacityShaderProgram, "sign2" );
+            eyeLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "eye" );
+            depthMapLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "depthMap" );
+            hairTextureLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "hairTexture" );
+            alphaTresholdLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "alphaTreshold" );
+            intensityFactorLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "intensityFactor" );
+            billboardLengthLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "renderSizeVertical" );
+            billboardWidthLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "renderSizeHorizontal" );
+            deepOpacityMapDistanceLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "deepOpacityMapDistance" );
+            nearLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "near" );
+            farLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "far" );
+            deepOpacityMapResolutionLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "resolution" );
+            lightModelViewMatrixLocOpacity = GL.GetUniformLocation( opacityShaderProgram, "lightModelViewMatrix" );
         }
     }
 }

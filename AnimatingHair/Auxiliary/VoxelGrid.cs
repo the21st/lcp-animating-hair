@@ -86,7 +86,7 @@ namespace AnimatingHair.Auxiliary
 
         public void FindNeighbors( SPHParticle particle )
         {
-            bool edge = false;
+            bool edgeOrOutside = false;
 
             int x = particle.ContainedIn.X;
             int y = particle.ContainedIn.Y;
@@ -105,7 +105,7 @@ namespace AnimatingHair.Auxiliary
 
                         if ( actX < 0 || actX >= VoxelCount[ 0 ] || actY < 0 || actY >= VoxelCount[ 1 ] || actZ < 0 || actZ >= VoxelCount[ 2 ] )
                         {
-                            edge = true;
+                            edgeOrOutside = true;
                         }
                         else
                         {
@@ -119,7 +119,7 @@ namespace AnimatingHair.Auxiliary
                 }
             }
 
-            if ( edge )
+            if ( edgeOrOutside )
             {
                 for ( int i = 0; i < outside.Particles.Count; i++ )
                 {
@@ -130,21 +130,28 @@ namespace AnimatingHair.Auxiliary
 
         private void processNeighbor( SPHParticle particle, SPHParticle neighbor )
         {
+            if ( particle.ID == neighbor.ID )
+                return;
+
             float distance = (particle.Position - neighbor.Position).Length;
 
-            if ( distance < VoxelSize && particle != neighbor )
+            if ( distance < VoxelSize )
             {
+                float kernelH2 = KernelEvaluator.ComputeKernelH2( distance );
+
                 if ( neighbor is HairParticle )
                 {
                     particle.NeighborsHair.Add( neighbor as HairParticle );
                     particle.DistancesHair.Add( distance );
-                    particle.KernelH2DistancesHair.Add( KernelEvaluator.ComputeKernelH2( distance ) );
+                    particle.KernelH2DistancesHair.Add( kernelH2 );
+                    particle.NeighborHandledHair.Add( false );
                 }
                 else if ( neighbor is AirParticle )
                 {
                     particle.NeighborsAir.Add( neighbor as AirParticle );
                     particle.DistancesAir.Add( distance );
-                    particle.KernelH2DistancesAir.Add( KernelEvaluator.ComputeKernelH2( distance ) );
+                    particle.KernelH2DistancesAir.Add( kernelH2 );
+                    particle.NeighborHandledAir.Add( false );
                 }
             }
         }

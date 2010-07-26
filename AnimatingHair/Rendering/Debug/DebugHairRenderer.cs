@@ -47,15 +47,17 @@ namespace AnimatingHair.Rendering.Debug
             if ( hp.IsRoot )
                 GL.Color3( 0, 0, 0 );
             else
-                GL.Color3( 0.9, 0.1, 0.3 );
+                GL.Color3( 0.999, 0.01, 0.01 );
 
             if ( hp.NeighborsRoot.Count + hp.NeighborsTip.Count == 0 )
                 GL.Color3( Color.White );
 
             GL.PushMatrix();
             GL.Translate( hp.Position );
-            Utility.DrawSphere( 0.03f, 3, 3 );
+            Utility.DrawSphere( 0.02f, 10, 10 );
             GL.PopMatrix();
+
+            //return;
 
             // -- direction --
             if ( !hp.IsRoot )

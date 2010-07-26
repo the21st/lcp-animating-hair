@@ -160,10 +160,12 @@ namespace AnimatingHair.Entity
                 particle.NeighborsHair.Clear();
                 particle.DistancesHair.Clear();
                 particle.KernelH2DistancesHair.Clear();
+                particle.NeighborHandledHair.Clear();
 
                 particle.NeighborsAir.Clear();
                 particle.DistancesAir.Clear();
                 particle.KernelH2DistancesAir.Clear();
+                particle.NeighborHandledAir.Clear();
             } );
 
             // find current neighbors
@@ -172,7 +174,8 @@ namespace AnimatingHair.Entity
             {
                 SPHParticle particle = Particles[ i ];
                 VoxelGrid.FindNeighbors( particle );
-            } );
+            }
+            );
         }
 
         private void updateVoxelGrid()

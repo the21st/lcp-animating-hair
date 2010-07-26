@@ -17,11 +17,8 @@ void main()
 	vec4 color = vec4( 0.0 );
 	float att;
 	
-	/* a fragment shader can't write a varying variable, hence we need
-	a new variable to store the normalized interpolated normal */
-	n = normalize(normal);
+	n = normalize( normal );
 	
-	/* compute the dot product between normal and normalized lightdir */
 	NdotL = max( dot( n, normalize( lightDir ) ), 0.0 );
 	
 	att = 1.0 / (gl_LightSource[0].constantAttenuation +
@@ -47,7 +44,7 @@ void main()
 	vec3 lightCoord = shadowCoord.xyz / shadowCoord.w;
 	lightCoord = vec3(0.5) * ( lightCoord + vec3(1.0) );
 	float depth = lightCoord.z;
-	depth = (2.0 * near) / (far + near - depth * (far - near)); // linearny depth medzi 0 a 1
+	depth = (2.0 * near) / (far + near - depth * (far - near)); // linear depth between 0 and 1
 	float depthStart = texture2D( deepOpacityMap, lightCoord.xy ).a;
 	
 	depthStart += delta[0];
@@ -90,6 +87,8 @@ void main()
 		
 	if ( depthStart > 0.999 )
 		shadow = 0;
+		
+	shadow *= 0.6;
 		
 	float depth2 = lightCoord.z - 0.001;
 	float distanceFromLight = texture2D( shadowMap, lightCoord.xy ).z;

@@ -9,7 +9,11 @@ namespace AnimatingHair.Entity.PhysicalEntity
     /// </summary>
     abstract class SPHParticle : PointMass
     {
-        protected SPHParticle( float mass ) : base( mass ) { }
+        protected SPHParticle( int id, float mass )
+            : base( mass )
+        {
+            ID = id;
+        }
 
         /// <summary>
         /// The density of the fluid volume at the position of this particle
@@ -21,15 +25,19 @@ namespace AnimatingHair.Entity.PhysicalEntity
         /// </summary>
         public Voxel ContainedIn { get; set; }
 
+        public readonly int ID;
+
         // list of the current HairParticle neighbors, along with list of corresponding pre-computed distances and kernel values for efficiency
-        public volatile List<HairParticle> NeighborsHair = new List<HairParticle>();
-        public volatile List<float> DistancesHair = new List<float>();
-        public volatile List<float> KernelH2DistancesHair = new List<float>();
+        public List<HairParticle> NeighborsHair = new List<HairParticle>();
+        public List<float> DistancesHair = new List<float>();
+        public List<float> KernelH2DistancesHair = new List<float>();
+        public List<bool> NeighborHandledHair = new List<bool>();
 
         // list of the current AirParticle neighbors, along with list of corresponding pre-computed distances and kernel values for efficiency
-        public volatile List<AirParticle> NeighborsAir = new List<AirParticle>();
-        public volatile List<float> DistancesAir = new List<float>();
-        public volatile List<float> KernelH2DistancesAir = new List<float>();
+        public List<AirParticle> NeighborsAir = new List<AirParticle>();
+        public List<float> DistancesAir = new List<float>();
+        public List<float> KernelH2DistancesAir = new List<float>();
+        public List<bool> NeighborHandledAir = new List<bool>();
 
         public override void RKStep( int stepNumber )
         {
