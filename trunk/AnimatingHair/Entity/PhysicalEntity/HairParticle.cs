@@ -4,7 +4,7 @@ using OpenTK;
 
 namespace AnimatingHair.Entity.PhysicalEntity
 {
-    class HairParticle : SPHParticle, IComparable<HairParticle>
+    class HairParticle : SPHParticle
     {
         public float Area { get; set; }
         public Vector3 Direction;
@@ -21,14 +21,11 @@ namespace AnimatingHair.Entity.PhysicalEntity
         public readonly List<HairParticle> NeighborsRoot;
         public readonly List<HairParticle> NeighborsTip;
 
-        public readonly int ID;
-
         public HairParticle( int id, float mass )
-            : base( mass )
+            : base( id, mass )
         {
             NeighborsTip = new List<HairParticle>();
             NeighborsRoot = new List<HairParticle>();
-            ID = id;
         }
 
         public override string ToString()

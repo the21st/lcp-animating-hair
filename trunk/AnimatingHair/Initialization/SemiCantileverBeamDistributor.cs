@@ -22,6 +22,7 @@ namespace AnimatingHair.Initialization
         private const float tangentComponent = 2.0f;
         private const float gravityFactor = 3;
         private const float whorlZ = -0.1f;
+        private const float elasticModulus = 35000;
 
         private readonly SphereCoordinateGenerator scg;
         private readonly CoordinateTransformator ct;
@@ -37,7 +38,7 @@ namespace AnimatingHair.Initialization
             Sphere[] spheres = new Sphere[ 1 ];
             spheres[ 0 ] = bust.Head;
             Cylinder[] cylinders = new Cylinder[ 0 ]; // TODO: cantilever collisions
-            cbs = new CantileverBeamSimulator( spheres, cylinders, Const.Instance.ElasticModulus, Const.Instance.SecondMomentOfArea );
+            cbs = new CantileverBeamSimulator( spheres, cylinders, elasticModulus, Const.Instance.SecondMomentOfArea );
         }
 
         public IEnumerable<ParticleCoordinate> DistributeParticles( int particleCount )
@@ -70,7 +71,13 @@ namespace AnimatingHair.Initialization
 
                 for ( int i = 0; i < k; i++ )
                 {
-                    if ( (newCoordinate.Position - result[ i ].Position).Length < minDistance )
+                    float length = (newCoordinate.Position - result[ i ].Position).Length;
+                    if ( newCoordinate.S > 0 )
+                    {
+                        float add = (1 / (newCoordinate.S + 3));
+                        length *= 1 + add;
+                    }
+                    if ( length < minDistance )
                     {
                         badPosition = true;
                         minDistance *= 0.99f; // NOTE: constant
@@ -247,15 +254,13 @@ namespace AnimatingHair.Initialization
 
             private readonly Sphere[] spheres;
             private readonly Cylinder[] cylinders;
-            private readonly float elasticModulus;
-            private readonly float secondMomentumOfArea;
+            private readonly float eTimesI;
 
             public CantileverBeamSimulator( Sphere[] spheres, Cylinder[] cylinders, float elasticModulus, float momentum )
             {
                 this.spheres = spheres;
                 this.cylinders = cylinders;
-                this.elasticModulus = elasticModulus;
-                secondMomentumOfArea = momentum;
+                eTimesI = elasticModulus * momentum;
             }
 
             // TODO: collisions with spheres and cylinders
@@ -266,7 +271,6 @@ namespace AnimatingHair.Initialization
 
                 Vector3 a0, a1, a2, pPrevious, pPreviousStar, pCurrent, pCurrentStar, d, yi, ei;
                 float m1, m2, g1, g2, y1, y2;
-                float eTimesI = elasticModulus * secondMomentumOfArea;
 
                 if ( particleCoordinate.S <= 0 )
                     return particleCoordinate;

@@ -244,10 +244,17 @@ namespace AnimatingHair.Entity
                 HairParticle particle = Particles[ i ];
                 for ( int j = 0; j < particle.NeighborsHair.Count; j++ )
                 {
-                    Vector3 f = calculateHairHairForces(
-                        particle, particle.NeighborsHair[ j ],
+                    if ( particle.NeighborHandledHair[ j ] )
+                        continue;
+
+                    HairParticle neighbor = particle.NeighborsHair[ j ];
+                    Vector3 f = calculateHairHairForces( particle, neighbor,
                         particle.DistancesHair[ j ], particle.KernelH2DistancesHair[ j ] );
                     particle.Force += f;
+                    neighbor.Force -= f;
+
+                    particle.NeighborHandledHair[ j ] = true;
+                    neighbor.NeighborHandledHair[ neighbor.NeighborsHair.IndexOf( particle ) ] = true;
                 }
             } );
         }
@@ -381,7 +388,7 @@ namespace AnimatingHair.Entity
                 Vector3 force = springFactor * deltaLocation;
 
                 pp.ParticleI.Force += force;
-                pp.ParticleJ.Force += -force;
+                pp.ParticleJ.Force -= force;
             }
         }
 

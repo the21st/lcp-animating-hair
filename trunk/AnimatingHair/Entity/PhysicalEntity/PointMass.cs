@@ -9,14 +9,14 @@ namespace AnimatingHair.Entity.PhysicalEntity
     /// </summary>
     abstract class PointMass
     {
-        public float Mass;
-        public float MassInverse;
+        public readonly float Mass;
+        protected readonly float MassInverse;
         public Vector3 Force;
         public Vector3 Acceleration;
         public Vector3 Velocity;
         public Vector3 Position;
 
-        public PointMass( float mass )
+        protected PointMass( float mass )
         {
             Mass = mass;
             MassInverse = 1.0f / mass;
