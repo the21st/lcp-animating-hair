@@ -300,8 +300,8 @@ namespace AnimatingHair.Rendering
             RenderingResources.Instance.DeepOpacityMap = GL.GenTexture();
             GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMap );
 
-            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest );
-            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest );
+            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear );
+            GL.TexParameter( TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear );
 
             GL.TexImage2D( TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, shadowMapWidth, shadowMapHeight, 0,
                 PixelFormat.Rgba, PixelType.UnsignedByte, new IntPtr() );

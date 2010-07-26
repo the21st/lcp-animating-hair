@@ -13,7 +13,6 @@ void main()
 	intensity *= opacityFactor;
 	if ( intensity < alphaTreshold )
 	{
-		//gl_FragDepth = 10.0;
 		discard;
 	}
 }

@@ -31,6 +31,7 @@ namespace AnimatingHair.Rendering
 
         private readonly OpacityMapsRenderer opacityMapsRenderer;
         private readonly ShadowMapRenderer shadowMapRenderer;
+        //private readonly GaussianBlurRenderer gaussianBlurRenderer;
 
         // auxiliary
         private readonly float[] lightDiffuse;
@@ -67,6 +68,8 @@ namespace AnimatingHair.Rendering
             opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light );
 
             shadowMapRenderer = new ShadowMapRenderer( scene.Bust );
+
+            //gaussianBlurRenderer = new GaussianBlurRenderer();
 
             lightDiffuse = new float[ 3 ];
             lightAmbient = new float[ 3 ];
@@ -108,16 +111,19 @@ namespace AnimatingHair.Rendering
             light.Position = new Vector3( -RenderingOptions.Instance.LightDistance * (float)Math.Sin( angle ), 0.3f * RenderingOptions.Instance.LightDistance, RenderingOptions.Instance.LightDistance * (float)Math.Cos( angle ) );
             GL.Light( LightName.Light0, LightParameter.Position, new Vector4( light.Position, 1 ) );
 
+            //light.Position = camera.Eye;
 
             GL.PushAttrib( AttribMask.AllAttribBits );
             opacityMapsRenderer.RenderOpacityTexture();
             GL.PopAttrib();
 
-
             GL.PushAttrib( AttribMask.AllAttribBits );
             shadowMapRenderer.RenderShadowTexture();
             GL.PopAttrib();
 
+            //GL.PushAttrib( AttribMask.AllAttribBits );
+            //gaussianBlurRenderer.BlurDeepOpacityTexture();
+            //GL.PopAttrib();
 
             initializeOpenGL();
 
@@ -229,7 +235,7 @@ namespace AnimatingHair.Rendering
             GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMap );
             GL.Uniform1( textureLoc, 0 );
 
-            const int size = 250;
+            const int size = 200;
 
             GL.Begin( BeginMode.Quads );
             {
@@ -247,7 +253,7 @@ namespace AnimatingHair.Rendering
             }
             GL.End();
 
-            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMap );
+            GL.BindTexture( TextureTarget.Texture2D, RenderingResources.Instance.DeepOpacityMapBlurred );
 
             GL.Begin( BeginMode.Quads );
             {

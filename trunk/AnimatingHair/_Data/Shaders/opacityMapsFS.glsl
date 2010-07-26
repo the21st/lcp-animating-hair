@@ -32,6 +32,8 @@ void main()
 		discard;
 	}
 	
+	intensity -= alphaTreshold;
+	
 	float depth = (2.0 * near) / (far + near - gl_FragCoord.z * (far - near)); // linearny depth medzi 0 a 1
 	
 	vec2 scrCoord = vec2 (1.0 / resolution, 1.0 / resolution) * gl_FragCoord.xy;
