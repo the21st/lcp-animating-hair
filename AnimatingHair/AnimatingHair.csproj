@@ -152,6 +152,7 @@
     <Compile Include="RenderingResources.cs" />
     <Compile Include="Rendering\Debug\AirRenderer.cs" />
     <Compile Include="Rendering\Debug\MetaBustRenderer.cs" />
+    <Compile Include="Rendering\GaussianBlurRenderer.cs" />
     <Compile Include="Rendering\OpacityMapsRenderer.cs" />
     <Compile Include="Rendering\ShadowMapRenderer.cs" />
     <Compile Include="Rendering\TriangleMesh.cs" />
@@ -198,11 +199,13 @@
     <Content Include="_Data\Models\vlas.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\app.manifest" />
     <None Include="_Data\Models\hlava.obj" />
     <None Include="_Data\Shaders\bustFS.glsl" />
     <None Include="_Data\Shaders\bustVS.glsl" />
+    <None Include="_Data\Shaders\gaussBlurHorizontalFS.glsl" />
+    <None Include="_Data\Shaders\gaussBlurVerticalFS.glsl" />
+    <None Include="_Data\Shaders\gaussBlurVS.glsl" />
     <None Include="_Data\Shaders\hairVS.glsl" />
     <None Include="_Data\Shaders\debugFS.glsl" />
     <None Include="_Data\Shaders\debugVS.glsl" />

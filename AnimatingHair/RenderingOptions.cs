@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 
 namespace AnimatingHair
 {
@@ -14,9 +15,10 @@ namespace AnimatingHair
 
             BillboardLength = 0.5f;
             BillboardWidth = 0.15f;
-            AlphaTreshold = 0.15f;
+            AlphaTreshold = 0.06f;
             DeepOpacityMapDistance = 0.015f;
             ShadowMapsResolution = 1024;
+            BlurSize = 1.0f / 1024;
 
             ShowBust = false;
             ShowMetaBust = false;
@@ -64,6 +66,7 @@ namespace AnimatingHair
         public float AlphaTreshold { get; set; }
         public float DeepOpacityMapDistance { get; set; }
         public int ShadowMapsResolution { get; set; }
+        public float BlurSize { get; set; }
 
         public bool ShowBust { get; set; }
         public bool ShowMetaBust { get; set; }

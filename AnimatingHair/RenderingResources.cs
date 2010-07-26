@@ -11,6 +11,7 @@ namespace AnimatingHair
         public TriangleMesh ShouldersModel;
 
         public int DeepOpacityMap;
+        public int DeepOpacityMapBlurred;
         public int ShadowMap;
 
         public Matrix4 BustModelTransformationMatrix;
