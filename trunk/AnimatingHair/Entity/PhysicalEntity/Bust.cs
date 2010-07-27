@@ -22,21 +22,36 @@ namespace AnimatingHair.Entity.PhysicalEntity
 
         public void ApplyForcesOnParticles( SPHParticle[] particles )
         {
-            Parallel.For( 0, particles.Length, i =>
-            //for ( int i = 0; i < particles.Length; i++ )
-            {
-                SPHParticle particle = particles[ i ];
-
-                applySphereCollisionForce( Head, particle );
-
-                applyCylinderCollisionForce( Neck, particle );
-
-                if ( !applyCylinderCollisionForce( Shoulders, particle ) )
+            if ( Const.Instance.Parallel )
+                Parallel.For( 0, particles.Length, i =>
                 {
-                    applySphereCollisionForce( ShoulderTipLeft, particle );
-                    applySphereCollisionForce( ShoulderTipRight, particle );
+                    SPHParticle particle = particles[ i ];
+
+                    applySphereCollisionForce( Head, particle );
+
+                    applyCylinderCollisionForce( Neck, particle );
+
+                    if ( !applyCylinderCollisionForce( Shoulders, particle ) )
+                    {
+                        applySphereCollisionForce( ShoulderTipLeft, particle );
+                        applySphereCollisionForce( ShoulderTipRight, particle );
+                    }
+                } );
+            else
+                for ( int i = 0; i < particles.Length; i++ )
+                {
+                    SPHParticle particle = particles[ i ];
+
+                    applySphereCollisionForce( Head, particle );
+
+                    applyCylinderCollisionForce( Neck, particle );
+
+                    if ( !applyCylinderCollisionForce( Shoulders, particle ) )
+                    {
+                        applySphereCollisionForce( ShoulderTipLeft, particle );
+                        applySphereCollisionForce( ShoulderTipRight, particle );
+                    }
                 }
-            } );
         }
 
         private static void applySphereCollisionForce( Sphere sphere, SPHParticle particle )

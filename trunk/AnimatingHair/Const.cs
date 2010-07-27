@@ -11,6 +11,7 @@ namespace AnimatingHair
         {
             Seed = 0;
             TimeStep = 0.01f;
+            Parallel = true;
 
             AirFriction = 0.1f;
             Gravity = 0.7f;
@@ -47,6 +48,7 @@ namespace AnimatingHair
         public int Seed { get; set; }
 
         public float TimeStep { get; set; }
+        public bool Parallel { get; set; }
 
         public long CurrentTimeStep = 0;
         public float H1;

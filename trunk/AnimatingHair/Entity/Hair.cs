@@ -66,11 +66,16 @@ namespace AnimatingHair.Entity
         /// </summary>
         public void UpdateDirections()
         {
-            Parallel.For( 0, Particles.Length, i =>
-            //for ( int i = 0; i < Particles.Length; i++ )
-            {
-                updateDirection( Particles[ i ] );
-            } );
+            if ( Const.Instance.Parallel )
+                Parallel.For( 0, Particles.Length, i =>
+                {
+                    updateDirection( Particles[ i ] );
+                } );
+            else
+                for ( int i = 0; i < Particles.Length; i++ )
+                {
+                    updateDirection( Particles[ i ] );
+                }
         }
 
         /// <summary>
@@ -169,39 +174,68 @@ namespace AnimatingHair.Entity
 
         private void prepareParticlePairs()
         {
-            Parallel.For( 0, ParticlePairsIteration.Count, i =>
-            //for ( int i = 0; i < ParticlePairsIteration.Count; i++ )
-            {
-                ParticlePair pair = ParticlePairsIteration[ i ];
-                ParticlePair oppositePair = pair.OppositePair;
+            if ( Const.Instance.Parallel )
+                Parallel.For( 0, ParticlePairsIteration.Count, i =>
+                {
+                    ParticlePair pair = ParticlePairsIteration[ i ];
+                    ParticlePair oppositePair = pair.OppositePair;
 
-                pair.CurrentPositionDifference = pair.ParticleJ.Position - pair.ParticleI.Position;
-                oppositePair.CurrentPositionDifference = -pair.CurrentPositionDifference;
+                    pair.CurrentPositionDifference = pair.ParticleJ.Position - pair.ParticleI.Position;
+                    oppositePair.CurrentPositionDifference = -pair.CurrentPositionDifference;
 
-                pair.CurrentDistance = pair.CurrentPositionDifference.Length;
-                oppositePair.CurrentDistance = pair.CurrentDistance;
+                    pair.CurrentDistance = pair.CurrentPositionDifference.Length;
+                    oppositePair.CurrentDistance = pair.CurrentDistance;
 
-                pair.Alpha = findAlphaIJ( pair );
-                oppositePair.Alpha = pair.Alpha;
+                    pair.Alpha = findAlphaIJ( pair );
+                    oppositePair.Alpha = pair.Alpha;
 
-                pair.T = findTIJ( pair );
-                oppositePair.T = findTIJ( oppositePair );
-            } );
+                    pair.T = findTIJ( pair );
+                    oppositePair.T = findTIJ( oppositePair );
+                } );
+            else
+                for ( int i = 0; i < ParticlePairsIteration.Count; i++ )
+                {
+                    ParticlePair pair = ParticlePairsIteration[ i ];
+                    ParticlePair oppositePair = pair.OppositePair;
+
+                    pair.CurrentPositionDifference = pair.ParticleJ.Position - pair.ParticleI.Position;
+                    oppositePair.CurrentPositionDifference = -pair.CurrentPositionDifference;
+
+                    pair.CurrentDistance = pair.CurrentPositionDifference.Length;
+                    oppositePair.CurrentDistance = pair.CurrentDistance;
+
+                    pair.Alpha = findAlphaIJ( pair );
+                    oppositePair.Alpha = pair.Alpha;
+
+                    pair.T = findTIJ( pair );
+                    oppositePair.T = findTIJ( oppositePair );
+                }
         }
 
         private void prepareParticles()
         {
-            Parallel.For( 0, Particles.Length, i =>
-            //for ( int i = 0; i < Particles.Length; i++ )
-            {
-                HairParticle hp = Particles[ i ];
+            if ( Const.Instance.Parallel )
+                Parallel.For( 0, Particles.Length, i =>
+                {
+                    HairParticle hp = Particles[ i ];
 
-                hp.Force = Vector3.Zero;
+                    hp.Force = Vector3.Zero;
 
-                calculateNewKX( hp );
+                    calculateNewKX( hp );
 
-                calculateAlphas( hp );
-            } );
+                    calculateAlphas( hp );
+                } );
+            else
+                for ( int i = 0; i < Particles.Length; i++ )
+                {
+                    HairParticle hp = Particles[ i ];
+
+                    hp.Force = Vector3.Zero;
+
+                    calculateNewKX( hp );
+
+                    calculateAlphas( hp );
+                }
         }
 
         private void applyGravitationalForce()
@@ -225,38 +259,44 @@ namespace AnimatingHair.Entity
 
         private void applyNeighborForces()
         {
-            //for ( int i = 0; i < Particles.Length; i++ )
-            //{
-            //    HairParticle particle = Particles[ i ];
-
-            //    for ( int j = 0; j < particle.NeighborsHair.Count; j++ )
-            //    {
-            //        Vector3 f = calculateHairHairForces(
-            //            particle, particle.NeighborsHair[ j ],
-            //            particle.DistancesHair[ j ], particle.KernelH2DistancesHair[ j ] );
-            //        particle.Force += f;
-            //    }
-            //}
-
-            Parallel.For( 0, Particles.Length, i =>
-            //for ( int i = 0; i < Particles.Length; i++ )
-            {
-                HairParticle particle = Particles[ i ];
-                for ( int j = 0; j < particle.NeighborsHair.Count; j++ )
+            if ( Const.Instance.Parallel )
+                Parallel.For( 0, Particles.Length, i =>
                 {
-                    if ( particle.NeighborHandledHair[ j ] )
-                        continue;
+                    HairParticle particle = Particles[ i ];
+                    for ( int j = 0; j < particle.NeighborsHair.Count; j++ )
+                    {
+                        if ( particle.NeighborHandledHair[ j ] )
+                            continue;
 
-                    HairParticle neighbor = particle.NeighborsHair[ j ];
-                    Vector3 f = calculateHairHairForces( particle, neighbor,
-                        particle.DistancesHair[ j ], particle.KernelH2DistancesHair[ j ] );
-                    particle.Force += f;
-                    neighbor.Force -= f;
+                        HairParticle neighbor = particle.NeighborsHair[ j ];
+                        Vector3 f = calculateHairHairForces( particle, neighbor,
+                            particle.DistancesHair[ j ], particle.KernelH2DistancesHair[ j ] );
+                        particle.Force += f;
+                        neighbor.Force -= f;
 
-                    particle.NeighborHandledHair[ j ] = true;
-                    neighbor.NeighborHandledHair[ neighbor.NeighborsHair.IndexOf( particle ) ] = true;
+                        particle.NeighborHandledHair[ j ] = true;
+                        neighbor.NeighborHandledHair[ neighbor.NeighborsHair.IndexOf( particle ) ] = true;
+                    }
+                } );
+            else
+                for ( int i = 0; i < Particles.Length; i++ )
+                {
+                    HairParticle particle = Particles[ i ];
+                    for ( int j = 0; j < particle.NeighborsHair.Count; j++ )
+                    {
+                        if ( particle.NeighborHandledHair[ j ] )
+                            continue;
+
+                        HairParticle neighbor = particle.NeighborsHair[ j ];
+                        Vector3 f = calculateHairHairForces( particle, neighbor,
+                            particle.DistancesHair[ j ], particle.KernelH2DistancesHair[ j ] );
+                        particle.Force += f;
+                        neighbor.Force -= f;
+
+                        particle.NeighborHandledHair[ j ] = true;
+                        neighbor.NeighborHandledHair[ neighbor.NeighborsHair.IndexOf( particle ) ] = true;
+                    }
                 }
-            } );
         }
 
         /// <summary>

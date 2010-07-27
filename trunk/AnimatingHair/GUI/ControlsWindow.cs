@@ -25,7 +25,7 @@ namespace AnimatingHair.GUI
         private float distance = 7, elevation = 0, azimuth = 180, mouseX, mouseY;
         private readonly Random r = new Random();
         private bool loaded = false;
-        private bool paused = true;
+        private bool paused = false;
         private bool cutting = false;
         private Vector3 cutMove;
         private Vector3 cutMove2;
@@ -100,6 +100,8 @@ namespace AnimatingHair.GUI
             visualTrackBarShininess.BindFloatData( RenderingOptions.Instance, "Shininess", 50, 300 );
             visualTrackBarReflect.BindFloatData( RenderingOptions.Instance, "Reflect", 0, 1 );
             visualTrackBarTransmit.BindFloatData( RenderingOptions.Instance, "Transmit", 0, 1 );
+
+            checkBoxParallel.DataBindings.Add( "Checked", Const.Instance, "Parallel", true, DataSourceUpdateMode.OnPropertyChanged );
 
             checkBoxShowHair.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowHair", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxDebugHair.DataBindings.Add( "Checked", RenderingOptions.Instance, "DebugHair", true, DataSourceUpdateMode.OnPropertyChanged );
@@ -428,6 +430,19 @@ namespace AnimatingHair.GUI
 
         private void buttonPause_Click( object sender, EventArgs e )
         {
+            //stopwatch.Start();
+
+            //for ( int i = 0; i < 500; i++ )
+            //{
+            //    scene.Step();
+            //}
+
+            //MessageBox.Show( (stopwatch.ElapsedMilliseconds / 1000.0).ToString() );
+
+            //stopwatch.Reset();
+
+            //return;
+
             paused = !paused;
 
             if ( paused )

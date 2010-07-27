@@ -104,14 +104,16 @@ namespace AnimatingHair.Rendering
 
                         // scale and translate the model so that it fits on the physical interaction model of the bust
                         GL.Translate( RenderingOptions.Instance.BustDisplacement );
-                        GL.Scale( RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio );
+                        GL.Scale( RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio,
+                                  RenderingOptions.Instance.BustScaleRatio );
 
                         RenderingResources.Instance.HeadModel.Draw();
                     }
                     GL.PopMatrix();
 
                     GL.Translate( RenderingOptions.Instance.BustDisplacement );
-                    GL.Scale( RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio );
+                    GL.Scale( RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio,
+                              RenderingOptions.Instance.BustScaleRatio );
                     RenderingResources.Instance.ShouldersModel.Draw();
                 }
                 GL.PopMatrix();

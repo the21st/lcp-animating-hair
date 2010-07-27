@@ -152,30 +152,50 @@ namespace AnimatingHair.Entity
         private void neighborSearchVoxelGrid()
         {
             // clear old values
-            Parallel.For( 0, Particles.Length, i =>
-            //for ( int i = 0; i < Particles.Length; i++ )
-            {
-                SPHParticle particle = Particles[ i ];
+            if ( Const.Instance.Parallel )
+                Parallel.For( 0, Particles.Length, i =>
+                {
+                    SPHParticle particle = Particles[ i ];
 
-                particle.NeighborsHair.Clear();
-                particle.DistancesHair.Clear();
-                particle.KernelH2DistancesHair.Clear();
-                particle.NeighborHandledHair.Clear();
+                    particle.NeighborsHair.Clear();
+                    particle.DistancesHair.Clear();
+                    particle.KernelH2DistancesHair.Clear();
+                    particle.NeighborHandledHair.Clear();
 
-                particle.NeighborsAir.Clear();
-                particle.DistancesAir.Clear();
-                particle.KernelH2DistancesAir.Clear();
-                particle.NeighborHandledAir.Clear();
-            } );
+                    particle.NeighborsAir.Clear();
+                    particle.DistancesAir.Clear();
+                    particle.KernelH2DistancesAir.Clear();
+                    particle.NeighborHandledAir.Clear();
+                } );
+            else
+                for ( int i = 0; i < Particles.Length; i++ )
+                {
+                    SPHParticle particle = Particles[ i ];
+
+                    particle.NeighborsHair.Clear();
+                    particle.DistancesHair.Clear();
+                    particle.KernelH2DistancesHair.Clear();
+                    particle.NeighborHandledHair.Clear();
+
+                    particle.NeighborsAir.Clear();
+                    particle.DistancesAir.Clear();
+                    particle.KernelH2DistancesAir.Clear();
+                    particle.NeighborHandledAir.Clear();
+                }
 
             // find current neighbors
-            Parallel.For( 0, Particles.Length, i =>
-            //for ( int i = 0; i < Particles.Length; i++ )
-            {
-                SPHParticle particle = Particles[ i ];
-                VoxelGrid.FindNeighbors( particle );
-            }
-            );
+            if ( Const.Instance.Parallel )
+                Parallel.For( 0, Particles.Length, i =>
+                {
+                    SPHParticle particle = Particles[ i ];
+                    VoxelGrid.FindNeighbors( particle );
+                } );
+            else
+                for ( int i = 0; i < Particles.Length; i++ )
+                {
+                    SPHParticle particle = Particles[ i ];
+                    VoxelGrid.FindNeighbors( particle );
+                }
         }
 
         private void updateVoxelGrid()
