@@ -20,7 +20,7 @@ namespace AnimatingHair
             ShadowMapsResolution = 1024;
             BlurSize = 1.0f / 1024;
 
-            ShowBust = false;
+            ShowBust = true;
             ShowMetaBust = false;
 
             AmbientTerm = 0.05f;

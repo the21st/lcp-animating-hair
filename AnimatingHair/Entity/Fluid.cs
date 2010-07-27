@@ -16,20 +16,36 @@ namespace AnimatingHair.Entity
         /// </summary>
         public void CalculateDensity()
         {
-            //Parallel.For( 0, Particles.Length, index =>
-            for ( int index = 0; index < Particles.Length; index++ )
-            {
-                SPHParticle particle = Particles[ index ];
-
-                float sum = particle.Mass * KernelEvaluator.Kernel0H2;
-
-                for ( int i = 0; i < particle.NeighborsHair.Count; i++ )
+            if ( Const.Instance.Parallel )
+                Parallel.For( 0, Particles.Length, index =>
                 {
-                    sum += particle.NeighborsHair[ i ].Mass * particle.KernelH2DistancesHair[ i ];
-                }
+                    SPHParticle particle = Particles[ index ];
 
-                particle.Density = sum;
-            }
+                    float sum = particle.Mass * KernelEvaluator.Kernel0H2;
+
+                    for ( int i = 0; i < particle.NeighborsHair.Count; i++ )
+                    {
+                        sum += particle.NeighborsHair[ i ].Mass *
+                            particle.KernelH2DistancesHair[ i ];
+                    }
+
+                    particle.Density = sum;
+                } );
+            else
+                for ( int index = 0; index < Particles.Length; index++ )
+                {
+                    SPHParticle particle = Particles[ index ];
+
+                    float sum = particle.Mass * KernelEvaluator.Kernel0H2;
+
+                    for ( int i = 0; i < particle.NeighborsHair.Count; i++ )
+                    {
+                        sum += particle.NeighborsHair[ i ].Mass *
+                               particle.KernelH2DistancesHair[ i ];
+                    }
+
+                    particle.Density = sum;
+                }
         }
 
         /// <summary>

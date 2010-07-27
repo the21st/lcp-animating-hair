@@ -125,6 +125,7 @@ namespace AnimatingHair.GUI
             this.diffuseDialog = new System.Windows.Forms.ColorDialog();
             this.ambientDialog = new System.Windows.Forms.ColorDialog();
             this.specularDialog = new System.Windows.Forms.ColorDialog();
+            this.checkBoxParallel = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSeed)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -166,7 +167,7 @@ namespace AnimatingHair.GUI
             // 
             // buttonRestartWithRandomSeed
             // 
-            this.buttonRestartWithRandomSeed.Location = new System.Drawing.Point( 1018, 578 );
+            this.buttonRestartWithRandomSeed.Location = new System.Drawing.Point( 1022, 604 );
             this.buttonRestartWithRandomSeed.Name = "buttonRestartWithRandomSeed";
             this.buttonRestartWithRandomSeed.Size = new System.Drawing.Size( 107, 32 );
             this.buttonRestartWithRandomSeed.TabIndex = 21;
@@ -188,9 +189,9 @@ namespace AnimatingHair.GUI
             // 
             // buttonRestart
             // 
-            this.buttonRestart.Location = new System.Drawing.Point( 971, 578 );
+            this.buttonRestart.Location = new System.Drawing.Point( 1022, 578 );
             this.buttonRestart.Name = "buttonRestart";
-            this.buttonRestart.Size = new System.Drawing.Size( 50, 32 );
+            this.buttonRestart.Size = new System.Drawing.Size( 107, 32 );
             this.buttonRestart.TabIndex = 18;
             this.buttonRestart.Text = "Restart";
             this.buttonRestart.UseVisualStyleBackColor = true;
@@ -286,7 +287,7 @@ namespace AnimatingHair.GUI
             // 
             // buttonPause
             // 
-            this.buttonPause.Location = new System.Drawing.Point( 822, 578 );
+            this.buttonPause.Location = new System.Drawing.Point( 818, 578 );
             this.buttonPause.Name = "buttonPause";
             this.buttonPause.Size = new System.Drawing.Size( 91, 58 );
             this.buttonPause.TabIndex = 31;
@@ -1060,11 +1061,24 @@ namespace AnimatingHair.GUI
             // 
             this.specularDialog.Color = System.Drawing.Color.White;
             // 
+            // checkBoxParallel
+            // 
+            this.checkBoxParallel.AutoSize = true;
+            this.checkBoxParallel.Checked = true;
+            this.checkBoxParallel.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxParallel.Location = new System.Drawing.Point( 915, 600 );
+            this.checkBoxParallel.Name = "checkBoxParallel";
+            this.checkBoxParallel.Size = new System.Drawing.Size( 75, 17 );
+            this.checkBoxParallel.TabIndex = 34;
+            this.checkBoxParallel.Text = "Parallelism";
+            this.checkBoxParallel.UseVisualStyleBackColor = true;
+            // 
             // ControlsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size( 1141, 661 );
+            this.Controls.Add( this.checkBoxParallel );
             this.Controls.Add( this.buttonRestart );
             this.Controls.Add( this.tabControl1 );
             this.Controls.Add( this.buttonPause );
@@ -1218,5 +1232,6 @@ namespace AnimatingHair.GUI
         private VisualTrackBar visualTrackBarTransmit;
         private VisualTrackBar visualTrackBarShininess;
         private VisualTrackBar visualTrackBarAmbient;
+        private System.Windows.Forms.CheckBox checkBoxParallel;
     }
 }
