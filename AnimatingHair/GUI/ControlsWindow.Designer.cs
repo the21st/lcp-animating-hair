@@ -37,6 +37,8 @@ namespace AnimatingHair.GUI
             this.fpsDisplayTimer = new System.Windows.Forms.Timer( this.components );
             this.FPSLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.restartProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.visualTrackBarAverageHairDensity = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarHairDensityForceMagnitude = new AnimatingHair.GUI.VisualTrackBar();
@@ -90,8 +92,8 @@ namespace AnimatingHair.GUI
             this.checkBoxOnlyShowOccupiedVoxels = new System.Windows.Forms.CheckBox();
             this.checkBoxShowVoxelGrid = new System.Windows.Forms.CheckBox();
             this.groupBox10 = new System.Windows.Forms.GroupBox();
-            this.checkBoxShowMetaBust = new System.Windows.Forms.CheckBox();
-            this.checkBoxShowBust = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowMetaHead = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowHead = new System.Windows.Forms.CheckBox();
             this.checkBoxShowHair = new System.Windows.Forms.CheckBox();
             this.groupBoxHairRendering = new System.Windows.Forms.GroupBox();
             this.visualTrackBarBillboardWidth = new AnimatingHair.GUI.VisualTrackBar();
@@ -104,7 +106,7 @@ namespace AnimatingHair.GUI
             this.label2 = new System.Windows.Forms.Label();
             this.comboBoxDeepOpacityMapResolution = new System.Windows.Forms.ComboBox();
             this.visualTrackBarDeepOpacityMapDistance = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarAlphaTreshold = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarAlphaThreshold = new AnimatingHair.GUI.VisualTrackBar();
             this.groupBox13 = new System.Windows.Forms.GroupBox();
             this.visualTrackBarLightIntensity = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarLightDistance = new AnimatingHair.GUI.VisualTrackBar();
@@ -119,7 +121,7 @@ namespace AnimatingHair.GUI
             this.visualTrackBarDensityOfHairMaterial = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarMaxNeighbors = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarHairMassFactor = new AnimatingHair.GUI.VisualTrackBar();
-            this.visualTrackBarNeighborAlignmentTreshold = new AnimatingHair.GUI.VisualTrackBar();
+            this.visualTrackBarNeighborAlignmentThreshold = new AnimatingHair.GUI.VisualTrackBar();
             this.visualTrackBarSecondMomentOfArea = new AnimatingHair.GUI.VisualTrackBar();
             this.colorDialog = new System.Windows.Forms.ColorDialog();
             this.diffuseDialog = new System.Windows.Forms.ColorDialog();
@@ -157,6 +159,9 @@ namespace AnimatingHair.GUI
             // 
             // glControl
             // 
+            this.glControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.glControl.BackColor = System.Drawing.Color.Black;
             this.glControl.Location = new System.Drawing.Point( 12, 36 );
             this.glControl.Name = "glControl";
@@ -167,6 +172,7 @@ namespace AnimatingHair.GUI
             // 
             // buttonRestartWithRandomSeed
             // 
+            this.buttonRestartWithRandomSeed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonRestartWithRandomSeed.Location = new System.Drawing.Point( 1022, 604 );
             this.buttonRestartWithRandomSeed.Name = "buttonRestartWithRandomSeed";
             this.buttonRestartWithRandomSeed.Size = new System.Drawing.Size( 107, 32 );
@@ -189,6 +195,7 @@ namespace AnimatingHair.GUI
             // 
             // buttonRestart
             // 
+            this.buttonRestart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonRestart.Location = new System.Drawing.Point( 1022, 578 );
             this.buttonRestart.Name = "buttonRestart";
             this.buttonRestart.Size = new System.Drawing.Size( 107, 32 );
@@ -221,7 +228,9 @@ namespace AnimatingHair.GUI
             // 
             this.statusStrip1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.statusStrip1.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.FPSLabel} );
+            this.FPSLabel,
+            this.restartProgressBar,
+            this.toolStripStatusLabel1} );
             this.statusStrip1.Location = new System.Drawing.Point( 0, 639 );
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -229,6 +238,21 @@ namespace AnimatingHair.GUI
             this.statusStrip1.SizingGrip = false;
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // restartProgressBar
+            // 
+            this.restartProgressBar.Name = "restartProgressBar";
+            this.restartProgressBar.Size = new System.Drawing.Size( 100, 16 );
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size( 986, 17 );
+            this.toolStripStatusLabel1.Spring = true;
+            this.toolStripStatusLabel1.Text = "To move the head, hold numpad 4, 5, 6 or 8. To rotate the head, hold numpad 7 or " +
+                "9.";
+            this.toolStripStatusLabel1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // groupBox2
             // 
@@ -287,6 +311,7 @@ namespace AnimatingHair.GUI
             // 
             // buttonPause
             // 
+            this.buttonPause.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPause.Location = new System.Drawing.Point( 818, 578 );
             this.buttonPause.Name = "buttonPause";
             this.buttonPause.Size = new System.Drawing.Size( 91, 58 );
@@ -364,6 +389,8 @@ namespace AnimatingHair.GUI
             // 
             // tabControl1
             // 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabControl1.Controls.Add( this.tabPage2 );
             this.tabControl1.Controls.Add( this.tabPage5 );
@@ -730,34 +757,34 @@ namespace AnimatingHair.GUI
             // 
             // groupBox10
             // 
-            this.groupBox10.Controls.Add( this.checkBoxShowMetaBust );
-            this.groupBox10.Controls.Add( this.checkBoxShowBust );
+            this.groupBox10.Controls.Add( this.checkBoxShowMetaHead );
+            this.groupBox10.Controls.Add( this.checkBoxShowHead );
             this.groupBox10.Location = new System.Drawing.Point( 6, 185 );
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Size = new System.Drawing.Size( 291, 43 );
             this.groupBox10.TabIndex = 4;
             this.groupBox10.TabStop = false;
-            this.groupBox10.Text = "Bust";
+            this.groupBox10.Text = "Head";
             // 
-            // checkBoxShowMetaBust
+            // checkBoxShowMetaHead
             // 
-            this.checkBoxShowMetaBust.AutoSize = true;
-            this.checkBoxShowMetaBust.Location = new System.Drawing.Point( 97, 19 );
-            this.checkBoxShowMetaBust.Name = "checkBoxShowMetaBust";
-            this.checkBoxShowMetaBust.Size = new System.Drawing.Size( 104, 17 );
-            this.checkBoxShowMetaBust.TabIndex = 1;
-            this.checkBoxShowMetaBust.Text = "Show Meta Bust";
-            this.checkBoxShowMetaBust.UseVisualStyleBackColor = true;
+            this.checkBoxShowMetaHead.AutoSize = true;
+            this.checkBoxShowMetaHead.Location = new System.Drawing.Point( 97, 19 );
+            this.checkBoxShowMetaHead.Name = "checkBoxShowMetaHead";
+            this.checkBoxShowMetaHead.Size = new System.Drawing.Size( 109, 17 );
+            this.checkBoxShowMetaHead.TabIndex = 1;
+            this.checkBoxShowMetaHead.Text = "Show Meta Head";
+            this.checkBoxShowMetaHead.UseVisualStyleBackColor = true;
             // 
-            // checkBoxShowBust
+            // checkBoxShowHead
             // 
-            this.checkBoxShowBust.AutoSize = true;
-            this.checkBoxShowBust.Location = new System.Drawing.Point( 6, 19 );
-            this.checkBoxShowBust.Name = "checkBoxShowBust";
-            this.checkBoxShowBust.Size = new System.Drawing.Size( 77, 17 );
-            this.checkBoxShowBust.TabIndex = 0;
-            this.checkBoxShowBust.Text = "Show Bust";
-            this.checkBoxShowBust.UseVisualStyleBackColor = true;
+            this.checkBoxShowHead.AutoSize = true;
+            this.checkBoxShowHead.Location = new System.Drawing.Point( 6, 19 );
+            this.checkBoxShowHead.Name = "checkBoxShowHead";
+            this.checkBoxShowHead.Size = new System.Drawing.Size( 82, 17 );
+            this.checkBoxShowHead.TabIndex = 0;
+            this.checkBoxShowHead.Text = "Show Head";
+            this.checkBoxShowHead.UseVisualStyleBackColor = true;
             // 
             // checkBoxShowHair
             // 
@@ -847,7 +874,7 @@ namespace AnimatingHair.GUI
             this.groupBox14.Controls.Add( this.label2 );
             this.groupBox14.Controls.Add( this.comboBoxDeepOpacityMapResolution );
             this.groupBox14.Controls.Add( this.visualTrackBarDeepOpacityMapDistance );
-            this.groupBox14.Controls.Add( this.visualTrackBarAlphaTreshold );
+            this.groupBox14.Controls.Add( this.visualTrackBarAlphaThreshold );
             this.groupBox14.Location = new System.Drawing.Point( 6, 182 );
             this.groupBox14.Name = "groupBox14";
             this.groupBox14.Size = new System.Drawing.Size( 291, 131 );
@@ -887,13 +914,13 @@ namespace AnimatingHair.GUI
             this.visualTrackBarDeepOpacityMapDistance.Size = new System.Drawing.Size( 279, 36 );
             this.visualTrackBarDeepOpacityMapDistance.TabIndex = 9;
             // 
-            // visualTrackBarAlphaTreshold
+            // visualTrackBarAlphaThreshold
             // 
-            this.visualTrackBarAlphaTreshold.Label = "Alpha Treshold";
-            this.visualTrackBarAlphaTreshold.Location = new System.Drawing.Point( 6, 19 );
-            this.visualTrackBarAlphaTreshold.Name = "visualTrackBarAlphaTreshold";
-            this.visualTrackBarAlphaTreshold.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarAlphaTreshold.TabIndex = 8;
+            this.visualTrackBarAlphaThreshold.Label = "Alpha Threshold";
+            this.visualTrackBarAlphaThreshold.Location = new System.Drawing.Point( 6, 19 );
+            this.visualTrackBarAlphaThreshold.Name = "visualTrackBarAlphaThreshold";
+            this.visualTrackBarAlphaThreshold.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarAlphaThreshold.TabIndex = 8;
             // 
             // groupBox13
             // 
@@ -996,7 +1023,7 @@ namespace AnimatingHair.GUI
             this.groupBox7.Controls.Add( this.visualTrackBarDensityOfHairMaterial );
             this.groupBox7.Controls.Add( this.visualTrackBarMaxNeighbors );
             this.groupBox7.Controls.Add( this.visualTrackBarHairMassFactor );
-            this.groupBox7.Controls.Add( this.visualTrackBarNeighborAlignmentTreshold );
+            this.groupBox7.Controls.Add( this.visualTrackBarNeighborAlignmentThreshold );
             this.groupBox7.Controls.Add( this.visualTrackBarSecondMomentOfArea );
             this.groupBox7.Location = new System.Drawing.Point( 3, 3 );
             this.groupBox7.Name = "groupBox7";
@@ -1029,13 +1056,13 @@ namespace AnimatingHair.GUI
             this.visualTrackBarHairMassFactor.Size = new System.Drawing.Size( 279, 36 );
             this.visualTrackBarHairMassFactor.TabIndex = 10;
             // 
-            // visualTrackBarNeighborAlignmentTreshold
+            // visualTrackBarNeighborAlignmentThreshold
             // 
-            this.visualTrackBarNeighborAlignmentTreshold.Label = "Neighbor Alignment Treshold";
-            this.visualTrackBarNeighborAlignmentTreshold.Location = new System.Drawing.Point( 6, 61 );
-            this.visualTrackBarNeighborAlignmentTreshold.Name = "visualTrackBarNeighborAlignmentTreshold";
-            this.visualTrackBarNeighborAlignmentTreshold.Size = new System.Drawing.Size( 279, 36 );
-            this.visualTrackBarNeighborAlignmentTreshold.TabIndex = 6;
+            this.visualTrackBarNeighborAlignmentThreshold.Label = "Neighbor Alignment Threshold";
+            this.visualTrackBarNeighborAlignmentThreshold.Location = new System.Drawing.Point( 6, 61 );
+            this.visualTrackBarNeighborAlignmentThreshold.Name = "visualTrackBarNeighborAlignmentThreshold";
+            this.visualTrackBarNeighborAlignmentThreshold.Size = new System.Drawing.Size( 279, 36 );
+            this.visualTrackBarNeighborAlignmentThreshold.TabIndex = 6;
             // 
             // visualTrackBarSecondMomentOfArea
             // 
@@ -1063,10 +1090,11 @@ namespace AnimatingHair.GUI
             // 
             // checkBoxParallel
             // 
+            this.checkBoxParallel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxParallel.AutoSize = true;
             this.checkBoxParallel.Checked = true;
             this.checkBoxParallel.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxParallel.Location = new System.Drawing.Point( 915, 600 );
+            this.checkBoxParallel.Location = new System.Drawing.Point( 915, 613 );
             this.checkBoxParallel.Name = "checkBoxParallel";
             this.checkBoxParallel.Size = new System.Drawing.Size( 75, 17 );
             this.checkBoxParallel.TabIndex = 34;
@@ -1086,9 +1114,7 @@ namespace AnimatingHair.GUI
             this.Controls.Add( this.buttonRestartWithRandomSeed );
             this.Controls.Add( this.menuStrip1 );
             this.Controls.Add( this.glControl );
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip1;
-            this.MaximizeBox = false;
             this.Name = "ControlsWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ControlsWindow";
@@ -1176,7 +1202,7 @@ namespace AnimatingHair.GUI
         private VisualTrackBar visualTrackBarHairParticleCount;
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.TabPage tabPage7;
-        private VisualTrackBar visualTrackBarNeighborAlignmentTreshold;
+        private VisualTrackBar visualTrackBarNeighborAlignmentThreshold;
         private VisualTrackBar visualTrackBarMaxNeighbors;
         private VisualTrackBar visualTrackBarHairMassFactor;
         private VisualTrackBar visualTrackBarSecondMomentOfArea;
@@ -1205,8 +1231,8 @@ namespace AnimatingHair.GUI
         private VisualTrackBar visualTrackBarBillboardLength;
         private VisualTrackBar visualTrackBarBillboardWidth;
         private System.Windows.Forms.GroupBox groupBox10;
-        private System.Windows.Forms.CheckBox checkBoxShowBust;
-        private System.Windows.Forms.CheckBox checkBoxShowMetaBust;
+        private System.Windows.Forms.CheckBox checkBoxShowHead;
+        private System.Windows.Forms.CheckBox checkBoxShowMetaHead;
         private System.Windows.Forms.GroupBox groupBox11;
         private System.Windows.Forms.CheckBox checkBoxOnlyShowOccupiedVoxels;
         private System.Windows.Forms.CheckBox checkBoxShowVoxelGrid;
@@ -1219,7 +1245,7 @@ namespace AnimatingHair.GUI
         private VisualTrackBar visualTrackBarLightIntensity;
         private System.Windows.Forms.GroupBox groupBox14;
         private VisualTrackBar visualTrackBarDeepOpacityMapDistance;
-        private VisualTrackBar visualTrackBarAlphaTreshold;
+        private VisualTrackBar visualTrackBarAlphaThreshold;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBoxDeepOpacityMapResolution;
         private System.Windows.Forms.Button buttonCutting;
@@ -1233,5 +1259,7 @@ namespace AnimatingHair.GUI
         private VisualTrackBar visualTrackBarShininess;
         private VisualTrackBar visualTrackBarAmbient;
         private System.Windows.Forms.CheckBox checkBoxParallel;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripProgressBar restartProgressBar;
     }
 }

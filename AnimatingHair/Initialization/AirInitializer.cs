@@ -14,7 +14,7 @@ namespace AnimatingHair.Initialization
         {
             air = new Air
                   {
-                      FanStrength = 0.2f
+                      FanStrength = 30
                   };
 
             distributeParticles();

@@ -29,15 +29,15 @@ namespace AnimatingHair.Initialization
         private readonly CantileverBeamSimulator cbs;
         private readonly Random r;
 
-        public SemiCantileverBeamDistributor( int seed, Bust bust )
+        public SemiCantileverBeamDistributor( int seed, HeadNeckShoulders headNeckShoulders )
         {
             r = new Random( seed );
-            scg = new SphereCoordinateGenerator( bust.Head.Center, bust.Head.Radius, seed );
-            ct = new CoordinateTransformator( bust.Head.Center, bust.Head.Radius );
+            scg = new SphereCoordinateGenerator( headNeckShoulders.Head.Center, headNeckShoulders.Head.Radius, seed );
+            ct = new CoordinateTransformator( headNeckShoulders.Head.Center, headNeckShoulders.Head.Radius );
 
             Sphere[] spheres = new Sphere[ 1 ];
-            spheres[ 0 ] = bust.Head;
-            Cylinder[] cylinders = new Cylinder[ 0 ]; // TODO: cantilever collisions
+            spheres[ 0 ] = headNeckShoulders.Head;
+            Cylinder[] cylinders = new Cylinder[ 0 ];
             cbs = new CantileverBeamSimulator( spheres, cylinders, elasticModulus, Const.Instance.SecondMomentOfArea );
         }
 
@@ -263,7 +263,6 @@ namespace AnimatingHair.Initialization
                 eTimesI = elasticModulus * momentum;
             }
 
-            // TODO: collisions with spheres and cylinders
             public ParticleCoordinate SimulateCantileverBeam( ParticleCoordinate particleCoordinate, Vector3 externalForce )
             {
                 int k = Convert.ToInt32( particleCoordinate.S / segmentLength );
@@ -309,7 +308,6 @@ namespace AnimatingHair.Initialization
 
                     pCurrent = pPrevious + ei;
 
-                    // TODO: collisions
                     foreach ( Cylinder cylinder in cylinders )
                     {
                     }

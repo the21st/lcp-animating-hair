@@ -13,7 +13,7 @@ namespace AnimatingHair.Auxiliary
         /// Bigger chunk size should reduce lock waiting time and thus
         /// increase paralelism.
         /// </summary>
-        const int chunkSize = 50;
+        private const int chunkSize = 100;
 
         /// <summary>
         /// The number of process() threads
@@ -66,14 +66,14 @@ namespace AnimatingHair.Auxiliary
         }
     }
 
-    static class Parallel2
+    static class Parallel3
     {
         private delegate void ThreadDelegate( int from );
 
         /// <summary>
         /// The number of process() threads
         /// </summary>
-        private const int threadCount = 2;
+        private const int threadCount = 4;
 
         /// <summary>
         /// Parallel for loop. Invokes given action, passing arguments

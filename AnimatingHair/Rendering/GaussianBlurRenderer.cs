@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.IO;
-using AnimatingHair.Entity.PhysicalEntity;
+using AnimatingHair.Auxiliary;
 using OpenTK.Graphics.OpenGL;
-using OpenTK;
 
 namespace AnimatingHair.Rendering
 {
@@ -158,7 +157,7 @@ namespace AnimatingHair.Rendering
             // check FBO status
             FBOstatus = GL.CheckFramebufferStatus( FramebufferTarget.Framebuffer );
             if ( FBOstatus != FramebufferErrorCode.FramebufferComplete )
-                throw new Exception( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO\n" );
+                throw new OpenGLException( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO\n" );
 
             // switch back to window-system-provided framebuffer
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );
@@ -190,7 +189,7 @@ namespace AnimatingHair.Rendering
             // check FBO status
             FBOstatus = GL.CheckFramebufferStatus( FramebufferTarget.Framebuffer );
             if ( FBOstatus != FramebufferErrorCode.FramebufferComplete )
-                throw new Exception( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO\n" );
+                throw new OpenGLException( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use FBO\n" );
 
             // switch back to window-system-provided framebuffer
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );

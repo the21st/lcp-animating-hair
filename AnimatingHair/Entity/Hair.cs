@@ -240,10 +240,13 @@ namespace AnimatingHair.Entity
 
         private void applyGravitationalForce()
         {
+            const int ground = -4;
             for ( int i = 0; i < Particles.Length; i++ )
             {
                 HairParticle particle = Particles[ i ];
-                particle.Force.Y += particle.Mass * ((float)-Const.Instance.Gravity);
+                particle.Force.Y += particle.Mass * -Const.Instance.Gravity;
+                if ( particle.Position.Y < ground )
+                    particle.Force.Y -= particle.Mass * 5 * (particle.Position.Y - ground);
             }
         }
 
@@ -309,8 +312,6 @@ namespace AnimatingHair.Entity
         /// <returns>The resultant force of these three types of interaction.</returns>
         private static Vector3 calculateHairHairForces( HairParticle hpI, HairParticle hpJ, float distance, float kernelH2 )
         {
-            // TODO: try to optimize
-
             Vector3 xIJ = hpJ.Position - hpI.Position;
             Vector3 vIJ = hpJ.Velocity - hpI.Velocity;
 

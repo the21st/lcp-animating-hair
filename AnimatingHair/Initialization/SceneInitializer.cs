@@ -14,17 +14,17 @@ namespace AnimatingHair.Initialization
         private Scene scene;
         private readonly HairInitializer hairInitializer = new HairInitializer();
         private readonly AirInitializer airInitializer = new AirInitializer();
-        private readonly BustInitializer bustInitializer = new BustInitializer();
+        private readonly HeadInitializer headInitializer = new HeadInitializer();
 
         /// <summary>
         /// Creates and initializes the scene entity by creating and
-        /// initializing the bust, hair and air objects (components of scene object).
+        /// initializing the head, hair and air objects (components of scene object).
         /// </summary>
         /// <returns>The newly created Scene object</returns>
         internal Scene InitializeScene()
         {
-            Bust bust = bustInitializer.InitializeBust();
-            Hair hair = hairInitializer.InitializeHair( bust );
+            HeadNeckShoulders headNeckShoulders = headInitializer.InitializeHead();
+            Hair hair = hairInitializer.InitializeHair( headNeckShoulders );
             Air air = airInitializer.InitializeAir();
 
             // NOTE: constant
@@ -33,7 +33,7 @@ namespace AnimatingHair.Initialization
             scene = new Scene
                     {
                         Air = air,
-                        Bust = bust,
+                        HeadNeckShoulders = headNeckShoulders,
                         Hair = hair,
                         VoxelGrid = voxelGrid,
                         Particles = new SPHParticle[ Const.Instance.HairParticleCount + Const.Instance.AirParticleCount ]

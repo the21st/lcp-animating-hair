@@ -25,11 +25,11 @@ namespace AnimatingHair.Rendering
         private readonly HairRenderer hairRenderer;
         private readonly DebugHairRenderer debugHairRenderer;
         private readonly AirRenderer airRenderer;
-        private readonly BustRenderer bustRenderer;
-        private readonly MetaBustRenderer metaBustRenderer;
+        private readonly HeadRenderer headRenderer;
+        private readonly MetaHeadRenderer metaHeadRenderer;
         private readonly VoxelGridRenderer voxelGridRenderer;
 
-        private readonly OpacityMapsRenderer opacityMapsRenderer;
+        private readonly DeepOpacityMapsRenderer deepOpacityMapsRenderer;
         private readonly ShadowMapRenderer shadowMapRenderer;
         //private readonly GaussianBlurRenderer gaussianBlurRenderer;
 
@@ -60,14 +60,14 @@ namespace AnimatingHair.Rendering
 
             airRenderer = new AirRenderer( scene.Air );
 
-            bustRenderer = new BustRenderer( scene.Bust, camera, light );
-            metaBustRenderer = new MetaBustRenderer( scene.Bust );
+            headRenderer = new HeadRenderer( scene.HeadNeckShoulders, camera, light );
+            metaHeadRenderer = new MetaHeadRenderer( scene.HeadNeckShoulders );
 
             voxelGridRenderer = new VoxelGridRenderer( scene.VoxelGrid );
 
-            opacityMapsRenderer = new OpacityMapsRenderer( scene.Hair, light );
+            deepOpacityMapsRenderer = new DeepOpacityMapsRenderer( scene.Hair, light );
 
-            shadowMapRenderer = new ShadowMapRenderer( scene.Bust );
+            shadowMapRenderer = new ShadowMapRenderer( scene.HeadNeckShoulders );
 
             //gaussianBlurRenderer = new GaussianBlurRenderer();
 
@@ -90,15 +90,15 @@ namespace AnimatingHair.Rendering
 
         public void Render()
         {
-            Vector3 lookAt = centerPosition + scene.Bust.Position;
+            Vector3 lookAt = centerPosition + scene.HeadNeckShoulders.Position;
 
             RenderingResources.Instance.LightProjectionMatrix = Matrix4.CreatePerspectiveFieldOfView( MathHelper.PiOver4, 1, RenderingOptions.Instance.Near, RenderingOptions.Instance.Far );
             RenderingResources.Instance.LightModelViewMatrix = Matrix4.LookAt( light.Position, lookAt, Vector3.UnitY );
 
 
-            Matrix4 translate = Matrix4.CreateTranslation( scene.Bust.Position );
-            Matrix4 rotate = Matrix4.CreateRotationY( scene.Bust.Angle );
-            RenderingResources.Instance.BustModelTransformationMatrix = rotate * translate;
+            Matrix4 translate = Matrix4.CreateTranslation( scene.HeadNeckShoulders.Position );
+            Matrix4 rotate = Matrix4.CreateRotationY( scene.HeadNeckShoulders.Angle );
+            RenderingResources.Instance.HeadModelTransformationMatrix = rotate * translate;
             RenderingResources.Instance.HeadRotateMatrixInverse = rotate;
             RenderingResources.Instance.HeadRotateMatrixInverse.Invert();
 
@@ -114,7 +114,7 @@ namespace AnimatingHair.Rendering
             //light.Position = camera.Eye;
 
             GL.PushAttrib( AttribMask.AllAttribBits );
-            opacityMapsRenderer.RenderOpacityTexture();
+            deepOpacityMapsRenderer.RenderOpacityTexture();
             GL.PopAttrib();
 
             GL.PushAttrib( AttribMask.AllAttribBits );
@@ -164,15 +164,15 @@ namespace AnimatingHair.Rendering
 
             GL.Enable( EnableCap.Lighting );
 
-            if ( RenderingOptions.Instance.ShowBust )
-                bustRenderer.Render();
+            if ( RenderingOptions.Instance.ShowHead )
+                headRenderer.Render();
 
-            if ( RenderingOptions.Instance.ShowMetaBust )
-                metaBustRenderer.Render();
+            if ( RenderingOptions.Instance.ShowMetaHead )
+                metaHeadRenderer.Render();
 
             GL.PushMatrix();
             {
-                GL.MultMatrix( ref RenderingResources.Instance.BustModelTransformationMatrix );
+                GL.MultMatrix( ref RenderingResources.Instance.HeadModelTransformationMatrix );
 
                 if ( RenderingOptions.Instance.ShowVoxelGrid )
                     voxelGridRenderer.Render();

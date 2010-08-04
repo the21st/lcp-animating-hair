@@ -20,13 +20,12 @@ namespace AnimatingHair.Initialization
         /// the particles and establishing lengthwise connections.
         /// Also sets the smoothing length values for the KernelEvaluator.
         /// </summary>
-        /// <param name="bust">The bust on which to distribute the hair</param>
+        /// <param name="headNeckShoulders">The head on which to distribute the hair</param>
         /// <returns>The newly created Hair object</returns>
-        public Hair InitializeHair( Bust bust )
+        public Hair InitializeHair( HeadNeckShoulders headNeckShoulders )
         {
-            // TODO: which distributor?
-            distributor = new SemiCantileverBeamDistributor( Const.Instance.Seed, bust );
-            //IParticleDistributor distributor = new CantileverBeamDistributor( Const.Instance.Seed, scene.Bust );
+            distributor = new SemiCantileverBeamDistributor( Const.Instance.Seed, headNeckShoulders );
+            //IParticleDistributor distributor = new CantileverBeamDistributor( Const.Instance.Seed, scene.Head );
 
             hair = new Hair();
 
@@ -102,7 +101,7 @@ namespace AnimatingHair.Initialization
         {
             foreach ( HairParticle hp in hair.Particles )
             {
-                hp.Area = (float)Math.Pow( hp.Mass / Const.Instance.DensityOfHairMaterial, 2.0 / 3.0 ); // TODO: precalculate inverse
+                hp.Area = (float)Math.Pow( hp.Mass * Const.Instance.DensityOfHairMaterialInverse, 2.0 / 3.0 );
             }
         }
 
@@ -173,7 +172,7 @@ namespace AnimatingHair.Initialization
 
                         pairIJ.C = pairJI.C = pairIJ.A * l;
 
-                        if ( pairIJ.A < Const.Instance.NeighborAlignmentTreshold )
+                        if ( pairIJ.A < Const.Instance.NeighborAlignmentThreshold )
                             continue;
 
                         pairIJ.K = pairJI.K = pairIJ.C * KernelEvaluator.ComputeKernelH1( l );

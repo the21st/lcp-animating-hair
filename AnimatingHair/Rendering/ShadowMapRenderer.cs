@@ -1,21 +1,23 @@
-﻿using System;
-using System.IO;
-using AnimatingHair.Entity;
+using System;
+using AnimatingHair.Auxiliary;
 using AnimatingHair.Entity.PhysicalEntity;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace AnimatingHair.Rendering
 {
+    /// <summary>
+    /// Handles rendering of the Shadow Map for head.
+    /// </summary>
     class ShadowMapRenderer
     {
-        private readonly Bust bust;
+        private readonly HeadNeckShoulders headNeckShoulders;
 
         private int depthFBO;
 
-        public ShadowMapRenderer( Bust bust )
+        public ShadowMapRenderer( HeadNeckShoulders headNeckShoulders )
         {
-            this.bust = bust;
+            this.headNeckShoulders = headNeckShoulders;
 
             generateDepthFBO();
         }
@@ -62,16 +64,17 @@ namespace AnimatingHair.Rendering
             // check depthFBO status
             FBOstatus = GL.CheckFramebufferStatus( FramebufferTarget.Framebuffer );
             if ( FBOstatus != FramebufferErrorCode.FramebufferComplete )
-                throw new Exception( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use depthFBO\n" );
+                throw new OpenGLException( "GL_FRAMEBUFFER_COMPLETE_EXT failed, CANNOT use depthFBO\n" );
 
             // switch back to window-system-provided framebuffer
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, 0 );
         }
 
+        /// <summary>
+        /// Renders the shadow map into a texture.
+        /// </summary>
         public void RenderShadowTexture()
         {
-            //GL.ActiveTexture( TextureUnit.Texture0 ); // NOTE: jak funguje tento prikaz ?? skus vypnut / zapnut
-
             GL.BindFramebuffer( FramebufferTarget.Framebuffer, depthFBO );
             GL.Viewport( 0, 0, RenderingOptions.Instance.ShadowMapsResolution, RenderingOptions.Instance.ShadowMapsResolution );
             GL.Clear( ClearBufferMask.DepthBufferBit );
@@ -82,7 +85,7 @@ namespace AnimatingHair.Rendering
 
         private void renderDepthMap()
         {
-            if ( !RenderingOptions.Instance.ShowBust )
+            if ( !RenderingOptions.Instance.ShowHead )
                 return;
 
             GL.ShadeModel( ShadingModel.Flat );
@@ -96,24 +99,24 @@ namespace AnimatingHair.Rendering
             {
                 GL.PushMatrix();
                 {
-                    GL.Translate( bust.Position );
+                    GL.Translate( headNeckShoulders.Position );
 
                     GL.PushMatrix();
                     {
-                        GL.Rotate( MathHelper.RadiansToDegrees( bust.Angle ), 0, 1, 0 );
+                        GL.Rotate( MathHelper.RadiansToDegrees( headNeckShoulders.Angle ), 0, 1, 0 );
 
-                        // scale and translate the model so that it fits on the physical interaction model of the bust
-                        GL.Translate( RenderingOptions.Instance.BustDisplacement );
-                        GL.Scale( RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio,
-                                  RenderingOptions.Instance.BustScaleRatio );
+                        // scale and translate the model so that it fits on the physical interaction model of the head
+                        GL.Translate( RenderingOptions.Instance.HeadDisplacement );
+                        GL.Scale( RenderingOptions.Instance.HeadScaleRatio, RenderingOptions.Instance.HeadScaleRatio,
+                                  RenderingOptions.Instance.HeadScaleRatio );
 
                         RenderingResources.Instance.HeadModel.Draw();
                     }
                     GL.PopMatrix();
 
-                    GL.Translate( RenderingOptions.Instance.BustDisplacement );
-                    GL.Scale( RenderingOptions.Instance.BustScaleRatio, RenderingOptions.Instance.BustScaleRatio,
-                              RenderingOptions.Instance.BustScaleRatio );
+                    GL.Translate( RenderingOptions.Instance.HeadDisplacement );
+                    GL.Scale( RenderingOptions.Instance.HeadScaleRatio, RenderingOptions.Instance.HeadScaleRatio,
+                              RenderingOptions.Instance.HeadScaleRatio );
                     RenderingResources.Instance.ShouldersModel.Draw();
                 }
                 GL.PopMatrix();

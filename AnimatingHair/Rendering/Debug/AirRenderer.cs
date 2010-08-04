@@ -1,4 +1,5 @@
-﻿using AnimatingHair.Entity;
+using AnimatingHair.Auxiliary;
+using AnimatingHair.Entity;
 using AnimatingHair.Entity.PhysicalEntity;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;

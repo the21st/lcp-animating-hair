@@ -25,15 +25,15 @@ namespace AnimatingHair.Initialization
         private readonly CantileverBeamSimulator cbs;
         private readonly Random r;
 
-        public CantileverBeamDistributor( int seed, Bust bust )
+        public CantileverBeamDistributor( int seed, HeadNeckShoulders headNeckShoulders )
         {
             r = new Random( seed );
-            scg = new SphereCoordinateGenerator( seed, bust.Head );
-            ct = new CoordinateTransformator( bust.Head );
+            scg = new SphereCoordinateGenerator( seed, headNeckShoulders.Head );
+            ct = new CoordinateTransformator( headNeckShoulders.Head );
 
             Sphere[] spheres = new Sphere[ 1 ];
-            spheres[ 0 ] = bust.Head;
-            Cylinder[] cylinders = new Cylinder[ 0 ]; // TODO: cantilever collisions
+            spheres[ 0 ] = headNeckShoulders.Head;
+            Cylinder[] cylinders = new Cylinder[ 0 ];
             cbs = new CantileverBeamSimulator( spheres, cylinders, Const.Instance.ElasticModulus, Const.Instance.SecondMomentOfArea );
         }
 
@@ -262,7 +262,6 @@ namespace AnimatingHair.Initialization
                 secondMomentumOfArea = momentum;
             }
 
-            // TODO: add collision detection with spheres and cylinders
             public ParticleCoordinate SimulateCantileverBeam( ParticleCoordinate particleCoordinate, Vector3 externalForce )
             {
                 int k = Convert.ToInt32( particleCoordinate.S / segmentLength );
@@ -309,7 +308,6 @@ namespace AnimatingHair.Initialization
 
                     pCurrent = pPrevious + ei;
 
-                    // TODO: colission detection with spheres and cylinders
                     foreach ( Cylinder cylinder in cylinders )
                     {
                     }
