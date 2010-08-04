@@ -24,7 +24,6 @@ void main()
 	
 	float intensity = texture2D( hairTexture, gl_TexCoord[0].st ).a; // intensity of shadow is the alpha value from texture
 	intensity *= opacityFactor; // times opacity factor from Vertex shader
-	intensity *= intensityFactor;
 	
 	if ( intensity < alphaThreshold )
 	{
