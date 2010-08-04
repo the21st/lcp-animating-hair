@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 using AnimatingHair.Entity;
 using AnimatingHair.Initialization;
@@ -11,6 +12,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using AnimatingHair.Auxiliary;
+using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 namespace AnimatingHair.GUI
 {
@@ -52,35 +54,68 @@ namespace AnimatingHair.GUI
             RenderingOptions.Instance.AspectRatio = (float)RenderingOptions.Instance.RenderWidth / RenderingOptions.Instance.RenderHeight;
 
             sceneInitializer = new SceneInitializer();
-            scene = sceneInitializer.InitializeScene();
-            camera = new Camera();
-
             cutter = new CutterQuad();
 
             try
             {
+                scene = sceneInitializer.InitializeScene();
+                camera = new Camera();
                 renderer = new Renderer( camera, scene, cutter );
             }
-            catch ( IOException exception )
+            catch ( Exception exception )
             {
                 MessageBox.Show( exception.Message + "\n\nAborting.", exception.GetType().ToString() );
                 Close();
             }
 
+            initControls();
+
+            Application.Idle += applicationIdle;
+
+            loaded = true;
+        }
+
+        private void initControls()
+        {
             comboBoxDeepOpacityMapResolution.SelectedIndex = 1;
 
-            numericUpDownSeed.DataBindings.Add( "Text", Const.Instance, "Seed", true, DataSourceUpdateMode.OnPropertyChanged );
+            bindData();
 
+            glControl.KeyDown += glControl_KeyDown;
+            glControl.KeyUp += glControl_KeyUp;
+            glControl.Resize += glControl_Resize;
+            glControl.Paint += glControl_Paint;
+
+            glControl.MouseWheel += glControl_MouseWheel;
+
+            colorDialog.Color = Color.FromArgb( (int)(scene.Hair.Clr[ 0 ] * 255), (int)(scene.Hair.Clr[ 1 ] * 255), (int)(scene.Hair.Clr[ 2 ] * 255) );
+            buttonColor.BackColor = colorDialog.Color;
+
+            Text =
+                GL.GetString( StringName.Vendor ) + " " +
+                GL.GetString( StringName.Renderer ) + " " +
+                GL.GetString( StringName.Version );
+
+            checkBoxShowHair_CheckedChanged( checkBoxShowHair, EventArgs.Empty );
+            checkBoxDebugHair_CheckedChanged( checkBoxDebugHair, EventArgs.Empty );
+            checkBoxShowVoxelGrid_CheckedChanged( checkBoxShowVoxelGrid, EventArgs.Empty );
+            checkBoxCruisingLight_CheckedChanged( checkBoxCruisingLight, EventArgs.Empty );
+
+            fpsDisplayTimer.Enabled = true;
+        }
+
+        private void bindData()
+        {
+            numericUpDownSeed.DataBindings.Add( "Text", Const.Instance, "Seed", true, DataSourceUpdateMode.OnPropertyChanged );
             visualTrackBarHairParticleCount.BindIntData( Const.Instance, "HairParticleCount", 2, 2000 );
             visualTrackBarMaxNeighbors.BindIntData( Const.Instance, "MaxNeighbors", 0, 25 );
-            visualTrackBarAirParticleCount.BindIntData( Const.Instance, "AirParticleCount", 1, 1000 );
-
+            visualTrackBarAirParticleCount.BindIntData( Const.Instance, "AirParticleCount", 0, 1000 );
             visualTrackBarTimeStep.BindFloatData( Const.Instance, "TimeStep", 0.001f, 0.1f );
             visualTrackBarGravity.BindFloatData( Const.Instance, "Gravity", -2, 2 );
             visualTrackBarAirFriction.BindFloatData( Const.Instance, "AirFriction", 0.01f, 0.3f );
             visualTrackBarHairLength.BindFloatData( Const.Instance, "HairLength", 0.1f, 4 );
             visualTrackBarMaxRootDepth.BindFloatData( Const.Instance, "MaxRootDepth", 0, 1 );
-            visualTrackBarNeighborAlignmentTreshold.BindFloatData( Const.Instance, "NeighborAlignmentTreshold", 0, 1 );
+            visualTrackBarNeighborAlignmentThreshold.BindFloatData( Const.Instance, "NeighborAlignmentThreshold", 0, 1 );
             visualTrackBarDensityOfHairMaterial.BindFloatData( Const.Instance, "DensityOfHairMaterial", 1, 300 );
             visualTrackBarElasticModulus.BindFloatData( Const.Instance, "ElasticModulus", 500, 15000 );
             visualTrackBarSecondMomentOfArea.BindFloatData( Const.Instance, "SecondMomentOfArea", 0.0005f, 0.01f );
@@ -93,72 +128,29 @@ namespace AnimatingHair.GUI
             visualTrackBarAverageAirDensity.BindFloatData( Const.Instance, "AverageAirDensity", 0.01f, 3 );
             visualTrackBarAirDensityForceMagnitude.BindFloatData( Const.Instance, "AirDensityForceMagnitude", 0.01f, 0.5f );
             visualTrackBarAirMassFactor.BindFloatData( Const.Instance, "AirMassFactor", 20, 500 );
-
             visualTrackBarDiffuse.BindFloatData( RenderingOptions.Instance, "DiffuseTerm", 0, 1 );
             visualTrackBarSpecular.BindFloatData( RenderingOptions.Instance, "SpecularTerm", 0, 1 );
             visualTrackBarAmbient.BindFloatData( RenderingOptions.Instance, "AmbientTerm", 0, 1 );
             visualTrackBarShininess.BindFloatData( RenderingOptions.Instance, "Shininess", 50, 300 );
             visualTrackBarReflect.BindFloatData( RenderingOptions.Instance, "Reflect", 0, 1 );
             visualTrackBarTransmit.BindFloatData( RenderingOptions.Instance, "Transmit", 0, 1 );
-
             checkBoxParallel.DataBindings.Add( "Checked", Const.Instance, "Parallel", true, DataSourceUpdateMode.OnPropertyChanged );
-
             checkBoxShowHair.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowHair", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxDebugHair.DataBindings.Add( "Checked", RenderingOptions.Instance, "DebugHair", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxShowConnections.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowConnections", true, DataSourceUpdateMode.OnPropertyChanged );
-            //checkBoxDirectionalOpacity.DataBindings.Add( "Checked", RenderingOptions.Instance, "DirectionalOpacity", true, DataSourceUpdateMode.OnPropertyChanged );
-            checkBoxShowBust.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowBust", true, DataSourceUpdateMode.OnPropertyChanged );
-            checkBoxShowMetaBust.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowMetaBust", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxShowHead.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowHead", true, DataSourceUpdateMode.OnPropertyChanged );
+            checkBoxShowMetaHead.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowMetaHead", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxCruisingLight.DataBindings.Add( "Checked", RenderingOptions.Instance, "LightCruising", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxShowVoxelGrid.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowVoxelGrid", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxOnlyShowOccupiedVoxels.DataBindings.Add( "Checked", RenderingOptions.Instance, "OnlyShowOccupiedVoxels", true, DataSourceUpdateMode.OnPropertyChanged );
             checkBoxShowDebugAir.DataBindings.Add( "Checked", RenderingOptions.Instance, "ShowDebugAir", true, DataSourceUpdateMode.OnPropertyChanged );
-
             visualTrackBarBillboardLength.BindFloatData( RenderingOptions.Instance, "BillboardLength", 0, 1 );
             visualTrackBarBillboardWidth.BindFloatData( RenderingOptions.Instance, "BillboardWidth", 0, 1 );
-            visualTrackBarAlphaTreshold.BindFloatData( RenderingOptions.Instance, "AlphaTreshold", 0, 1 );
+            visualTrackBarAlphaThreshold.BindFloatData( RenderingOptions.Instance, "AlphaThreshold", 0, 1 );
             visualTrackBarDeepOpacityMapDistance.BindFloatData( RenderingOptions.Instance, "DeepOpacityMapDistance", 0.001f, 0.1f );
             visualTrackBarLightCruiseSpeed.BindFloatData( RenderingOptions.Instance, "LightCruiseSpeed", 0.0005f, 0.01f );
             visualTrackBarLightDistance.BindFloatData( RenderingOptions.Instance, "LightDistance", 1, 20 );
             visualTrackBarLightIntensity.BindFloatData( RenderingOptions.Instance, "LightIntensity", 0, 3 );
-
-            initControls();
-
-
-            Application.Idle += applicationIdle;
-
-            loaded = true;
-        }
-
-        private void initControls()
-        {
-            glControl.KeyDown += glControl_KeyDown;
-            glControl.KeyUp += glControl_KeyUp;
-            glControl.Resize += glControl_Resize;
-            glControl.Paint += glControl_Paint;
-
-            glControl.MouseWheel += glControl_MouseWheel;
-
-            //glControl.MouseDown += glControl_MouseDown;
-            //glControl.MouseUp += glControl_MouseUp;
-
-            colorDialog.Color = Color.FromArgb( (int)(scene.Hair.Clr[ 0 ] * 255), (int)(scene.Hair.Clr[ 1 ] * 255), (int)(scene.Hair.Clr[ 2 ] * 255) );
-            buttonColor.BackColor = colorDialog.Color;
-
-            Text =
-                GL.GetString( StringName.Vendor ) + " " +
-                GL.GetString( StringName.Renderer ) + " " +
-                GL.GetString( StringName.Version );
-
-            // Ensure that the viewport and projection matrix are set correctly.
-            glControl_Resize( glControl, EventArgs.Empty );
-
-            checkBoxShowHair_CheckedChanged( null, null );
-            checkBoxDebugHair_CheckedChanged( null, null );
-            checkBoxShowVoxelGrid_CheckedChanged( null, null );
-            checkBoxCruisingLight_CheckedChanged( null, null );
-
-            fpsDisplayTimer.Enabled = true;
         }
 
         private void polarToCartesian()
@@ -173,7 +165,7 @@ namespace AnimatingHair.GUI
             x = distance * (float)Math.Cos( azi2 ) * k;
 
             camera.Eye = new Vector3( x, z, y );
-            camera.Target = new Vector3( 0.000429759f, -0.5017318f, -0.5830618f ); // TODO
+            camera.Target = new Vector3( 0, -0.5f, -0.6f );
             camera.Up = Vector3.UnitY;
         }
 
@@ -224,6 +216,9 @@ namespace AnimatingHair.GUI
                 if ( c.ClientSize.Height == 0 )
                     c.ClientSize = new Size( c.ClientSize.Width, 1 );
 
+                RenderingOptions.Instance.RenderWidth = c.ClientSize.Width;
+                RenderingOptions.Instance.RenderHeight = c.ClientSize.Height;
+                RenderingOptions.Instance.AspectRatio = c.AspectRatio;
                 renderer.Resize( c.ClientSize.Width, c.ClientSize.Height, c.AspectRatio );
             }
         }
@@ -318,6 +313,7 @@ namespace AnimatingHair.GUI
             fpsHistory.AddFirst( 1000.0f / stopwatch.ElapsedMilliseconds );
             stopwatch.Reset();
 
+
             glControl.SwapBuffers();
         }
 
@@ -405,11 +401,19 @@ namespace AnimatingHair.GUI
 
         private void restart()
         {
-            RenderingOptions.Instance.ShadowMapsResolution = int.Parse( comboBoxDeepOpacityMapResolution.Text );
+            try
+            {
+                RenderingOptions.Instance.ShadowMapsResolution = int.Parse( comboBoxDeepOpacityMapResolution.Text );
 
-            scene = sceneInitializer.InitializeScene();
-            camera = new Camera();
-            renderer = new Renderer( camera, scene, cutter );
+                scene = sceneInitializer.InitializeScene();
+                camera = new Camera();
+                renderer = new Renderer( camera, scene, cutter );
+            }
+            catch ( Exception exception )
+            {
+                MessageBox.Show( exception.Message + "\n\nAborting.", exception.GetType().ToString() );
+                Close();
+            }
 
             buttonColor.BackColor = colorDialog.Color;
             scene.Hair.Clr = new float[]
@@ -420,6 +424,9 @@ namespace AnimatingHair.GUI
                              };
 
             polarToCartesian();
+
+            // Ensure that the viewport and projection matrix are set correctly.
+            glControl_Resize( glControl, EventArgs.Empty );
         }
 
         private void buttonRestartWithRandomSeed_Click( object sender, EventArgs e )
@@ -430,19 +437,6 @@ namespace AnimatingHair.GUI
 
         private void buttonPause_Click( object sender, EventArgs e )
         {
-            //stopwatch.Start();
-
-            //for ( int i = 0; i < 500; i++ )
-            //{
-            //    scene.Step();
-            //}
-
-            //MessageBox.Show( (stopwatch.ElapsedMilliseconds / 1000.0).ToString() );
-
-            //stopwatch.Reset();
-
-            //return;
-
             paused = !paused;
 
             if ( paused )
@@ -508,10 +502,16 @@ namespace AnimatingHair.GUI
             if ( openFileDialog.ShowDialog() == DialogResult.OK )
             {
                 saveFile = openFileDialog.FileName;
-                Utility.LoadConfiguration( saveFile );
-                refresh();
-
-                restart();
+                try
+                {
+                    Utility.LoadConfiguration( saveFile );
+                    refresh();
+                    restart();
+                }
+                catch ( WrongFileFormatException )
+                {
+                    MessageBox.Show( "Wrong file format!" );
+                }
             }
 
             paused = wasPaused;

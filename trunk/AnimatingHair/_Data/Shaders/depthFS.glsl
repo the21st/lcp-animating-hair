@@ -1,5 +1,5 @@
 ﻿uniform sampler2D tex;
-uniform float alphaTreshold;
+uniform float alphaThreshold;
 
 varying float opacityFactor;
 
@@ -11,7 +11,7 @@ void main()
 	
 	float intensity = color.a;
 	intensity *= opacityFactor;
-	if ( intensity < alphaTreshold )
+	if ( intensity < alphaThreshold )
 	{
 		discard;
 	}

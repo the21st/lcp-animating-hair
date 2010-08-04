@@ -25,7 +25,7 @@ namespace AnimatingHair.Entity
         public bool Fan { get { return Air.Fan; } set { Air.Fan = value; } }
 
         // the entities
-        public Bust Bust { get; set; }
+        public HeadNeckShoulders HeadNeckShoulders { get; set; }
         public Hair Hair { get; set; }
         public Air Air { get; set; }
 
@@ -46,9 +46,9 @@ namespace AnimatingHair.Entity
         /// </summary>
         internal void Step()
         {
-            // based on user input (indirectly - through boolean fields), calculates acceleration acting on the bust
-            Vector3 bustMovementAcceleration = getMovementAcceleration();
-            float bustAngularAcceleration = getAngularAcceleration();
+            // based on user input (indirectly - through boolean fields), calculates acceleration acting on the head
+            Vector3 headMovementAcceleration = getMovementAcceleration();
+            float headAngularAcceleration = getAngularAcceleration();
 
             // the initialization of the runge-kutta intergration
             rkStep( 0 );
@@ -67,7 +67,7 @@ namespace AnimatingHair.Entity
                 Air.CalculateDensity();
 
                 // 3. apply forces
-                applyAllForces( bustMovementAcceleration, bustAngularAcceleration );
+                applyAllForces( headMovementAcceleration, headAngularAcceleration );
 
                 // 4. update positions and velocities
                 rkStep( i );
@@ -87,21 +87,21 @@ namespace AnimatingHair.Entity
         /// <summary>
         /// Applies forces on entities.
         /// </summary>
-        private void applyAllForces( Vector3 bustMovementAcceleration, float bustAngularAcceleration )
+        private void applyAllForces( Vector3 headMovementAcceleration, float headAngularAcceleration )
         {
             Hair.CalculateForcesOnSelf();
             Air.CalculateForcesOnSelf();
 
-            Bust.ApplyRotation();
-            Bust.ApplyForcesOnParticles( Particles );
+            HeadNeckShoulders.ApplyRotation();
+            HeadNeckShoulders.ApplyForcesOnParticles( Particles );
 
             applyInteractionForces( Hair.Particles, Air.Particles );
 
-            Hair.ApplyInertialAcceleration( -Vector3.Transform( bustMovementAcceleration,
+            Hair.ApplyInertialAcceleration( -Vector3.Transform( headMovementAcceleration,
                 RenderingResources.Instance.HeadRotateMatrixInverse ) );
-            Hair.ApplyInertialAngularAcceleration( bustAngularAcceleration, Bust.AngularVelocity );
-            Bust.Acceleration = bustMovementAcceleration;
-            Bust.AngularAcceleration = bustAngularAcceleration;
+            Hair.ApplyInertialAngularAcceleration( headAngularAcceleration, HeadNeckShoulders.AngularVelocity );
+            HeadNeckShoulders.Acceleration = headMovementAcceleration;
+            HeadNeckShoulders.AngularAcceleration = headAngularAcceleration;
         }
 
         private float getAngularAcceleration()
@@ -114,14 +114,14 @@ namespace AnimatingHair.Entity
                 if ( RotateAntiClockwise )
                     result -= 0.5f;
                 else
-                    result -= Bust.AngularVelocity;
+                    result -= HeadNeckShoulders.AngularVelocity;
 
-            if ( Bust.AngularVelocity > 1.0 && result > 0 )
+            if ( HeadNeckShoulders.AngularVelocity > 1.0 && result > 0 )
             {
                 result = 0;
             }
 
-            if ( Bust.AngularVelocity < -1.0 && result < 0 )
+            if ( HeadNeckShoulders.AngularVelocity < -1.0 && result < 0 )
             {
                 result = 0;
             }
@@ -141,9 +141,9 @@ namespace AnimatingHair.Entity
             if ( Right )
                 result.X -= 0.4f;
 
-            if ( (result.X == 0 && result.Z == 0) || Bust.Velocity.Length > 0.6 )
+            if ( (result.X == 0 && result.Z == 0) || HeadNeckShoulders.Velocity.Length > 0.6 )
             {
-                result -= Bust.Velocity;
+                result -= HeadNeckShoulders.Velocity;
             }
 
             return result;
@@ -210,7 +210,7 @@ namespace AnimatingHair.Entity
         {
             Hair.RKStep( stepNumber );
             Air.RKStep( stepNumber );
-            Bust.RKStep( stepNumber );
+            HeadNeckShoulders.RKStep( stepNumber );
         }
 
         /// <summary>
@@ -261,8 +261,8 @@ namespace AnimatingHair.Entity
         /// </summary>
         public void StepEuler()
         {
-            Vector3 bustMovementAcceleration = getMovementAcceleration();
-            float bustAngularAcceleration = getAngularAcceleration();
+            Vector3 headMovementAcceleration = getMovementAcceleration();
+            float headAngularAcceleration = getAngularAcceleration();
 
             // 0. update positions in voxel Grid
             updateVoxelGrid();
@@ -275,7 +275,7 @@ namespace AnimatingHair.Entity
             Air.CalculateDensity();
 
             // 3. apply forces
-            applyAllForces( bustMovementAcceleration, bustAngularAcceleration );
+            applyAllForces( headMovementAcceleration, headAngularAcceleration );
 
             // 4. update positions and velocities
             eulerIntegrate();

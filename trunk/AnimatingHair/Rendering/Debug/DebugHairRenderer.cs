@@ -57,8 +57,6 @@ namespace AnimatingHair.Rendering.Debug
             Utility.DrawSphere( 0.02f, 10, 10 );
             GL.PopMatrix();
 
-            //return;
-
             // -- direction --
             if ( !hp.IsRoot )
             {

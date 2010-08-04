@@ -38,6 +38,7 @@ namespace AnimatingHair.Auxiliary
         /// <param name="cornerLocation">Position of the corner of the first voxel. The voxel grid spans in positive direction.</param>
         /// <param name="size">The size of the whole voxel grid (not of one voxel).</param>
         /// <param name="voxelSize">The size of one voxel</param>
+        /// <param name="maxHairID">Maximum HairParticle ID, to distinguish from AirParticles.</param>
         public VoxelGrid( Vector3 cornerLocation, float[] size, float voxelSize )
         {
             voxelSizeInv = 1f / voxelSize;
@@ -52,7 +53,7 @@ namespace AnimatingHair.Auxiliary
 
             outside = new Voxel( -1, -1, -1 );
 
-            Grid = new Voxel[ VoxelCount[ 0 ], VoxelCount[ 1 ], VoxelCount[ 2 ] ]; // TODO: tuto to pada pri particlecount = 1
+            Grid = new Voxel[ VoxelCount[ 0 ], VoxelCount[ 1 ], VoxelCount[ 2 ] ];
 
             for ( int i = 0; i < VoxelCount[ 0 ]; i++ )
             {
@@ -93,26 +94,93 @@ namespace AnimatingHair.Auxiliary
             int z = particle.ContainedIn.Z;
             Voxel currentCell;
 
-            for ( int i = -1; i <= 1; i++ )
+            if ( particle.ContainedIn == outside )
             {
-                for ( int j = -1; j <= 1; j++ )
-                {
-                    for ( int k = -1; k <= 1; k++ )
-                    {
-                        int actX = x + i;
-                        int actY = y + j;
-                        int actZ = z + k;
+                edgeOrOutside = true;
 
-                        if ( actX < 0 || actX >= VoxelCount[ 0 ] || actY < 0 || actY >= VoxelCount[ 1 ] || actZ < 0 || actZ >= VoxelCount[ 2 ] )
+                // particle is outside the voxel grid, meaning we have to search all border voxels
+                for ( int i = 0; i < VoxelCount[ 0 ]; i++ )
+                {
+                    for ( int j = 0; j < VoxelCount[ 1 ]; j++ )
+                    {
+                        currentCell = Grid[ i, j, 0 ];
+                        for ( int l = 0; l < currentCell.Particles.Count; l++ )
                         {
-                            edgeOrOutside = true;
+                            processNeighbor( particle, currentCell.Particles[ l ] );
                         }
-                        else
+                        currentCell = Grid[ i, j, VoxelCount[ 2 ] - 1 ];
+                        for ( int l = 0; l < currentCell.Particles.Count; l++ )
                         {
-                            currentCell = Grid[ actX, actY, actZ ];
+                            processNeighbor( particle, currentCell.Particles[ l ] );
+                        }
+                    }
+                }
+                // particle is outside the voxel grid, meaning we have to search all border voxels
+                for ( int i = 0; i < VoxelCount[ 0 ]; i++ )
+                {
+                    for ( int j = 0; j < VoxelCount[ 2 ]; j++ )
+                    {
+                        for ( int k = 0; k < 2; k++ )
+                        {
+                            currentCell = Grid[ i, 0, j ];
                             for ( int l = 0; l < currentCell.Particles.Count; l++ )
                             {
                                 processNeighbor( particle, currentCell.Particles[ l ] );
+                            }
+                            currentCell = Grid[ i, VoxelCount[ 1 ] - 1, j ];
+                            for ( int l = 0; l < currentCell.Particles.Count; l++ )
+                            {
+                                processNeighbor( particle, currentCell.Particles[ l ] );
+                            }
+                        }
+                    }
+                }
+                // particle is outside the voxel grid, meaning we have to search all border voxels
+                for ( int i = 0; i < VoxelCount[ 1 ]; i++ )
+                {
+                    for ( int j = 0; j < VoxelCount[ 2 ]; j++ )
+                    {
+                        for ( int k = 0; k < 2; k++ )
+                        {
+                            currentCell = Grid[ 0, i, j ];
+                            for ( int l = 0; l < currentCell.Particles.Count; l++ )
+                            {
+                                processNeighbor( particle, currentCell.Particles[ l ] );
+                            }
+                            currentCell = Grid[ VoxelCount[ 0 ] - 1, i, j ];
+                            for ( int l = 0; l < currentCell.Particles.Count; l++ )
+                            {
+                                processNeighbor( particle, currentCell.Particles[ l ] );
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+
+                for ( int i = -1; i <= 1; i++ )
+                {
+                    for ( int j = -1; j <= 1; j++ )
+                    {
+                        for ( int k = -1; k <= 1; k++ )
+                        {
+                            int actX = x + i;
+                            int actY = y + j;
+                            int actZ = z + k;
+
+                            if ( actX < 0 || actX >= VoxelCount[ 0 ] || actY < 0 || actY >= VoxelCount[ 1 ] || actZ < 0 ||
+                                 actZ >= VoxelCount[ 2 ] )
+                            {
+                                edgeOrOutside = true;
+                            }
+                            else
+                            {
+                                currentCell = Grid[ actX, actY, actZ ];
+                                for ( int l = 0; l < currentCell.Particles.Count; l++ )
+                                {
+                                    processNeighbor( particle, currentCell.Particles[ l ] );
+                                }
                             }
                         }
                     }

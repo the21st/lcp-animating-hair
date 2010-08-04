@@ -1,8 +1,7 @@
 ﻿uniform sampler2D depthMap;
 uniform sampler2D hairTexture;
 uniform vec3 eye;
-uniform float alphaTreshold;
-uniform float intensityFactor;
+uniform float alphaThreshold;
 uniform float deepOpacityMapDistance;
 
 varying float opacityFactor;
@@ -27,12 +26,12 @@ void main()
 	intensity *= opacityFactor; // times opacity factor from Vertex shader
 	intensity *= intensityFactor;
 	
-	if ( intensity < alphaTreshold )
+	if ( intensity < alphaThreshold )
 	{
 		discard;
 	}
 	
-	intensity -= alphaTreshold;
+	intensity -= alphaThreshold;
 	
 	float depth = (2.0 * near) / (far + near - gl_FragCoord.z * (far - near)); // linearny depth medzi 0 a 1
 	

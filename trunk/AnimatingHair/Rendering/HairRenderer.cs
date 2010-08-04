@@ -1,4 +1,5 @@
 using System;
+using AnimatingHair.Auxiliary;
 using AnimatingHair.Entity;
 using AnimatingHair.Entity.PhysicalEntity;
 using OpenTK;
@@ -101,7 +102,7 @@ namespace AnimatingHair.Rendering
             for ( int i = 0; i < hair.Particles.Length; i++ )
             {
                 HairParticle hp = hair.Particles[ i ];
-                Vector3 pos = Vector3.Transform( hp.Position, RenderingResources.Instance.BustModelTransformationMatrix );
+                Vector3 pos = Vector3.Transform( hp.Position, RenderingResources.Instance.HeadModelTransformationMatrix );
                 hp.DistanceFromCamera = (pos - camera.Eye).Length;
             }
 
@@ -137,7 +138,7 @@ namespace AnimatingHair.Rendering
             GL.Uniform1( nearLoc, RenderingOptions.Instance.Near );
             GL.Uniform1( farLoc, RenderingOptions.Instance.Far );
             GL.UniformMatrix4( cameraModelViewMatrixLoc, false, ref RenderingResources.Instance.CameraModelViewMatrix );
-            RenderingResources.Instance.LightModelViewMatrix = RenderingResources.Instance.BustModelTransformationMatrix * RenderingResources.Instance.LightModelViewMatrix;
+            RenderingResources.Instance.LightModelViewMatrix = RenderingResources.Instance.HeadModelTransformationMatrix * RenderingResources.Instance.LightModelViewMatrix;
             GL.UniformMatrix4( lightModelViewMatrixLoc, false, ref RenderingResources.Instance.LightModelViewMatrix );
             GL.UniformMatrix4( lightProjectionMatrixLoc, false, ref RenderingResources.Instance.LightProjectionMatrix );
 

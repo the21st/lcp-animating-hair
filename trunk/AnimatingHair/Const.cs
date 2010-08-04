@@ -3,6 +3,9 @@ using System.IO;
 
 namespace AnimatingHair
 {
+    /// <summary>
+    /// A singleton class containing simulation variables.
+    /// </summary>
     class Const
     {
         public static readonly Const Instance = new Const();
@@ -10,18 +13,18 @@ namespace AnimatingHair
         private Const()
         {
             Seed = 0;
-            TimeStep = 0.01f;
+            TimeStep = 0.04f;
             Parallel = true;
 
-            AirFriction = 0.1f;
+            AirFriction = 0.2f;
             Gravity = 0.7f;
 
-            HairParticleCount = 2000;
-            HairLength = 2.6f;
+            HairParticleCount = 1000;
+            HairLength = 2.3f;
             MaxRootDepth = 0.5f;
 
             MaxNeighbors = 12;
-            NeighborAlignmentTreshold = 0.5f;
+            NeighborAlignmentThreshold = 0.5f;
 
             DensityOfHairMaterial = 40f;
             ElasticModulus = 3000;
@@ -37,10 +40,10 @@ namespace AnimatingHair
             HairDensityForceMagnitude = 1f;
 
             AirParticleCount = 0;
-            DragCoefficient = 0.1f;
+            DragCoefficient = 0.05f;
             AverageAirDensity = 1f;
             AirDensityForceMagnitude = 0.1f;
-            AirMassFactor = 100;
+            AirMassFactor = 10;
         }
 
         #region Simulation variables
@@ -74,13 +77,24 @@ namespace AnimatingHair
 
         public int MaxNeighbors { get; set; }
 
-        public float NeighborAlignmentTreshold { get; set; }
+        public float NeighborAlignmentThreshold { get; set; }
 
         #endregion
 
         #region Physical properties of hair
 
-        public float DensityOfHairMaterial { get; set; }
+        private float densityOfHairMaterial;
+        public float DensityOfHairMaterial
+        {
+            get { return densityOfHairMaterial; }
+            set
+            {
+                DensityOfHairMaterialInverse = 1 / value;
+                densityOfHairMaterial = value;
+            }
+        }
+
+        public float DensityOfHairMaterialInverse { get; set; }
 
         public float ElasticModulus { get; set; }
 
@@ -90,7 +104,7 @@ namespace AnimatingHair
 
         public float HairParticleMass()
         {
-            // TODO: netreba sem zaratat aj density of hair material?
+            // TODO: shouldnt be density of hair material included?
             return HairMassFactor * HairLength / HairParticleCount;
         }
 
@@ -142,7 +156,7 @@ namespace AnimatingHair
             stringWriter.WriteLine( "MaxRootDepth = " + Const.Instance.MaxRootDepth );
 
             stringWriter.WriteLine( "MaxNeighbors = " + Const.Instance.MaxNeighbors );
-            stringWriter.WriteLine( "NeighborAlignmentTreshold = " + Const.Instance.NeighborAlignmentTreshold );
+            stringWriter.WriteLine( "NeighborAlignmentThreshold = " + Const.Instance.NeighborAlignmentThreshold );
 
             stringWriter.WriteLine( "DensityOfHairMaterial = " + Const.Instance.DensityOfHairMaterial );
             stringWriter.WriteLine( "ElasticModulus = " + Const.Instance.ElasticModulus );
@@ -181,127 +195,138 @@ namespace AnimatingHair
                     continue;
 
                 lineParts = line.Split( '=' );
+
+                if ( lineParts.Length != 2 )
+                    throw new WrongFileFormatException( "Wrong file format." );
+
                 for ( int i = 0; i < lineParts.Length; i++ )
                 {
                     lineParts[ i ] = lineParts[ i ].Trim().ToLowerInvariant();
                 }
 
-                switch ( lineParts[ 0 ] )
+                try
                 {
-                    case "seed":
-                        {
-                            Const.Instance.Seed = int.Parse( lineParts[ 1 ] );
+                    switch ( lineParts[ 0 ] )
+                    {
+                        case "seed":
+                            {
+                                Const.Instance.Seed = int.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "timestep":
+                            {
+                                Const.Instance.TimeStep = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "airfriction":
+                            {
+                                Const.Instance.AirFriction = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "gravity":
+                            {
+                                Const.Instance.Gravity = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "hairparticlecount":
+                            {
+                                Const.Instance.HairParticleCount = int.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "hairlength":
+                            {
+                                Const.Instance.HairLength = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "maxrootdepth":
+                            {
+                                Const.Instance.MaxRootDepth = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "maxneighbors":
+                            {
+                                Const.Instance.MaxNeighbors = int.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "densityofhairmaterial":
+                            {
+                                Const.Instance.DensityOfHairMaterial = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "elasticmodulus":
+                            {
+                                Const.Instance.ElasticModulus = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "secondmomentofarea":
+                            {
+                                Const.Instance.SecondMomentOfArea = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "hairmassfactor":
+                            {
+                                Const.Instance.HairMassFactor = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "neighboralignmentthreshold":
+                            {
+                                Const.Instance.NeighborAlignmentThreshold = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "collisiondamp":
+                            {
+                                Const.Instance.CollisionDamp = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "frictiondamp":
+                            {
+                                Const.Instance.FrictionDamp = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "averagehairdensity":
+                            {
+                                Const.Instance.AverageHairDensity = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "hairdensityforcemagnitude":
+                            {
+                                Const.Instance.HairDensityForceMagnitude = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "airparticlecount":
+                            {
+                                Const.Instance.AirParticleCount = int.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "dragcoefficient":
+                            {
+                                Const.Instance.DragCoefficient = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "averageairdensity":
+                            {
+                                Const.Instance.AverageAirDensity = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "airdensityforcemagnitude":
+                            {
+                                Const.Instance.AirDensityForceMagnitude = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "airmassfactor":
+                            {
+                                Const.Instance.AirMassFactor = float.Parse( lineParts[ 1 ] );
+                                break;
+                            }
+                        case "":
                             break;
-                        }
-                    case "timestep":
-                        {
-                            Const.Instance.TimeStep = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "airfriction":
-                        {
-                            Const.Instance.AirFriction = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "gravity":
-                        {
-                            Const.Instance.Gravity = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "hairparticlecount":
-                        {
-                            Const.Instance.HairParticleCount = int.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "hairlength":
-                        {
-                            Const.Instance.HairLength = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "maxrootdepth":
-                        {
-                            Const.Instance.MaxRootDepth = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "maxneighbors":
-                        {
-                            Const.Instance.MaxNeighbors = int.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "densityofhairmaterial":
-                        {
-                            Const.Instance.DensityOfHairMaterial = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "elasticmodulus":
-                        {
-                            Const.Instance.ElasticModulus = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "secondmomentofarea":
-                        {
-                            Const.Instance.SecondMomentOfArea = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "hairmassfactor":
-                        {
-                            Const.Instance.HairMassFactor = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "neighboralignmenttreshold":
-                        {
-                            Const.Instance.NeighborAlignmentTreshold = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "collisiondamp":
-                        {
-                            Const.Instance.CollisionDamp = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "frictiondamp":
-                        {
-                            Const.Instance.FrictionDamp = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "averagehairdensity":
-                        {
-                            Const.Instance.AverageHairDensity = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "hairdensityforcemagnitude":
-                        {
-                            Const.Instance.HairDensityForceMagnitude = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "airparticlecount":
-                        {
-                            Const.Instance.AirParticleCount = int.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "dragcoefficient":
-                        {
-                            Const.Instance.DragCoefficient = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "averageairdensity":
-                        {
-                            Const.Instance.AverageAirDensity = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "airdensityforcemagnitude":
-                        {
-                            Const.Instance.AirDensityForceMagnitude = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "airmassfactor":
-                        {
-                            Const.Instance.AirMassFactor = float.Parse( lineParts[ 1 ] );
-                            break;
-                        }
-                    case "":
-                        break;
-                    default:
-                        throw new Exception( "Wrong file format." );
+                        default:
+                            throw new WrongFileFormatException( "Wrong file format." );
+                    }
+                }
+                catch ( FormatException )
+                {
+                    throw new WrongFileFormatException( "Wrong file format." );
                 }
             }
         }

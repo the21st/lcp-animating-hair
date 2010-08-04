@@ -133,19 +133,6 @@ namespace AnimatingHair.Entity.PhysicalEntity
         {
             Velocity = startVelocity + (1.0f / 6.0f) * (kVelocity[ 1 ] + 2 * (kVelocity[ 2 ] + kVelocity[ 3 ]) + kVelocity[ 4 ]);
 
-            // TODO: !!! trimming !!!
-            if ( this is SPHParticle )
-            {
-                SPHParticle sphParticle = this as SPHParticle;
-                float trim = 0.3f;
-                float length = sphParticle.Velocity.Length;
-                if ( length > trim )
-                {
-                    float factor = trim / length;
-                    sphParticle.Velocity *= factor;
-                }
-            }
-
             Position = startPosition + (1.0f / 6.0f) * (kPosition[ 1 ] + 2 * (kPosition[ 2 ] + kPosition[ 3 ]) + kPosition[ 4 ]);
         }
 

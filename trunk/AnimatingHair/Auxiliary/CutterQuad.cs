@@ -4,6 +4,9 @@ using System.Drawing;
 
 namespace AnimatingHair.Auxiliary
 {
+    /// <summary>
+    /// Represents the quad used for cutting hair.
+    /// </summary>
     class CutterQuad
     {
         public Vector3 Position;
