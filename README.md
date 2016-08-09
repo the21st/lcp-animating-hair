@@ -1,5 +1,5 @@
 # Animating hair with the Loosely Connected Particles method (spherical hydro-dynamics)
-This is the code for my [bachelor thesis](https://dl.dropboxusercontent.com/u/73774/thesis_final.pdf).
+This is the code for my [bachelor thesis](thesis_final.pdf).
 
 It's an implementation of the Loosely Connected Particles (LCP) method of hair animation proposed by [Bando et al](http://web.media.mit.edu/~bandy/hair/EG03hair.pdf).
 I added the Deep Opacity Maps method of hair shadowing on the LCP and introduced alpha thresholding to eliminate artifacts.
